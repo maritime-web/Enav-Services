@@ -12,10 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.dataformats.service;
 
-import dk.dma.embryo.dataformats.model.Forecast;
+package dk.dma.embryo.dataformats.model;
 
-public interface ForecastPersistService {
-    void persist(Forecast forecast);
+/**
+ * Created by Steen on 22-01-2016.
+ */
+public enum Type {
+    ICE_FORECAST, CURRENT_FORECAST, WAVE_FORECAST, WIND_FORECAST
 }

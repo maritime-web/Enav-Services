@@ -12,27 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.dataformats.service;
 
-import java.util.List;
+package dk.dma.embryo.dataformats.model;
 
-import dk.dma.embryo.dataformats.model.ForecastHeader;
-import dk.dma.embryo.dataformats.model.ForecastType;
-import dk.dma.embryo.dataformats.model.Type;
-
-public interface ForecastService {
-    List<ForecastType> getForecastTypes();
-
-    ForecastType getForecastType(Type type);
-
-    void reParse();
-
-    List<ForecastHeader> getForecastList(Type type);
-
-    List<ForecastHeader> listAvailableIceForecasts();
-
-    List<ForecastHeader> listAvailableWaveForecasts();
-
-    List<ForecastHeader> listAvailableCurrentForecasts();
-
+/**
+ * Created by Steen on 22-01-2016.
+ */
+public enum ForecastProvider {
+    DMI, FCOO
 }

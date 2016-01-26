@@ -12,27 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.dataformats.service;
 
-import java.util.List;
+package dk.dma.embryo.dataformats.persistence;
 
-import dk.dma.embryo.dataformats.model.ForecastHeader;
-import dk.dma.embryo.dataformats.model.ForecastType;
-import dk.dma.embryo.dataformats.model.Type;
+import javax.inject.Qualifier;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-public interface ForecastService {
-    List<ForecastType> getForecastTypes();
-
-    ForecastType getForecastType(Type type);
-
-    void reParse();
-
-    List<ForecastHeader> getForecastList(Type type);
-
-    List<ForecastHeader> listAvailableIceForecasts();
-
-    List<ForecastHeader> listAvailableWaveForecasts();
-
-    List<ForecastHeader> listAvailableCurrentForecasts();
-
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+public @interface CouchDatabase {
+    String databaseName();
 }

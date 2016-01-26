@@ -12,27 +12,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.dataformats.service;
 
-import java.util.List;
+package dk.dma.embryo.dataformats.model;
 
-import dk.dma.embryo.dataformats.model.ForecastHeader;
-import dk.dma.embryo.dataformats.model.ForecastType;
-import dk.dma.embryo.dataformats.model.Type;
+/**
+ * Created by Steen on 20-01-2016.
+ */
+public enum ForecastMetaDataKeys {
+    ID("id"),
+    TYPE("ftype"),
+    AREA("area"),
+    PROVIDER("provider"),
+    JSON_SIZE("size"),
+    TIMESTAMP("timestamp"),
+    ORIGINAL_FILE_NAME("name");
 
-public interface ForecastService {
-    List<ForecastType> getForecastTypes();
+    private final String keyName;
 
-    ForecastType getForecastType(Type type);
+    ForecastMetaDataKeys(String keyName) {
+        this.keyName = keyName;
+    }
 
-    void reParse();
-
-    List<ForecastHeader> getForecastList(Type type);
-
-    List<ForecastHeader> listAvailableIceForecasts();
-
-    List<ForecastHeader> listAvailableWaveForecasts();
-
-    List<ForecastHeader> listAvailableCurrentForecasts();
-
+    public String getKeyName() {
+        return keyName;
+    }
 }
