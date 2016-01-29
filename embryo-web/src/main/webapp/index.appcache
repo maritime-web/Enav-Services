@@ -1,9 +1,0 @@
-CACHE MANIFEST
-NETWORK:
-*
-CACHE:
-index.html
-
-
-# This file has been replaced by front.appcache.
-# Is has only been left to ensure an update of the application no matter when the user used the application for the last time.

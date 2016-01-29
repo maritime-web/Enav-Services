@@ -542,7 +542,6 @@
         <module>embryo-sar</module>
         <module>embryo-reporting</module>
         <module>embryo-weather</module>
-        <module>embryo-web</module>
     </modules>
 
 </project>
