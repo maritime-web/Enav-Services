@@ -14,6 +14,7 @@
  */
 package dk.dma.embryo.vessel.service;
 
+import dk.dma.embryo.common.area.Area;
 import dk.dma.embryo.common.area.AreaFilter;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.log.EmbryoLogService;
@@ -32,6 +33,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -72,10 +74,13 @@ public class AisDataServiceImpl implements AisDataService {
     private AisSourceFilter aisSourceFilter;
 
     @Inject
-    private AisTrackClient aisTraclClient;
+    private AisTrackClient aisTrackClient;
 
     @Inject
     private AisStoreClient aisStoreClient;
+
+    @Inject
+    private AisDataServiceProperties aisDataServiceProperties;
 
 
     @Inject
@@ -91,8 +96,8 @@ public class AisDataServiceImpl implements AisDataService {
             fb.setSourceFilter(defaultSources, aisSourceFilter).addUserSelectedAreas(areaFilter).setDefaultArea(defaultArea);
 
             logger.trace("AisTrackClient.vessels({}, {}, {},{})", fb.getMmsiNumbers(), fb.getBaseArea(), fb.getUserSelectedAreas(), fb.getSourceFilter());
-            List<AisTrack> aisTracks = aisTraclClient.vessels(fb.getMmsiNumbers(), fb.getBaseArea(), fb.getUserSelectedAreas(), fb.getSourceFilter());
-            logger.trace("AisTrackClient.vessels({}, {}, {}, {}) : {}", fb.getMmsiNumbers(), fb.getBaseArea(), fb.getUserSelectedAreas(), fb.getSourceFilter(), aisTracks);
+            List<AisTrack> aisTracks = aisTrackClient.vessels(fb.getMmsiNumbers(), fb.getBaseArea(), fb.getUserSelectedAreas(), fb.getSourceFilter());
+            logger.info("AisTrackClient.vessels({}, {}, {}, {})", fb.getMmsiNumbers(), fb.getBaseArea(), fb.getUserSelectedAreas(), fb.getSourceFilter());
 
             Function<AisVessel, AisVessel> addMaxSpeedFunc = AisVessel.addMaxSpeedFn(Vessel.asMap(arcticWebVessels));
             Stream<AisVessel> vesselStream = aisTracks.stream().filter(AisTrack.valid()).map(AisTrack.toJsonVesselFn()).map(addMaxSpeedFunc);
@@ -104,6 +109,31 @@ public class AisDataServiceImpl implements AisDataService {
             return vessels;
         } catch (Exception e) {
             String msg = "Error fetching vessels using request parameters " + (fb == null ? "null" : fb.requestValuesAsString());
+            logger.error(msg, e);
+            embryoLogService.error(msg, e);
+            throw e;
+        }
+    }
+
+    /**
+     * Get ais vessels within a bounding box.
+     * @param specificAreaFilter
+     * @return list of vessels.
+     */
+    public List<AisVessel> getAisVesselsBBOX(String specificAreaFilter) {
+        try {
+            List<AisTrack> aisTracks = aisTrackClient.vessels(specificAreaFilter);
+            logger.info("BBOX search AisTrackClient.vessels found {} vessels {}", aisTracks.size());
+
+            Stream<AisVessel> vesselStream = aisTracks.stream().filter(AisTrack.valid()).map(AisTrack.toJsonVesselFn());
+            List<AisVessel> vessels = vesselStream.collect(Collectors.toList());
+
+            String msg = "Fetched " + vessels.size() + " vessels in area  " + specificAreaFilter + "  aisTracks size " + aisTracks.size();
+            logger.info(msg);
+            embryoLogService.info(msg);
+            return vessels;
+        } catch (Exception e) {
+            String msg = "Error fetching vessels inside BBOX using request parameters " ;
             logger.error(msg, e);
             embryoLogService.error(msg, e);
             throw e;
@@ -154,10 +184,11 @@ public class AisDataServiceImpl implements AisDataService {
         try {
             fb = new AisTrackRequestParamBuilder();
             fb.setSourceFilter(defaultSources, aisSourceFilter);
+            logger.info("ais track client:  {}", aisTrackClient.toString());
 
             logger.trace("AisTrackClient.vessel({}, {})", mmsi, fb.getSourceFilter());
-            AisTrack aisTrack = aisTraclClient.vessel(mmsi, fb.getSourceFilter());
-            logger.trace("AisTrackClient.vessel({" +
+            AisTrack aisTrack = aisTrackClient.vessel(mmsi, fb.getSourceFilter());
+            logger.info("AisTrackClient.vessel({" +
                     "}, {}) : {}", mmsi, fb.getSourceFilter(), aisTrack);
 
             AisVessel aisVessel = aisTrack.toJsonVessel();
@@ -215,7 +246,7 @@ public class AisDataServiceImpl implements AisDataService {
             String duration = AisStoreClient.LOOK_BACK_PT24H;
             logger.trace("AisStoreClient.historicalTrack({}, {}, {})", mmsi, fb.getSourceFilter(), duration);
             List<TrackPosition> historicalTrack = aisStoreClient.pastTrack(mmsi, fb.getSourceFilter(), duration);
-            logger.trace("AisStoreClient.historicalTrack({}, {}, {}) : {}", mmsi, fb.getSourceFilter(), duration, historicalTrack);
+            logger.info("AisStoreClient.historicalTrack({}, {}, {}) : {}", mmsi, fb.getSourceFilter(), duration, historicalTrack);
 
             List<TrackPosition> downSampled = TrackPosition.downSample(historicalTrack, 500);
 

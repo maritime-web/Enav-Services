@@ -166,6 +166,28 @@ public class VesselRestService extends AbstractRestService {
         return super.getResponse(request, result, NO_CACHE);
     }
 
+
+    /**
+     * list vessels in a specific area. the search is forwarded towards the AIS-Track server.
+     * Larger area search can result in a response with several megabytes of data.
+     * @param request
+     * @param specificAreaFilter i.e. 53.0|11.0|66.0|33.0 for the Baltic sea.
+     * @return a list of ais vessels.
+     */
+    @GET
+    @Path("/listarea")
+    @Produces("application/json")
+    @GZIP
+    public Response list(@Context Request request, @QueryParam("area") String specificAreaFilter ) {
+        logger.info("  searching in area {} ", specificAreaFilter);
+
+        List<AisVessel> aisVessels = this.aisDataService.getAisVesselsBBOX(specificAreaFilter);
+        logger.info("area specific search resulted in {} found vessels ", aisVessels.size());
+        List<VesselOverview> result = AisVessel.toVesselOverviewStream(aisVessels).collect(Collectors.toList());
+
+        return super.getResponse(request, result, NO_CACHE);
+    }
+
     @GET
     @Path("/details")
     @Produces("application/json")

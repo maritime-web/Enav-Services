@@ -23,6 +23,9 @@ public interface AisDataService {
    
     List<AisVessel> getAisVessels();
 
+   // List<AisVessel> getAisVesselsBBOX(double ne_lat, double ne_lot, double sw_lat, double sw_lot );
+    List<AisVessel> getAisVesselsBBOX(String specificAreaFilter);
+
     AisVessel getAisVesselByMmsi(Long mmsi);
 
     List<AisVessel> getAisVesselsByMmsi(List<Long> mmsiNumbers);

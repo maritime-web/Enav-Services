@@ -10,7 +10,6 @@
         <groupId>dk.dma.enav.services</groupId>
 		<artifactId>parent</artifactId>
         <version>2.7-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<dependencies>
