@@ -16,6 +16,8 @@
 package dk.dma.embryo.dataformats.persistence;
 
 import dk.dma.embryo.dataformats.model.Type;
+import org.apache.http.HttpHost;
+import org.apache.http.client.fluent.Executor;
 import org.hamcrest.CoreMatchers;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -59,12 +61,20 @@ public class HttpCouchClientIT {
     }
 
     private HttpCouchClient getHttpCouchClient() {
-        HttpCouchClient cut = new HttpCouchClient(getConfig());
+        CouchDbConfig config = getConfig();
+        HttpCouchClient cut = new HttpCouchClient(createExecutor(config), config);
         cut.initialize();
         return cut;
     }
 
+    private Executor createExecutor(CouchDbConfig config) {
+        HttpHost host = new HttpHost(config.getHost(), config.getPort());
+        return Executor.newInstance()
+                .auth(host, config.getUser(), config.getPassword())
+                .authPreemptive(host);
+    }
+
     private CouchDbConfig getConfig() {
-        return new CouchDbConfig("/forecast", "/couchdb/forecast-design.json", "_design/forecast", "192.168.99.101", 5984, "embryo", "embryo");
+        return new CouchDbConfig("/forecast", "/couchdb/forecast-design.json", "_design/forecast", "192.168.99.100", 5984, "embryo", "embryo");
     }
 }
