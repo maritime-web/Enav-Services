@@ -155,7 +155,7 @@ public class AisDataServiceImpl implements AisDataService {
             fb.setSourceFilter(defaultSources, null);
 
             logger.trace("AisTrackClient.vessels({}, {})", mmsiNumbers, fb.getSourceFilter());
-            List<AisTrack> aisTracks = aisTraclClient.vesselsByMmsis(mmsiNumbers, fb.getSourceFilter());
+            List<AisTrack> aisTracks = aisTrackClient.vesselsByMmsis(mmsiNumbers, fb.getSourceFilter());
             logger.trace("AisTrackClient.vessels({}, {}) : {}", mmsiNumbers, fb.getSourceFilter(), aisTracks);
 
             Stream<AisVessel> vesselStream = aisTracks.stream().filter(AisTrack.valid()).map(AisTrack.toJsonVesselFn());
