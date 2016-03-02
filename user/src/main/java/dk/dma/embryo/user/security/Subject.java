@@ -40,8 +40,6 @@ public interface Subject extends Serializable {
      * Expected used while transitioning from role base security to feature base
      * security
      * 
-     * @param permission
-     * @return
      */
     <R extends Role> boolean hasRole(Class<R> roleType);
 

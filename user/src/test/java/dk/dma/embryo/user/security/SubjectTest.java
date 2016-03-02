@@ -72,7 +72,7 @@ public class SubjectTest extends AbstractShiroTest {
     ScheduleDao scheduleDao;
 
     @Inject
-    Subject subject;
+    SubjectImpl subject;
 
     @Test
     @InSessionScope

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<web-fragment metadata-complete="true" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<web-fragment metadata-complete="false" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd">
 
+<!--
     <context-param>
         <param-name>shiroConfigLocations</param-name>
         <param-value>classpath:default-embryo-shiro.ini</param-value>
@@ -35,6 +36,7 @@
         <filter-name>UserAgentLoggingFilter</filter-name>
         <url-pattern>/rest/authentication/login</url-pattern>
     </filter-mapping>
+-->
 
 </web-fragment>
     

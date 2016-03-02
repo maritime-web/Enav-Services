@@ -22,6 +22,7 @@ import dk.dma.embryo.weather.model.Warnings;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.unitils.reflectionassert.ReflectionAssert;
@@ -31,6 +32,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Jesper Tejlgaard
@@ -131,6 +134,20 @@ public class DmiForecastParser_EnTest {
         Assert.assertNotNull(forecast.getTo());
         Assert.assertEquals(1407153600000L, forecast.getTo().getTime());
         Assert.assertEquals(14, forecast.getDistricts().size());
+    }
+
+    @Ignore
+    @Test
+    public void test20160225FailedInProduction() throws IOException {
+        InputStream is = getClass().getResourceAsStream("/dmi/grudseng_2016_02_25.xml");
+
+        RegionForecast forecast = parser.parse(is);
+
+        String expectedOverview = "A low, 982 hPa, over Timmiarmiut, is moving slowly towards east " +
+                "filling somewhat. A high, 1023 hPa, over northeastern " +
+                "Greenland, is almost stationary.";
+        Assert.assertEquals(expectedOverview, forecast.getDesc());
+        System.out.println(forecast.getFrom());
     }
 
     @Test
