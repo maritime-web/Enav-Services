@@ -1,4 +1,4 @@
-Embryo
+E-navigation Services
 =========
 
 A tool for ships sailing in the Arctic region around Greenland. ArcticWeb serves as a single access point to safety related information, provides streamlined reporting and allows for voluntary coordinated voyage through sharing of positions and planned routes.
@@ -69,6 +69,7 @@ ArcticWeb has a default configuration file which may be overridden by setting th
 
     <system-properties>
         <property name="arcticweb.configuration" value="file:///Users/chvid/sfs/arcticweb.properties"/>
+        <property name="balticweb.configuration" value="file:///home/YourSuperPathName/BalticWeb/balticweb.properties"/>
     </system-properties>
 
 In particular the file may contain URLs and passwords for the DMI Ice map server.
