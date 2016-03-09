@@ -97,7 +97,7 @@ public class AisDataServiceImpl implements AisDataService {
 
             logger.trace("AisTrackClient.vessels({}, {}, {},{})", fb.getMmsiNumbers(), fb.getBaseArea(), fb.getUserSelectedAreas(), fb.getSourceFilter());
             List<AisTrack> aisTracks = aisTrackClient.vessels(fb.getMmsiNumbers(), fb.getBaseArea(), fb.getUserSelectedAreas(), fb.getSourceFilter());
-            logger.info("AisTrackClient.vessels({}, {}, {}, {})", fb.getMmsiNumbers(), fb.getBaseArea(), fb.getUserSelectedAreas(), fb.getSourceFilter());
+            logger.debug("AisTrackClient.vessels({}, {}, {}, {})", fb.getMmsiNumbers(), fb.getBaseArea(), fb.getUserSelectedAreas(), fb.getSourceFilter());
 
             Function<AisVessel, AisVessel> addMaxSpeedFunc = AisVessel.addMaxSpeedFn(Vessel.asMap(arcticWebVessels));
             Stream<AisVessel> vesselStream = aisTracks.stream().filter(AisTrack.valid()).map(AisTrack.toJsonVesselFn()).map(addMaxSpeedFunc);
@@ -123,7 +123,7 @@ public class AisDataServiceImpl implements AisDataService {
     public List<AisVessel> getAisVesselsBBOX(String specificAreaFilter) {
         try {
             List<AisTrack> aisTracks = aisTrackClient.vessels(specificAreaFilter);
-            logger.info("BBOX search AisTrackClient.vessels found {} vessels {}", aisTracks.size());
+            logger.debug("BBOX search AisTrackClient.vessels found {} vessels {}", aisTracks.size());
 
             Stream<AisVessel> vesselStream = aisTracks.stream().filter(AisTrack.valid()).map(AisTrack.toJsonVesselFn());
             List<AisVessel> vessels = vesselStream.collect(Collectors.toList());
@@ -246,7 +246,7 @@ public class AisDataServiceImpl implements AisDataService {
             String duration = AisStoreClient.LOOK_BACK_PT24H;
             logger.trace("AisStoreClient.historicalTrack({}, {}, {})", mmsi, fb.getSourceFilter(), duration);
             List<TrackPosition> historicalTrack = aisStoreClient.pastTrack(mmsi, fb.getSourceFilter(), duration);
-            logger.info("AisStoreClient.historicalTrack({}, {}, {}) : {}", mmsi, fb.getSourceFilter(), duration, historicalTrack);
+            logger.trace("AisStoreClient.historicalTrack({}, {}, {}) : {}", mmsi, fb.getSourceFilter(), duration, historicalTrack);
 
             List<TrackPosition> downSampled = TrackPosition.downSample(historicalTrack, 500);
 
