@@ -7,6 +7,7 @@ import org.keycloak.jose.jws.JWSInputException;
 import org.slf4j.Logger;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.servlet.ServletRequestAttributeEvent;
@@ -41,21 +42,23 @@ public class SubjectProducer implements ServletRequestListener, ServletRequestAt
 
     @SuppressWarnings("unused")
     @Produces @RequestScoped
-    public Subject produceSubject() {
+    public Subject produceSubject(@New KeycloakSubject keycloakSubject) {
         HttpServletRequest httpServletRequest = holder.get();
         if (httpServletRequest == null) {
             logger.info("httpServletRequest is NULL");
-            return new KeycloakSubject(null);
+            return keycloakSubject;
         }
         KeycloakSecurityContext securityContext = (KeycloakSecurityContext) httpServletRequest.getAttribute(KeycloakSecurityContext.class.getName());
         if (securityContext == null) {
             logger.info(">>>>>>>>>>>>>>>>>>>>>>>>   KeycloakSecurityContext is null?");
+        } else {
+            logger.info("********************************************");
+            logger.info(securityContext.getRealm());
+            logger.info("TokenString as json:\n" +toJson(securityContext.getTokenString()));
+            logger.info("********************************************");
         }
-        logger.info("********************************************");
-        logger.info(securityContext.getRealm());
-        logger.info("TokenString as json:\n" +toJson(securityContext.getTokenString()));
-        logger.info("********************************************");
-        return new KeycloakSubject(securityContext);
+        keycloakSubject.setSecurityContext(securityContext);
+        return keycloakSubject;
     }
 
     private String toJson(String tokenString) {
