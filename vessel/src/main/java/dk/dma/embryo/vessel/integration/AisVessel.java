@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import dk.dma.embryo.vessel.json.VesselOverview;
+import dk.dma.embryo.vessel.json.VesselSimplifiedOverview;
 import dk.dma.embryo.vessel.model.Vessel;
 
 import java.util.ArrayList;
@@ -142,6 +143,22 @@ public class AisVessel {
         return vesselOverview;
     }
 
+    /**
+     * method that returns a simplified vessel overview  object consisting only of the lat,lon and type (colour in the ui).
+     * @return list of {lat,lon, type}
+     */
+    public VesselSimplifiedOverview toVesselSimplifiedOverview() {
+        VesselSimplifiedOverview vesselSimplifiedOverview = new VesselSimplifiedOverview();
+        vesselSimplifiedOverview.setX(getLon());
+        vesselSimplifiedOverview.setY(getLat());
+
+        VesselType vesType = VesselType.getShipTypeFromTypeText(getVesselType());
+        String type = ShipTypeMapper.getInstance().getColor(vesType).ordinal() + "";
+        vesselSimplifiedOverview.setType(type);
+
+        return vesselSimplifiedOverview;
+    }
+
     private static void mapMaxSpeed(VesselOverview vesselOverview, Double maxSpeed, MaxSpeedOrigin maxSpeedOrigin) {
         if(maxSpeedOrigin == MaxSpeedOrigin.AW) {
             vesselOverview.setAwsog(maxSpeed);
@@ -158,6 +175,15 @@ public class AisVessel {
 
     public static Stream<VesselOverview> toVesselOverviewStream(List<AisVessel> vessels) {
         return vessels.stream().map(vessel -> vessel.toVesselOverview());
+    }
+
+
+    public static List<VesselSimplifiedOverview> toVesselSimplifiedOverview(List<AisVessel> vessels) {
+        return toVesselSimplifiedOverviewStream(vessels).collect(Collectors.toList());
+    }
+
+    public static Stream<VesselSimplifiedOverview> toVesselSimplifiedOverviewStream(List<AisVessel> vessels) {
+        return vessels.stream().map(vessel -> vessel.toVesselSimplifiedOverview());
     }
 
     public static AisVessel create(Vessel vessel){
