@@ -116,6 +116,10 @@ public interface AisTrackClient {
     List<AisTrack> vessels(@QueryParam("baseArea") String baseArea);
 
     @GET
+    @Path("/tracks")
+    List<AisTrack> vessels(@QueryParam("baseArea") String baseArea, @QueryParam("area") String area);
+
+    @GET
     @Path("/track/{mmsi}")
     AisTrack vessel(@PathParam("mmsi") Long mmsi, @QueryParam("sourceFilter") String commaSeparatedListOfRegions);
 
