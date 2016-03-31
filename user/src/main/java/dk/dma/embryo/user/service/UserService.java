@@ -16,6 +16,7 @@ package dk.dma.embryo.user.service;
 
 import dk.dma.embryo.user.model.AreasOfInterest;
 import dk.dma.embryo.user.model.SecuredUser;
+import dk.dma.embryo.user.model.User;
 
 import javax.ejb.FinderException;
 import java.util.List;
@@ -37,4 +38,6 @@ public interface UserService {
     void changePassword(String uuid, String password) throws FinderException;
 
     void updateAreasOfInterest(List<AreasOfInterest> areasOfInterests, String userName) throws FinderException;
+
+    void createFrom(User user);
 }

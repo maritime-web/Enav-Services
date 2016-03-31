@@ -36,7 +36,7 @@ import java.util.List;
  * 
  */
 @SessionScoped
-public class SubjectImpl implements Serializable {//implements Subject {
+public class SubjectImpl implements Subject {
 
     private static final long serialVersionUID = -7771436245663646148L;
 

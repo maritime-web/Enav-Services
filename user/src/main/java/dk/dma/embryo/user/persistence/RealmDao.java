@@ -36,4 +36,6 @@ public interface RealmDao extends Dao {
     SecuredUser findByEmail(String email);
 
     SecuredUser findByUuid(String uuid);
+
+    SecuredUser findByMaritimeCloudId(String maritimeCloudId);
 }

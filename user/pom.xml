@@ -14,7 +14,7 @@
     </parent>
 
     <properties>
-        <keycloak.version>1.9.0.Final</keycloak.version>
+        <keycloak.version>1.9.1.Final</keycloak.version>
     </properties>
 
     <dependencies>
@@ -97,17 +97,11 @@
 
       <!-- Keycloak dependencies -->
       <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-core</artifactId>
-          <version>${keycloak.version}</version>
-          <scope>provided</scope>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-servlet-filter-adapter</artifactId>
+        <version>${keycloak.version}</version>
       </dependency>
-      <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-adapter-core</artifactId>
-          <version>${keycloak.version}</version>
-          <scope>provided</scope>
-      </dependency>
+
 
       <!-- Import the Servlet API. -->
     <dependency>

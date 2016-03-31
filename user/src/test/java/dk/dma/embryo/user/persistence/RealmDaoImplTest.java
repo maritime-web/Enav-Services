@@ -19,6 +19,7 @@ import dk.dma.embryo.user.model.Role;
 import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.model.ShoreRole;
+import dk.dma.embryo.user.model.User;
 import dk.dma.embryo.user.model.VesselOwnerRole;
 import org.junit.After;
 import org.junit.Assert;
@@ -31,6 +32,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 public class RealmDaoImplTest {
@@ -56,6 +59,11 @@ public class RealmDaoImplTest {
 
         SecuredUser user1 = new SecuredUser("user1", "pw1", null);
         SecuredUser user2 = new SecuredUser("user2", "pw2", null);
+        User user = new User();
+        user.setMaritimeCloudId("c1d4b1bb-6e36-441f-a6d4-26996512d9d2");
+        user.setLogin("user3");
+        user.setRole("Sailor");
+        SecuredUser user3 = new SecuredUser(user);
 
 
         AreasOfInterest group1 = new AreasOfInterest("Group 1", "", true);
@@ -70,6 +78,9 @@ public class RealmDaoImplTest {
         user2.setRole(shore);
 
         entityManager.persist(user2);
+
+        user3.setRole(sailor);
+        entityManager.persist(user3);
 
         entityManager.getTransaction().commit();
         entityManager.close();
@@ -150,5 +161,15 @@ public class RealmDaoImplTest {
         assertEquals("user1", updatedUser.getUserName());
         assertEquals("pw1", updatedUser.getHashedPassword());
         Assert.assertTrue(updatedUser.getAreasOfInterest() == null || updatedUser.getAreasOfInterest().isEmpty());
+    }
+
+    @Test
+    public void testFindByMaritimeCloudId() {
+        SecuredUser user = repository.findByMaritimeCloudId("c1d4b1bb-6e36-441f-a6d4-26996512d9d2");
+
+        entityManager.clear();
+
+        assertThat(user.getUserName(), is("user3"));
+        assertThat(user.getRole().getLogicalName(), is("Sailor"));
     }
 }

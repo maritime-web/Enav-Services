@@ -27,6 +27,7 @@ import dk.dma.embryo.user.model.SecuredUser;
 @Stateless
 public class RealmDaoImpl extends DaoImpl implements RealmDao {
 
+    @SuppressWarnings("unused")
     public RealmDaoImpl() {
         super();
     }
@@ -40,14 +41,14 @@ public class RealmDaoImpl extends DaoImpl implements RealmDao {
         TypedQuery<SecuredUser> query = em.createNamedQuery("SecuredUser:findByUserName", SecuredUser.class);
         query.setParameter("userName", username);
 
-        return (SecuredUser) getSingleOrNull(query.getResultList());
+        return getSingleOrNull(query.getResultList());
     }
 
     @Override
     public SecuredUser getByPrimaryKeyReturnAll(Long key) {
         TypedQuery<SecuredUser> query = em.createNamedQuery("SecuredUser:getByPrimaryKeyReturnAll", SecuredUser.class);
         query.setParameter("id", key);
-        return (SecuredUser) getSingleOrNull(query.getResultList());
+        return getSingleOrNull(query.getResultList());
     }
 
     @Override
@@ -74,6 +75,13 @@ public class RealmDaoImpl extends DaoImpl implements RealmDao {
     public SecuredUser findByUuid(String uuid) {
         TypedQuery<SecuredUser> query = em.createNamedQuery("SecuredUser:findByUuid", SecuredUser.class);
         query.setParameter("uuid", uuid);
+        return getSingleOrNull(query.getResultList());
+    }
+
+    @Override
+    public SecuredUser findByMaritimeCloudId(String maritimeCloudId) {
+        TypedQuery<SecuredUser> query = em.createNamedQuery("SecuredUser:findByMaritimeCloudId", SecuredUser.class);
+        query.setParameter("maritimeCloudId", maritimeCloudId);
         return getSingleOrNull(query.getResultList());
     }
 

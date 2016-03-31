@@ -21,6 +21,7 @@ import dk.dma.embryo.user.model.Role;
 import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.model.ShoreRole;
+import dk.dma.embryo.user.model.User;
 import dk.dma.embryo.user.persistence.RealmDao;
 import dk.dma.embryo.user.security.SecurityUtil;
 import dk.dma.embryo.user.security.SecurityUtil.HashedPassword;
@@ -78,6 +79,13 @@ public class UserServiceImpl implements UserService {
         SecuredUser su = SecurityUtil.createUser(login, password, email, aisFilterName);
         su.setRole(createRole(role, mmsi));
         realmDao.saveEntity(su);
+    }
+
+    @Override
+    public void createFrom(User user) {
+        SecuredUser newUser = new SecuredUser(user);
+        newUser.setRole(createRole(user.getRole(), user.getShipMmsi()));
+        realmDao.saveEntity(newUser);
     }
 
     public void edit(String login, Long mmsi, String email, String role, String aisFilterName) {
@@ -155,4 +163,5 @@ public class UserServiceImpl implements UserService {
 
         SecuredUser savedUser = this.realmDao.saveEntityWithFlush(userReadyForUpdate);
     }
+
 }
