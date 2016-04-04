@@ -14,6 +14,8 @@
  */
 package dk.dma.embryo.user.shiro;
 
+import dk.dma.embryo.common.configuration.Configuration;
+import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.user.service.KeycloakBearerToken;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
@@ -32,7 +34,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 /**
  * Created by Steen on 15-03-2016.
@@ -48,34 +52,35 @@ public class KeycloakAuthenticationFilter extends AuthenticatingFilter {
         return new KeycloakBearerToken(getAccessToken(request, response));
     }
 
-    private AccessToken getAccessToken(ServletRequest request, ServletResponse response) {
+    private AccessToken getAccessToken(ServletRequest request, ServletResponse response) throws IOException {
         HttpServletRequest httpRequest = WebUtils.toHttp(request);
         HttpServletResponse httpResponse = WebUtils.toHttp(response);
         OIDCServletHttpFacade facade = new OIDCServletHttpFacade(httpRequest, httpResponse);
-        KeycloakDeployment keycloakDeployment = getDeploymentContext(httpRequest).resolveDeployment(facade);
+        KeycloakDeployment keycloakDeployment = getDeploymentContext().resolveDeployment(facade);
         BearerTokenRequestAuthenticator authenticator = new BearerTokenRequestAuthenticator(keycloakDeployment);
         AuthOutcome outcome = authenticator.authenticate(facade);
-        if (outcome == AuthOutcome.AUTHENTICATED ) {
+        if (outcome == AuthOutcome.AUTHENTICATED) {
             return authenticator.getToken();
             //todo verifySSL
         }
         return null;
     }
 
-    private AdapterDeploymentContext getDeploymentContext(HttpServletRequest request) {
+    private AdapterDeploymentContext getDeploymentContext() throws IOException {
         if (deploymentContext == null) {
-            deploymentContext = createDeploymentContext(request);
+            deploymentContext = createDeploymentContext();
         }
 
         return deploymentContext;
     }
 
-    private AdapterDeploymentContext createDeploymentContext(HttpServletRequest request) {
-        String path = "/WEB-INF/keycloak.json";
-        InputStream is = request.getServletContext().getResourceAsStream(path);
-        KeycloakDeployment kd = KeycloakDeploymentBuilder.build(is);
-
+    private AdapterDeploymentContext createDeploymentContext() throws IOException {
+        PropertyFileService propertyService = Configuration.getBean(PropertyFileService.class);
+        String configUrl = propertyService.getProperty("enav-service.keycloak.service-client.configuration.url", true);
+        InputStream keycloakConfAsStream = new URL(configUrl).openStream();
+        KeycloakDeployment kd = KeycloakDeploymentBuilder.build(keycloakConfAsStream);
         return new AdapterDeploymentContext(kd);
+
     }
 
     @Override
