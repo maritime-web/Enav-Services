@@ -31,7 +31,7 @@ public class SailorRole extends Role {
     private Vessel vessel;
 
     public SailorRole() {
-        super("Sailor");
+        super(KnownRoles.Sailor.toString());
     }
 
     public Vessel getVessel() {

@@ -14,14 +14,25 @@
  */
 package dk.dma.embryo.user.model;
 
-import javax.persistence.Entity;
+/**
+ * Created by Steen on 05-04-2016.
+ *
+ */
+public enum KnownRoles {
+    Sailor,
+    Shore,
+    Reporting,
+    Administration;
 
-
-@Entity
-public class ReportingAuthorityRole extends Role {
-    private static final long serialVersionUID = 1L;
-
-    public ReportingAuthorityRole() {
-        super(KnownRoles.Reporting.toString());
+    public static boolean isKnown(String role) {
+        for (KnownRoles knownRoles : values()) {
+            if (knownRoles.toString().equals(role)) {
+                return true;
+            }
+        }
+        return false;
     }
+
 }
+
+
