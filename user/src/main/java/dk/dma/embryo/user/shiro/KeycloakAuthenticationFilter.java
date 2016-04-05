@@ -17,6 +17,7 @@ package dk.dma.embryo.user.shiro;
 import dk.dma.embryo.common.configuration.Configuration;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.user.service.KeycloakBearerToken;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
 import org.apache.shiro.web.util.WebUtils;
@@ -93,5 +94,11 @@ public class KeycloakAuthenticationFilter extends AuthenticatingFilter {
             return false;
         }
         return true;
+    }
+
+    @Override
+    protected boolean onLoginFailure(AuthenticationToken token, AuthenticationException e, ServletRequest request, ServletResponse response) {
+        LOGGER.error("Failed to login for " + ((KeycloakBearerToken)token).getPreferredUserName(), e);
+        return super.onLoginFailure(token, e, request, response);
     }
 }

@@ -31,6 +31,8 @@ public interface UserService {
 
     void edit(String login, Long mmsi, String email, String role, String aisFilterName);
 
+    void mergeWith(User user);
+
     void delete(String login);
 
     void createPasswordUuid(SecuredUser user);

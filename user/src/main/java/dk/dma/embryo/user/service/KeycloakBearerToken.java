@@ -67,7 +67,9 @@ public class KeycloakBearerToken implements AuthenticationToken {
         Object mmsiCandidate = token.getOtherClaims().get("mmsi");
         if (mmsiCandidate != null) {
             if (mmsiCandidate instanceof String) {
-                mmsi = Long.valueOf((String)mmsiCandidate);
+                mmsi = Long.valueOf((String) mmsiCandidate);
+            } else if (mmsiCandidate instanceof Integer) {
+                mmsi = Long.valueOf((Integer)mmsiCandidate);
             } else {
                 mmsi = (Long) mmsiCandidate;
             }

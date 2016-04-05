@@ -16,6 +16,7 @@ package dk.dma.embryo.user.service;
 
 import dk.dma.embryo.common.configuration.Configuration;
 import dk.dma.embryo.user.model.SecuredUser;
+import dk.dma.embryo.user.model.User;
 import dk.dma.embryo.user.persistence.RealmDao;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -46,19 +47,21 @@ public class KeycloakBearerOnlyRealm extends JpaRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         KeycloakBearerToken keycloakBearerToken = (KeycloakBearerToken) token;
-        RealmDao realmDao = Configuration.getBean(RealmDao.class);
 
-        SecuredUser user = realmDao.findByMaritimeCloudId(keycloakBearerToken.getMaritimeId());
-        if (user == null) {
-            createUser(keycloakBearerToken);
-            user = realmDao.findByMaritimeCloudId(keycloakBearerToken.getMaritimeId());
-        }
+        SecuredUser user = updateUser(keycloakBearerToken);
 
         return new SimpleAuthenticationInfo(user.getId(), token.getCredentials(), getName());
     }
 
-    private void createUser(KeycloakBearerToken token) {
+    private SecuredUser updateUser(KeycloakBearerToken token) {
+        RealmDao realmDao = Configuration.getBean(RealmDao.class);
         UserService userService = Configuration.getBean(UserService.class);
-        userService.createFrom(token.toUser());
+        SecuredUser user = realmDao.findByMaritimeCloudId(token.getMaritimeId());
+        if (user == null) {
+            userService.createFrom(token.toUser());
+        } else {
+            userService.mergeWith(token.toUser());
+        }
+        return realmDao.findByMaritimeCloudId(token.getMaritimeId());
     }
 }

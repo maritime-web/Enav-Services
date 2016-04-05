@@ -50,9 +50,7 @@ public class UserServiceImpl implements UserService {
     private Role createRole(String role, Long mmsi) {
         switch (role) {
         case "Sailor":
-            Vessel vessel = new Vessel();
-            vessel.setMmsi(mmsi);
-            vesselDao.saveEntity(vessel);
+            Vessel vessel = getVessel(mmsi);
 
             SailorRole sailor = new SailorRole();
             sailor.setVessel(vessel);
@@ -72,6 +70,16 @@ public class UserServiceImpl implements UserService {
             return administator;
         }
         return null;
+    }
+
+    private Vessel getVessel(Long mmsi) {
+        Vessel vessel = vesselDao.getVessel(mmsi);
+        if (vessel == null) {
+            vessel = new Vessel();
+            vessel.setMmsi(mmsi);
+            vesselDao.saveEntity(vessel);
+        }
+        return vessel;
     }
 
     @Override
@@ -112,6 +120,11 @@ public class UserServiceImpl implements UserService {
         }
 
         realmDao.saveEntity(user);
+    }
+
+    @Override
+    public void mergeWith(User user) {
+        edit(user.getLogin(), user.getShipMmsi(), user.getEmail(), user.getRole(), user.getAisFilterName());
     }
 
     @Override
