@@ -122,8 +122,15 @@ public class AisDataServiceImpl implements AisDataService {
      */
     public List<AisVessel> getAisVesselsBBOX(String specificAreaFilter) {
         try {
-            List<AisTrack> aisTracks = aisTrackClient.vessels(specificAreaFilter);
-            logger.debug("BBOX search AisTrackClient.vessels found {} vessels {}", aisTracks.size());
+            List<AisTrack> aisTracks;
+            // if a baseArea is provide by the application server bbox searches is limited to that area.
+            if(baseAreaFilter != null && !baseAreaFilter.equalsIgnoreCase("")) {
+                aisTracks = aisTrackClient.vessels(baseAreaFilter, specificAreaFilter);
+                logger.debug("BBOX search AisTrackClient.vessels found {} vessels in area={} limited by a baseArea={}", aisTracks.size(), specificAreaFilter, baseAreaFilter);
+            }else{    // No base area provided by app-server, search without any limits.
+                aisTracks = aisTrackClient.vessels(specificAreaFilter);
+                logger.debug("BBOX search AisTrackClient.vessels found {} vessels {}", aisTracks.size(), specificAreaFilter);
+            }
 
             Stream<AisVessel> vesselStream = aisTracks.stream().filter(AisTrack.valid()).map(AisTrack.toJsonVesselFn());
             List<AisVessel> vessels = vesselStream.collect(Collectors.toList());
