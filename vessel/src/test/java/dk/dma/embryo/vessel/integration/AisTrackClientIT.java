@@ -19,13 +19,16 @@ import dk.dma.embryo.common.configuration.LogConfiguration;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.vessel.integration.AisTrackClient.AisTrack;
+import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
+import javax.ws.rs.ext.RuntimeDelegate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,6 +49,11 @@ public class AisTrackClientIT {
     @Inject
     @Property("embryo.aistrack.server.user")
     private String aisTrackUser;
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        RuntimeDelegate.setInstance(new ResteasyProviderFactory());
+    }
 
     @Test
     public void testVesselsByMmsis() {

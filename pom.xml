@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
     <version>2.7-SNAPSHOT</version>
     <name>e-Navigation Services parent</name>
-    <description></description>
+    <description>Parent project for all the e-nav services</description>
 
     <organization>
         <name>Danish Maritime Authority</name>
@@ -391,6 +391,7 @@
                             <nomen>false</nomen>
                             <passfail>false</passfail>
                             <plusplus>true</plusplus>
+                            <!--suppress MavenModelInspection -->
                             <predef>angular,$,jQuery,${jslint.predef},sessionStorage,localStorage</predef>
                             <properties>false</properties>
                             <sloppy>true</sloppy>
@@ -483,7 +484,6 @@
                             <includes>
                                 <include>dk/dma/**/*IT.java</include>
                             </includes>
-                            <groups>dk.dma.embryo.test.DmiIntegration</groups>
                         </configuration>
                     </plugin>
                 </plugins>

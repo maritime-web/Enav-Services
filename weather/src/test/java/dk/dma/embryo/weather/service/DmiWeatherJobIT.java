@@ -54,12 +54,13 @@ public class DmiWeatherJobIT {
     public void testJob() {
         job.timeout();
 
-        Mockito.verify(logservice).info("Scanned DMI (ftpserver.dmi.dk) for files. Transfered: gronvar-2014-12-09.xml, gruds.xml, Errors: ");
+        Mockito.verify(logservice).info("Scanned DMI (ftpserver.dmi.dk) for files. Transfered: gronvar.xml, gruds.xml, grudseng.xml, Errors: ");
         
         Path localDir = Paths.get(localDmiDir);
 
-        Assert.assertTrue(Files.exists(localDir.resolve("dmi/gronvar-2014-12-09.xml")));
+        Assert.assertTrue(Files.exists(localDir.resolve("gronvar.xml")));
         Assert.assertTrue(Files.exists(localDir.resolve("gruds.xml")));
+        Assert.assertTrue(Files.exists(localDir.resolve("grudseng.xml")));
     }
 
 }
