@@ -1,26 +1,11 @@
 E-navigation Services
 =========
 
-A tool for ships sailing in the Arctic region around Greenland. ArcticWeb serves as a single access point to safety related information, provides streamlined reporting and allows for voluntary coordinated voyage through sharing of positions and planned routes.
+Is a Maven multiproject containing all server side modules, which can be used when putting together
+a maritime web application like [ArcticWeb](https://github.com/maritime-web/ArcticWeb) or
+[BalticWeb](https://github.com/maritime-web/BalticWeb).
 
-The live system can be found here: https://arcticweb.e-navigation.net
-
-## Software Architecture
-
-The ArcticWeb client is a rich client HTML/JS-application with a server side JSON webservice API. The server is a J2EE 6 application.
-
-On the client side we use:
-
-* JavaScript/HTML
-* Grunt (for building)
-* OpenLayers (for maps)
-* JQuery (for DOM-manipulation and calling webservices)
-* Twitter Bootstrap (for basic layout)
-* AngularJS (for forms and similar)
-* HTML5 Application Cache
-* Karma (for unit testing)
-
-On the server side we use:
+## Server side technologies.
 
 * Java 8
 * Maven (for building)
@@ -32,25 +17,16 @@ On the server side we use:
 * JUnit (for unit-test)
 * Mockito (for mocking)
 
-
 ## Prerequisites ##
 
 * Java JDK 1.8
 * Maven 3.x
 * Wildfly 8.2 (Maven setup to deploy to Wildfly)
 * MySQL (Maven configures JBoss datasource to use MySQL)
-* Node.js (Follow the installation instructions at http://nodejs.org)
-* Grunt.js (Follow the installation instructions at http://gruntjs.com)
 * CouchDB
 * a file called arcticweb.properties
 
 ## Initial setup
-
-Wildfly should be installed using the install script provided in this repository. install-wildfly.sh. Remember to add a admin user using 
-
-    $ chmod +x install-wildfly.sh 
-    $ ./install-wildfly.sh
-    $ ./wildfly-8.2.0.Final/bin/add-user.sh 
 
 As root in MySQL - create a database and a user for ArcticWeb:
 
@@ -64,88 +40,14 @@ depending on OS it might be located in /etc/mysql/my.cnf
     [mysqld]
     max_allowed_packet=16M
 
-### Configure WildFly ###
-ArcticWeb has a default configuration file which may be overridden by setting the system property "arcticweb.configuration" to the URI of an external configuration file. For example put the following in your JBOSS standalone.xml-file:
-
-    <system-properties>
-        <property name="arcticweb.configuration" value="file:///Users/chvid/sfs/arcticweb.properties"/>
-        <property name="balticweb.configuration" value="file:///home/YourSuperPathName/BalticWeb/balticweb.properties"/>
-    </system-properties>
-
-In particular the file may contain URLs and passwords for the DMI Ice map server.
-
-    $ ./wildfly-8.2.0.Final/bin/standalone.sh 
-
 
 ## Building ##
 
     mvn clean install
 
-
-## Deploy to JBoss
-
-Initial deployment (Clean, build, install database drivers environmental variables and deploy application)
-
-    embryo-web> mvn install -P fulldeploy
-
-    or 
-
-    Embryo> mvn install -P fulldeploy
-
-Daily deployment
-
-    embryo-web> mvn jboss-as:deploy - just build and deploy the WAR-file
-
-    or 
-
-    Embryo> mvn install -P deploy - build the whole application and deploy WAR-file
-
-A local deployment will setup ArcticWeb at the following URL:
-
-    http://localhost:8080/arcticweb/
-
-To setup test users and data you must first login with dma/qwerty and thereafter push the button at the following URL
-
-    http://localhost:8080/testdata.html
-
-Thereafter you can login with orasila/qwerty, oratank/qwerty, dmi/qwerty, etc. 
-
-## Instant reload of web resources
-
-Grunt has been setup to run a livereload server, which enables instant reload of static web resources (html, css, js, images) upon saving them. Go to the embryo-web folder and execute
-
-    grunt server
-
-Then visit the url: http://localhost:9000
-
-You will now be able to test/see changes to static web resources almost instantly. 
-
-(All REST http calls are proxied to the JBoss server installation at port 8080). 
-
 ## Checkstyle
 
 See https://github.com/dma-dk/dma-developers
-
-## JSLint
-
-Execute the following Maven command to lint your JavaScript files:
-
-    mvn jslint4java:lint
-
-
-## JavaScript Unit Test
-
-JavaScript may be tested using Node.js, NPM, Grunt and Karma. Follow this blog (http://jespertejlgaard.blogspot.dk/2013/08/installing-nodejs-npm-and-karma-on.html) to install Node.js and NPM, but leave out Karma  (at least on Linux) Install Grunt:
-
-    sudo npm install -g karma
-
-JS unit tests are performed in PhantomJS as part of the Maven build in the Maven test phase. 
- 
-The unit tests can however also be executed by a Karma server, which will discover changes in the project JavaScript files and execute all JS unit tests. The Karma server is started by executing 
-
-    embryo-web$ grunt karma:unit
-
-It will by default execute all JS Unit Tests in PhantomJS, Chrome and Firefox.
 
 ## Eclipse setup ##
 
@@ -158,26 +60,6 @@ Use Eclipse Maven integration:
 
 * Choose File > Import and then Maven > Existing Maven Projects
 
-
-## JavaScript Validation Errors in Eclipse
-
-Ways to avoid annoying JavaScript Validation Errors in Eclipse:
-
-http://stackoverflow.com/questions/7102299/eclipse-javascript-validation-disabled-but-still-generating-errors
-
-
-## Demo test server
-
-More stable releases are demoed from this test server:
-
-http://test.e-navigation.net/arcticweb (requires credentials only available to development team)
-
-
-## CI Test Server - Latest and Greatest
-
-The CI server continuously deployes the latest and greatest to a separate test server:
-
-http://appsrv-alpha.e-navigation.net/arcticweb/ (requires credentials only available to development team)
 
 ## Database maintenaince
 
@@ -246,7 +128,7 @@ where the important fields are
 * status: may have the values "OK" or "ERROR" 
 * date: The time of logging in milliseconds since the standard base time known as "the epoch", namely January 1, 1970, 00:00:00 GMT.
 
-At the time of writing the current services are subject to surveillance
+At the time of writing the current services are candidates for surveillance
 
 * dk.dma.embryo.vessel.job.AisReplicatorJob
 * dk.dma.embryo.vessel.service.AisDataServiceImpl
