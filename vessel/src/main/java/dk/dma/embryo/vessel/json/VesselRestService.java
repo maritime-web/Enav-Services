@@ -70,25 +70,9 @@ public class VesselRestService extends AbstractRestService {
     @GZIP
     public Response historicalTrack(@Context Request request, @QueryParam("mmsi") long mmsi) {
 
-        List<TrackPos> historicalTrack = null;
-        
-        // Call long track if this call times out or get any kind of error call the regular track.
-        /*
-        try {
-            
-            historicalTrack = historicalLongTrackWithTimeout(mmsi);
-            logger.info("Historical LONG track called with success.");
-        } catch (Exception e) {
-
-            historicalTrack = this.historicalTrackAisViewService.historicalTrack(mmsi, 500, AisViewServiceAllAisData.LOOK_BACK_PT24H);
-            logger.info("Historical LONG track timeout or failed but SHORT track called instead with success.");
-        } 
-        */
-        
-        // The above statments are kept as comments because LONG tracks are disable because of instability.
+        List<TrackPos> historicalTrack;
         
         try {
-            //historicalTrack = aisDataService.historicalTrack(mmsi, 500, );
             historicalTrack = aisDataService.historicalTrack(mmsi);
         } catch (ClientResponseFailure crf) {
 
@@ -102,49 +86,6 @@ public class VesselRestService extends AbstractRestService {
         return super.getResponse(request, historicalTrack, MAX_AGE_10_MINUTES);
         
     }
-    /*
-    private List<TrackSingleLocation> historicalLongTrackWithTimeout(long mmsi) throws IOException {
-        
-        HttpParams httpParams = new BasicHttpParams();
-        HttpClient httpClient = new DefaultHttpClient();
-
-        // Determines the timeout until a connection is etablished.
-        HttpConnectionParams.setConnectionTimeout(httpParams, 3000);
-        // Defines the default socket timeout (SO_TIMEOUT) in milliseconds which is the timeout for waiting for data.
-        HttpConnectionParams.setSoTimeout(httpParams, 10000);
-
-        
-        String url = this.fullAisViewServiceInclNorwegianDataUrl;
-
-        HttpGet getRequest = new HttpGet(url + "/vessel/longtrack/" + mmsi);
-        getRequest.addHeader("accept", "application/json");
-
-        httpParams.setIntParameter("minDist", 500);
-        httpParams.setParameter("age", AisViewServiceAllAisData.LOOK_BACK_PT120H);
-        getRequest.setParams(httpParams);
-
-        HttpResponse response = httpClient.execute(getRequest);
-
-        String json = EntityUtils.toString(response.getEntity());
-
-        List<LinkedHashMap<String, Object>> ob = new ObjectMapper().readValue(json, ArrayList.class);
-
-        List<TrackSingleLocation> historicalTrack = new ArrayList<>();
-        for (LinkedHashMap<String, Object> linkedHashMap : ob) {
-            Double cog = (Double) linkedHashMap.get("cog");
-            Double lat = (Double) linkedHashMap.get("lat");
-            Double lon = (Double) linkedHashMap.get("lon");
-            Double sog = (Double) linkedHashMap.get("sog");
-            Long time = (Long) linkedHashMap.get("time");
-
-            TrackSingleLocation point = new TrackSingleLocation(cog, lat, lon, sog, time);
-            historicalTrack.add(point);
-        }
-
-        httpClient.getConnectionManager().shutdown();
-
-        return historicalTrack;
-    }*/
 
     @GET
     @Path("/list")
@@ -170,7 +111,7 @@ public class VesselRestService extends AbstractRestService {
     /**
      * list vessels in a specific area. the search is forwarded towards the AIS-Track server.
      * Larger area search can result in a response with several megabytes of data.
-     * @param request
+     * @param request the request
      * @param specificAreaFilter i.e. 53.0|11.0|66.0|33.0 for the Baltic sea.
      * @return a list of ais vessels.
      */
@@ -192,7 +133,7 @@ public class VesselRestService extends AbstractRestService {
     /**
      * list vessels in a specific area. the search is forwarded towards the AIS-Track server.
      * Larger area search can result in a response with several megabytes of data.
-     * @param request
+     * @param request the request
      * @param specificAreaFilter i.e. 53.0|11.0|66.0|33.0 for the Baltic sea.
      * @return a list of ais vessels.
      */
@@ -259,8 +200,7 @@ public class VesselRestService extends AbstractRestService {
         }
 
         logger.debug("details({}) : {}", details);
-        Response response = super.getResponse(request, details, MAX_AGE_10_MINUTES);
-        return response;
+        return super.getResponse(request, details, MAX_AGE_10_MINUTES);
     }
 
     @POST

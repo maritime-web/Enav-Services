@@ -32,6 +32,7 @@ import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -55,6 +56,7 @@ import java.util.Random;
 
 @RunWith(CdiRunner.class)
 @AdditionalClasses(value = {PropertyFileService.class, LogConfiguration.class, TimerService.class})
+@Ignore("Only works on Linux machines")
 public class DatabaseInitializerIT {
 
     private static DockerClient docker;

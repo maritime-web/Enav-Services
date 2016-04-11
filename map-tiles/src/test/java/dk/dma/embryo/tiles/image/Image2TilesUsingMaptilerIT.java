@@ -17,6 +17,7 @@ package dk.dma.embryo.tiles.image;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -25,7 +26,7 @@ import java.io.IOException;
 /**
  * Created by Jesper Tejlgaard on 8/20/14.
  */
-
+@Ignore("Only for manual test via the IDE since it requires a maptiler executable")
 public class Image2TilesUsingMaptilerIT {
 
     @Test

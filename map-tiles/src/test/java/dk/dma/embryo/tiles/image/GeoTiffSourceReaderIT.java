@@ -15,6 +15,7 @@
 
 package dk.dma.embryo.tiles.image;
 
+import com.google.common.io.Resources;
 import dk.dma.embryo.common.configuration.LogConfiguration;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
@@ -23,6 +24,7 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.net.URL;
 
 /**
  * Created by Jesper Tejlgaard on 8/20/14.
@@ -38,8 +40,8 @@ public class GeoTiffSourceReaderIT {
     public void readGeoTiff() throws Exception {
         System.out.println(System.currentTimeMillis());
 
-        File file = new File("/home/jesper/arcticweb/dmi-satellite-ice/201408051525_Modis_Dundee22.tif");
-
+        URL url = Resources.getResource("201408051525.rgb_MODIS_Dundee.tif");
+        File file = new File(url.toURI());
         ImageSourceMeta ism = reader.read(file);
 
         System.out.println("test" + ism);
