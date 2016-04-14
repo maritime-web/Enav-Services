@@ -26,6 +26,9 @@ public class SarDb extends CouchDb {
     }
 
 
+    // TODO modify async-couchdb-client such that javascript attribute is not added to design documents.
+    @JsView(designName = "sar", viewName = "searchArea", map = "if (doc['@type'] === 'SearchArea') {emit(doc.sarId);}")
+    private CouchDbMapView<String, CouchDbDocument> searchAreaView;
     /*
 
             var ddoc = {
@@ -85,4 +88,17 @@ public class SarDb extends CouchDb {
     // TODO modify async-couchdb-client such that javascript attribute is not added to design documents.
     @JsView(designName = "sar", viewName = "searchPattern", map = "if (doc['@type'] === 'Pattern') {emit(doc.sarId);}")
     private CouchDbMapView<String, CouchDbDocument> searchPatternView;
+
+    // TODO modify async-couchdb-client such that javascript attribute is not added to design documents.
+    @JsView(designName = "sar", viewName = "sarForCoordinators",
+            map = "if((doc['@type'] === 'SarLog' && doc.lat && doc.lon) || doc['@type'] != 'Allocation' || " +
+                    "    doc.status === 'A' || doc.status === 'DZ' || doc.status === 'DM')")
+    private CouchDbMapView<String, CouchDbDocument> coordinatorView;
+
+    // TODO modify async-couchdb-client such that javascript attribute is not added to design documents.
+    @JsView(designName = "sar", viewName = "sarForNonCoordinators",
+            map = "if((doc['@type'] === 'SarLog' && doc.lat && doc.lon) || doc['@type'] === 'Pattern' || " +
+                    "    (doc['@type'] === 'Allocation' && doc.status === 'A') || " +
+                    "    doc['@type'] === 'SearchArea')")
+    private CouchDbMapView<String, CouchDbDocument> nonCoordinatorView;
 }
