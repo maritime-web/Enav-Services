@@ -61,12 +61,8 @@ public class AisStoreClientIT {
 
     @Test
     public void testPastTrack() {
-        System.out.println(aisStoreUrl);
-        System.out.println(aisStoreUser);
+        List<TrackPosition> trackPositions = this.aisStoreClient.pastTrack(220443000L, "s.region!=802,808", "PT48H");
 
-        List<TrackPosition> trackPositions = this.aisStoreClient.pastTrack(220443000L, "s.region!=802,808", "PT1H");
-
-        System.out.println(trackPositions);
         assertThat(trackPositions, is(not(empty())));
     }
 }
