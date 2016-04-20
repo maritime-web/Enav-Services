@@ -12,31 +12,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package dk.dma.embryo.tiles.tiles;
-
-import dk.dma.embryo.tiles.config.TileMillExecutor;
-import org.junit.Test;
+package dk.dma.embryo.common.servlet;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
- * Created by Jesper Tejlgaard on 8/21/14.
+ * Created by Jesper Tejlgaard on 4/19/16.
  */
-public class TileMillExecutorIT {
+public class Resource {
 
-    @Test
-    public void testExecution() throws IOException {
+    private File file;
 
-        System.out.println("Foo " + getClass().getResource("~/Git"));
+    private ETag eTag;
 
-        String fileName = getClass().getResource("/projectmill.testconfig.json").getFile();
-        TileMillExecutor executor = new TileMillExecutor("/home/jesper/Git/projectmill", "/usr/share/tilemill");
-        executor.execute(new File(fileName));
-
-
+    Resource(File file){
+        this.file = file;
     }
 
+    public boolean exists() {
+        return file != null && file.exists();
+    }
+
+    public ETag getETag() {
+        if(!exists()) {
+            return null;
+        }
+        if(eTag == null) {
+            long length = file.length();
+            long lastModified = file.lastModified();
+            eTag = new ETag(length + "_" + lastModified);
+        }
+        return eTag;
+    }
 
 }

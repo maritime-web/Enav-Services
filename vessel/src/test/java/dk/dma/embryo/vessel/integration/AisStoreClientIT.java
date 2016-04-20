@@ -19,14 +19,22 @@ import dk.dma.embryo.common.configuration.LogConfiguration;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.vessel.integration.AisStoreClient.TrackPosition;
+import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
+import javax.ws.rs.ext.RuntimeDelegate;
 import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.not;
 
 /**
  * @author Jesper Tejlgaard
@@ -36,24 +44,25 @@ import java.util.List;
 public class AisStoreClientIT {
 
     @Inject
-    private AisStoreClient aisTrackClient;
+    private AisStoreClient aisStoreClient;
 
     @Inject
     @Property("embryo.aisstore.server.url")
-    private String aisTrackUrl;
+    private String aisStoreUrl;
 
     @Inject
     @Property("embryo.aisstore.server.user")
-    private String aisTrackUser;
+    private String aisStoreUser;
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        RuntimeDelegate.setInstance(new ResteasyProviderFactory());
+    }
 
     @Test
     public void testPastTrack() {
-        System.out.println(aisTrackUrl);
-        System.out.println(aisTrackUser);
+        List<TrackPosition> trackPositions = this.aisStoreClient.pastTrack(220443000L, "s.region!=802,808", "PT48H");
 
-        List<TrackPosition> trackPositions = this.aisTrackClient.pastTrack(220443000L, "s.region!=802,808", "PT1H");
-
-        System.out.println(trackPositions);
-        Assert.assertEquals(2, trackPositions.size());
+        assertThat(trackPositions, is(not(empty())));
     }
 }
