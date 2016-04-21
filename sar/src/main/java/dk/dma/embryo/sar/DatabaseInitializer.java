@@ -88,7 +88,7 @@ public class DatabaseInitializer {
             // automaticly creates database if not already
 
             CouchDbConfig.Builder builder = new CouchDbConfig.Builder().setHttpClient(httpClient)
-                    .setServerUrl(userDbUrl).setDbName("user");
+                    .setServerUrl(userDbUrl).setDbName("embryo-user");
 
             if (dbUser != null && dbUser.trim().length() > 0 && dbPassword != null && dbPassword.trim().length() > 0) {
                 builder.setUser(dbUser).setPassword(dbPassword);
