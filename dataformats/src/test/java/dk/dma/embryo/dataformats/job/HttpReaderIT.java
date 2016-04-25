@@ -17,6 +17,7 @@ package dk.dma.embryo.dataformats.job;
 import java.io.File;
 import java.io.IOException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -26,6 +27,7 @@ import org.junit.Test;
  *
  * @author Jesper Tejlgaard
  */
+@Ignore("Not included in automatic run, because depending on russian weather site")
 public class HttpReaderIT {
 
     @Test
