@@ -57,14 +57,14 @@ public class AisTrackClientIT {
 
     @Test
     public void testVesselsByMmsis() {
-        System.out.println(aisTrackUrl);
-        System.out.println(aisTrackUser);
-
         List<Long> mmsiNumbers = Arrays.asList(220443000L, 220516000L);
 
         List<AisTrack> aisTracks = this.aisTrackClient.vesselsByMmsis(mmsiNumbers, "s.region!=802,808");
 
-        System.out.println(aisTracks);
-        Assert.assertEquals(2, aisTracks.size());
+        Assert.assertNotNull(aisTracks);
+
+        // Vessels may disappear if in harbour. Only expect one or two.
+        Assert.assertTrue(aisTracks.size() == 1 || aisTracks.size() == 2);
+        //Assert.assertEquals(2, aisTracks.size());
     }
 }
