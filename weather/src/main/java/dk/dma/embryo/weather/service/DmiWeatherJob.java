@@ -110,6 +110,11 @@ public class DmiWeatherJob {
                 new File(localDmiDir).mkdirs();
             }
 
+            if (!new File(tmpDir).exists()) {
+                logger.info("Making local temporary directory: " + tmpDir);
+                new File(tmpDir).mkdirs();
+            }
+
             FTPClient ftp = connect();
 
             logger.info("Transfer files ...");
