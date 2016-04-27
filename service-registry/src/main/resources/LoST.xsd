@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+           targetNamespace="urn:ietf:params:xml:ns:lost1" xmlns:ns1="urn:ietf:params:xml:ns:lost1">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+    <xs:element name="findService">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:group ref="ns1:requestLocation"/>
+                <xs:group ref="ns1:commonRequestPattern"/>
+            </xs:sequence>
+            <xs:attribute name="validateLocation" type="xs:boolean"/>
+            <xs:attribute name="serviceBoundary">
+                <xs:simpleType>
+                    <xs:restriction base="xs:token">
+                        <xs:enumeration value="reference"/>
+                        <xs:enumeration value="value"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="recursive" type="xs:boolean"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="listServices">
+        <xs:complexType>
+            <xs:group ref="ns1:commonRequestPattern"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="listServicesByLocation">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:group ref="ns1:requestLocation"/>
+                <xs:group ref="ns1:commonRequestPattern"/>
+            </xs:sequence>
+            <xs:attribute name="recursive" type="xs:boolean"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getServiceBoundary">
+        <xs:complexType>
+            <xs:group ref="ns1:extensionPoint"/>
+            <xs:attributeGroup ref="ns1:serviceBoundaryKey"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="findServiceResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="ns1:mapping"/>
+                <xs:element minOccurs="0" ref="ns1:locationValidation"/>
+                <xs:group ref="ns1:commonResponsePattern"/>
+                <xs:group ref="ns1:locationUsed"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="listServicesResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="ns1:serviceList"/>
+                <xs:group ref="ns1:commonResponsePattern"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="listServicesByLocationResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="ns1:serviceList"/>
+                <xs:group ref="ns1:commonResponsePattern"/>
+                <xs:group ref="ns1:locationUsed"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getServiceBoundaryResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:group ref="ns1:serviceBoundary"/>
+                <xs:group ref="ns1:commonResponsePattern"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:group name="commonRequestPattern">
+        <xs:sequence>
+            <xs:group ref="ns1:service"/>
+            <xs:element minOccurs="0" ref="ns1:path"/>
+            <xs:group ref="ns1:extensionPoint"/>
+        </xs:sequence>
+    </xs:group>
+    <xs:group name="commonResponsePattern">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:warnings"/>
+            <xs:element ref="ns1:path"/>
+            <xs:group ref="ns1:extensionPoint"/>
+        </xs:sequence>
+    </xs:group>
+    <xs:group name="requestLocation">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" ref="ns1:location"/>
+        </xs:sequence>
+    </xs:group>
+    <xs:element name="location">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="ns1:locationInformation">
+                    <xs:attribute name="id" use="required" type="xs:token"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="locationInformation">
+        <xs:group maxOccurs="unbounded" ref="ns1:extensionPoint"/>
+        <xs:attribute name="profile" type="xs:NMTOKEN"/>
+    </xs:complexType>
+    <xs:group name="serviceBoundary">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" ref="ns1:serviceBoundary"/>
+        </xs:sequence>
+    </xs:group>
+    <xs:element name="serviceBoundary" type="ns1:locationInformation"/>
+    <xs:element name="serviceBoundaryReference">
+        <xs:complexType>
+            <xs:group ref="ns1:extensionPoint"/>
+            <xs:attributeGroup ref="ns1:source"/>
+            <xs:attributeGroup ref="ns1:serviceBoundaryKey"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:attributeGroup name="serviceBoundaryKey">
+        <xs:attribute name="key" use="required" type="xs:token"/>
+    </xs:attributeGroup>
+    <xs:element name="path">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="ns1:via"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="via">
+        <xs:complexType>
+            <xs:group ref="ns1:extensionPoint"/>
+            <xs:attributeGroup ref="ns1:source"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:group name="locationUsed">
+        <xs:sequence>
+            <xs:element minOccurs="0" ref="ns1:locationUsed"/>
+        </xs:sequence>
+    </xs:group>
+    <xs:element name="locationUsed">
+        <xs:complexType>
+            <xs:attribute name="id" use="required" type="xs:token"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:attributeGroup name="expires">
+        <xs:attribute name="expires" use="required">
+            <xs:simpleType>
+                <xs:union memberTypes="xs:dateTime">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:token">
+                            <xs:enumeration value="NO-CACHE"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                    <xs:simpleType>
+                        <xs:restriction base="xs:token">
+                            <xs:enumeration value="NO-EXPIRATION"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:union>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:attributeGroup>
+    <xs:simpleType name="qnameList">
+        <xs:list itemType="xs:QName"/>
+    </xs:simpleType>
+    <xs:element name="mapping">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:displayName"/>
+                <xs:group ref="ns1:service"/>
+                <xs:choice minOccurs="0">
+                    <xs:group ref="ns1:serviceBoundary"/>
+                    <xs:element ref="ns1:serviceBoundaryReference"/>
+                </xs:choice>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:uri"/>
+                <xs:element minOccurs="0" ref="ns1:serviceNumber"/>
+                <xs:group ref="ns1:extensionPoint"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="ns1:expires"/>
+            <xs:attribute name="lastUpdated" use="required" type="xs:dateTime"/>
+            <xs:attributeGroup ref="ns1:source"/>
+            <xs:attribute name="sourceId" use="required" type="xs:token"/>
+            <xs:attributeGroup ref="ns1:message"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="displayName">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute ref="xml:lang" use="required"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="uri" type="xs:anyURI"/>
+    <xs:element name="serviceNumber">
+        <xs:simpleType>
+            <xs:restriction base="xs:token">
+                <xs:pattern value="[0-9*#]+"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="locationValidation">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" ref="ns1:valid"/>
+                <xs:element minOccurs="0" ref="ns1:invalid"/>
+                <xs:element minOccurs="0" ref="ns1:unchecked"/>
+                <xs:group ref="ns1:extensionPoint"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="valid" type="ns1:qnameList"/>
+    <xs:element name="invalid" type="ns1:qnameList"/>
+    <xs:element name="unchecked" type="ns1:qnameList"/>
+    <xs:complexType name="exceptionContainer">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="ns1:badRequest"/>
+                <xs:element ref="ns1:internalError"/>
+                <xs:element ref="ns1:serviceSubstitution"/>
+                <xs:element ref="ns1:defaultMappingReturned"/>
+                <xs:element ref="ns1:forbidden"/>
+                <xs:element ref="ns1:notFound"/>
+                <xs:element ref="ns1:loop"/>
+                <xs:element ref="ns1:serviceNotImplemented"/>
+                <xs:element ref="ns1:serverTimeout"/>
+                <xs:element ref="ns1:serverError"/>
+                <xs:element ref="ns1:locationInvalid"/>
+                <xs:element ref="ns1:locationProfileUnrecognized"/>
+            </xs:choice>
+            <xs:group ref="ns1:extensionPoint"/>
+        </xs:sequence>
+        <xs:attributeGroup ref="ns1:source"/>
+    </xs:complexType>
+    <xs:element name="errors" type="ns1:exceptionContainer"/>
+    <xs:element name="warnings" type="ns1:exceptionContainer"/>
+    <xs:complexType name="basicException">
+        <xs:annotation>
+            <xs:documentation>
+                Exception pattern.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:group ref="ns1:extensionPoint"/>
+        <xs:attributeGroup ref="ns1:message"/>
+    </xs:complexType>
+    <xs:element name="badRequest" type="ns1:basicException"/>
+    <xs:element name="internalError" type="ns1:basicException"/>
+    <xs:element name="serviceSubstitution" type="ns1:basicException"/>
+    <xs:element name="defaultMappingReturned" type="ns1:basicException"/>
+    <xs:element name="forbidden" type="ns1:basicException"/>
+    <xs:element name="notFound" type="ns1:basicException"/>
+    <xs:element name="loop" type="ns1:basicException"/>
+    <xs:element name="serviceNotImplemented" type="ns1:basicException"/>
+    <xs:element name="serverTimeout" type="ns1:basicException"/>
+    <xs:element name="serverError" type="ns1:basicException"/>
+    <xs:element name="locationInvalid" type="ns1:basicException"/>
+    <xs:element name="locationValidationUnavailable" type="ns1:basicException"/>
+    <xs:element name="locationProfileUnrecognized">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="ns1:basicException">
+                    <xs:attribute name="unsupportedProfiles" use="required" type="xs:NMTOKENS"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="redirect">
+        <xs:complexType>
+            <xs:group ref="ns1:extensionPoint"/>
+            <xs:attribute name="target" use="required" type="ns1:appUniqueString"/>
+            <xs:attributeGroup ref="ns1:source"/>
+            <xs:attributeGroup ref="ns1:message"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:attributeGroup name="message">
+        <xs:attribute name="message" type="xs:token"/>
+        <xs:attribute ref="xml:lang"/>
+    </xs:attributeGroup>
+    <xs:group name="service">
+        <xs:sequence>
+            <xs:element minOccurs="0" ref="ns1:service"/>
+        </xs:sequence>
+    </xs:group>
+    <xs:element name="service" type="xs:anyURI"/>
+    <xs:simpleType name="appUniqueString">
+        <xs:restriction base="xs:token">
+            <xs:pattern value="([a-zA-Z0-9\-]+\.)+[a-zA-Z0-9]+"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:attributeGroup name="source">
+        <xs:attribute name="source" use="required" type="ns1:appUniqueString"/>
+    </xs:attributeGroup>
+    <xs:element name="serviceList">
+        <xs:simpleType>
+            <xs:list itemType="xs:anyURI"/>
+        </xs:simpleType>
+    </xs:element>
+    <xs:group name="notLost">
+        <xs:annotation>
+            <xs:documentation>
+                Any element not in the LoST namespace.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:any namespace="##other" processContents="skip"/>
+            <xs:any namespace="##local" processContents="skip"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="anyElement">
+        <xs:annotation>
+            <xs:documentation>
+                A wildcard pattern for including any element
+                from any other namespace.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
+        </xs:sequence>
+    </xs:group>
+    <xs:attributeGroup name="anyElement">
+        <xs:annotation>
+            <xs:documentation>
+                A wildcard pattern for including any element
+                from any other namespace.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:anyAttribute processContents="skip"/>
+    </xs:attributeGroup>
+    <xs:group name="extensionPoint">
+        <xs:annotation>
+            <xs:documentation>
+                A point where future extensions
+                (elements from other namespaces)
+                can be added.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:group minOccurs="0" maxOccurs="unbounded" ref="ns1:notLost"/>
+        </xs:sequence>
+    </xs:group>
+</xs:schema>

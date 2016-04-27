@@ -5,7 +5,7 @@
     <groupId>dk.dma.enav.services</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
-    <version>2.7-SNAPSHOT</version>
+    <version>2.7-MC_Service_registry-SNAPSHOT</version>
     <name>e-Navigation Services parent</name>
     <description>Parent project for all the e-nav services</description>
 
@@ -91,19 +91,19 @@
 
             <dependency>
                 <groupId>dk.dma.enav.services</groupId>
-                <artifactId>embryo-msi</artifactId>
+                <artifactId>msi</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>dk.dma.enav.services</groupId>
-                <artifactId>embryo-reporting</artifactId>
+                <artifactId>reporting</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>dk.dma.enav.services</groupId>
-                <artifactId>embryo-weather</artifactId>
+                <artifactId>weather</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -542,6 +542,7 @@
         <module>sar</module>
         <module>reporting</module>
         <module>weather</module>
+        <module>service-registry</module>
     </modules>
 
 </project>
