@@ -14,25 +14,45 @@
  */
 package dk.dma.enav.services.registry;
 
+import dk.dma.embryo.common.json.AbstractRestService;
+
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import java.util.Map;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Steen on 20-04-2016.
  *
  */
 @Path("/register")
-public class ServiceLookupRestService {
+public class ServiceLookupRestService extends AbstractRestService {
     @Inject
     private LostServiceClient lostServiceClient;
 
     @Path("/lookup")
-    @Consumes("application/json")
+    @Produces("application/json")
     @GET
-    public Map<String, String> lookup() {
-        return null;
+    public List<ServiceInstanceMetadata> lookup(@QueryParam("p1") double p1, @QueryParam("p2") double p2) {
+        List<ServiceInstanceMetadata> res = new ArrayList<>();
+        ServiceInstanceMetadata metadata = new ServiceInstanceMetadata(
+                "urn:mrnx:mcl:service:instance:dma:nw-nm:v0.1",
+                "MSI service",
+                "<p2:LinearRing xmlns:p2=\"http://www.opengis.net/gml\">\n" +
+                "      <p2:pos>14.0020751953125 54.95869417101662</p2:pos> +\n" +
+                "      <p2:pos>15.0457763671875 55.6930679264579</p2:pos> +\n" +
+                "      <p2:pos>16.5069580078125 55.363502833950776</p2:pos> +\n" +
+                "      <p2:pos>14.633789062500002 54.53383250794428</p2:pos> +\n" +
+                "      <p2:pos>14.414062499999998 54.65794628989232</p2:pos> +\n" +
+                "      <p2:pos>14.3975830078125 54.81334841741929</p2:pos> +\n" +
+                "      <p2:pos>14.161376953124998 54.81334841741929</p2:pos> +\n" +
+                "      <p2:pos>14.0020751953125 54.95869417101662</p2:pos> +\n" +
+                "</p2:LinearRing>");
+        res.add(metadata);
+
+        return res;
     }
 }

@@ -14,16 +14,18 @@
  */
 package dk.dma.enav.services.registry;
 
-import javax.ejb.Singleton;
-import java.util.List;
-
 /**
  * Created by Steen on 27-04-2016.
  *
  */
-@Singleton
-public class LostServiceClient {
-    public List<ServiceInstanceMetadata> findService(ServiceLookupRequest request) {
-        return null;
+public class ServiceInstanceMetadata {
+    private String id;
+    private String name;
+    private String boundary;
+
+    public ServiceInstanceMetadata(String id, String name, String boundary) {
+        this.id = id;
+        this.name = name;
+        this.boundary = boundary;
     }
 }
