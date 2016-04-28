@@ -42,8 +42,12 @@ public class ServiceLookupRequest {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ServiceLookupRequest that = (ServiceLookupRequest) o;
         return Double.compare(that.p1, p1) == 0 &&
                 Double.compare(that.p2, p2) == 0;
