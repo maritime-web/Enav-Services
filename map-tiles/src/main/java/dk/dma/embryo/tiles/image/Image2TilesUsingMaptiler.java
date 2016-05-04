@@ -115,6 +115,7 @@ public class Image2TilesUsingMaptiler implements Image2Tiles {
         File errorLog = new File(logDirectory, name + "-error.log");
         File outputLog = new File(logDirectory, name + "-output.log");
 
+        logger.debug("ProcessBuilder commands: {}", commands);
         logger.debug("Error log file: {}", errorLog.getAbsolutePath());
         logger.debug("Output log file: {}", outputLog.getAbsolutePath());
 
