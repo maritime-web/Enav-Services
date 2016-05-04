@@ -21,17 +21,21 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
+
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
 /**
  * Created by Steen on 20-04-2016.
  *
  */
-@Path("/register")
+@Path("/service")
 public class ServiceLookupRestService extends AbstractRestService {
     @Inject
-    private LostServiceClient lostServiceClient;
+    private LostService lostService;
 
     @Path("/lookup")
     @Produces("application/json")
@@ -39,8 +43,9 @@ public class ServiceLookupRestService extends AbstractRestService {
     public List<ServiceInstanceMetadata> lookup(@QueryParam("p1") double p1, @QueryParam("p2") double p2) {
         List<ServiceInstanceMetadata> res = new ArrayList<>();
         ServiceInstanceMetadata metadata = new ServiceInstanceMetadata(
+                "urn:mrnx:mcl:service:dma:nw-nm:v0.1",
                 "urn:mrnx:mcl:service:instance:dma:nw-nm:v0.1",
-                "MSI service",
+                "DK NW-NM",
                 "<p2:LinearRing xmlns:p2=\"http://www.opengis.net/gml\">\n" +
                 "      <p2:pos>14.0020751953125 54.95869417101662</p2:pos> +\n" +
                 "      <p2:pos>15.0457763671875 55.6930679264579</p2:pos> +\n" +
@@ -50,8 +55,15 @@ public class ServiceLookupRestService extends AbstractRestService {
                 "      <p2:pos>14.3975830078125 54.81334841741929</p2:pos> +\n" +
                 "      <p2:pos>14.161376953124998 54.81334841741929</p2:pos> +\n" +
                 "      <p2:pos>14.0020751953125 54.95869417101662</p2:pos> +\n" +
-                "</p2:LinearRing>");
+                "</p2:LinearRing>",
+                "http://niord.e-navigation.net/rest/public/v1/messages");
         res.add(metadata);
+
+        try {
+            res = lostService.findAllServices(p1, p2);
+        } catch (LostResourceNotFoundException e) {
+            throw new WebApplicationException(Response.status(NOT_FOUND).entity("Unable to find any services with a boundary containing [" + p1 + ", " + p2 + "]").build());
+        }
 
         return res;
     }

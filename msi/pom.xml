@@ -24,6 +24,16 @@
       <artifactId>common</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>dk.dma.enav.services</groupId>
+      <artifactId>service-registry</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.niord</groupId>
+      <artifactId>niord-model</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
 
     <!-- Added here again because weld jar contains older version of slf4j. This must be first in the classpath for Eclipse 
       to work -->
@@ -37,6 +47,11 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jackson2-provider</artifactId>
     </dependency>
 
     <!-- APACHE COMMONS -->
