@@ -39,7 +39,7 @@ import java.util.Locale;
  *
  */
 public class ListServicesByLocationRequestFactory {
-    private static final String pointTemplate = "<p2:Point id=\"point1\" srsName=\"urn:ogc:def:crs:EPSG::4326\" xmlns:p2=\"http://www.opengis.net/gml\"><p2:pos>%1$f %2$f</p2:pos></p2:Point>";
+    private static final String POINT_TEMPLATE = "<p2:Point id=\"point1\" srsName=\"urn:ogc:def:crs:EPSG::4326\" xmlns:p2=\"http://www.opengis.net/gml\"><p2:pos>%1$f %2$f</p2:pos></p2:Point>";
 
     @Inject
     private Logger logger;
@@ -48,7 +48,7 @@ public class ListServicesByLocationRequestFactory {
         Document document;
         try {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            document = documentBuilder.parse(new InputSource(new StringReader(String.format(Locale.ENGLISH, pointTemplate, p1, p2) )));
+            document = documentBuilder.parse(new InputSource(new StringReader(String.format(Locale.ENGLISH, POINT_TEMPLATE, p1, p2) )));
         } catch (SAXException | IOException | ParserConfigurationException e) {
             throw new RuntimeException("Bugger!", e);
         }

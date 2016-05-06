@@ -154,6 +154,7 @@
                 </executions>
                 <configuration>
                     <enableIntrospection>true</enableIntrospection>
+                    <extension>true</extension>
                 </configuration>
             </plugin>
         </plugins>

@@ -80,8 +80,12 @@ public class ServiceInstanceMetadata {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ServiceInstanceMetadata that = (ServiceInstanceMetadata) o;
         return Objects.equals(instanceId, that.instanceId);
     }
