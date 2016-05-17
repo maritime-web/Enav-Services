@@ -14,6 +14,7 @@
  */
 package dk.dma.enav.services.registry;
 
+import dk.dma.embryo.common.configuration.Property;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
@@ -30,10 +31,15 @@ import java.io.IOException;
  *
  */
 public class LostServiceClient {
-    private static final String LOST_URL = "http://efficiensea2.labs.frequentis.com:8081/lost.svc";
+
+    private final Logger logger;
+    private final String lostUrl;
 
     @Inject
-    private Logger logger;
+    public LostServiceClient(Logger logger, @Property("enav-service.service-registry.lost.url") String lostUrl) {
+        this.logger = logger;
+        this.lostUrl = lostUrl;
+    }
 
     public String post(String request) {
         try {
@@ -47,14 +53,14 @@ public class LostServiceClient {
     }
 
     private HttpResponse performRequest(String request) throws IOException {
-        Response response = Executor.newInstance().execute(Request.Post(LOST_URL).bodyString(request, ContentType.APPLICATION_XML));
+        Response response = Executor.newInstance().execute(Request.Post(lostUrl).bodyString(request, ContentType.APPLICATION_XML));
         return response.returnResponse();
     }
 
     private void verifyResponseIsOk(String request, HttpResponse response) {
         int statusCode = response.getStatusLine().getStatusCode();
         if (statusCode != 200) {
-            logger.warn("Recieved status code {} from request to {} with request entity:\n{}", statusCode, LOST_URL, request);
+            logger.warn("Recieved status code {} from request to {} with request entity:\n{}", statusCode, lostUrl, request);
             if (statusCode == 404) {
                 throw new LostResourceNotFoundException();
             }
