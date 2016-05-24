@@ -14,8 +14,10 @@
  */
 package dk.dma.enav.services.registry;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
+import com.google.common.base.MoreObjects;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -28,7 +30,12 @@ public class ServiceInstanceMetadata {
     private String name;
     private String boundary;
     private String url;
+    private Errors errors;
+    private List<Errors> warnings;
 
+    public ServiceInstanceMetadata() {
+        this(null, null, null, null, null);
+    }
 
     public ServiceInstanceMetadata(String serviceId, String instanceId, String name, String boundary, String url) {
         this.serviceId = serviceId;
@@ -36,6 +43,12 @@ public class ServiceInstanceMetadata {
         this.name = name;
         this.boundary = boundary;
         this.url = url;
+        this.warnings = new ArrayList<>();
+    }
+
+    public ServiceInstanceMetadata(String id, Errors errorDescriptions) {
+        this(id, null, null, null, null);
+        setErrors(errorDescriptions);
     }
 
     public String getServiceId() {
@@ -78,6 +91,22 @@ public class ServiceInstanceMetadata {
         this.url = url;
     }
 
+    public Errors getErrors() {
+        return errors;
+    }
+
+    public void setErrors(Errors errors) {
+        this.errors = errors;
+    }
+
+    public List<Errors> getWarnings() {
+        return warnings;
+    }
+
+    public void setWarnings(List<Errors> warnings) {
+        this.warnings = warnings != null ? warnings : this.warnings;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -87,22 +116,30 @@ public class ServiceInstanceMetadata {
             return false;
         }
         ServiceInstanceMetadata that = (ServiceInstanceMetadata) o;
-        return Objects.equals(instanceId, that.instanceId);
+        return Objects.equals(serviceId, that.serviceId) &&
+                Objects.equals(instanceId, that.instanceId) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(boundary, that.boundary) &&
+                Objects.equals(url, that.url) &&
+                Objects.equals(errors, that.errors) &&
+                Objects.equals(warnings, that.warnings);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(instanceId);
+        return Objects.hash(serviceId, instanceId, name, boundary, url, errors, warnings);
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .append("serviceId", serviceId)
-                .append("instanceId", instanceId)
-                .append("name", name)
-                .append("boundary", boundary)
-                .append("url", url)
+        return MoreObjects.toStringHelper(this)
+                .add("serviceId", serviceId)
+                .add("instanceId", instanceId)
+                .add("name", name)
+                .add("boundary", boundary)
+                .add("url", url)
+                .add("errors", errors)
+                .add("warnings", warnings)
                 .toString();
     }
 }

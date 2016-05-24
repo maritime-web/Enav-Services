@@ -12,9 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.enav.services.registry;
+package dk.dma.enav.services.registry.lost;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -25,7 +24,6 @@ import org.slf4j.Logger;
 import java.util.Locale;
 
 import static dk.dma.enav.hamcrest.matchers.EnavMatchers.hasXPath;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -43,28 +41,28 @@ public class ListServicesByLocationRequestFactoryTest {
 
     @Test
     public void shouldContainListServicesByLocationAsRootElement() throws Exception {
-        String request = cut.createRequest(1D, 2D);
+        String request = cut.create(1D, 2D);
 
         assertThat(request, hasXPath("/listServicesByLocation"));
     }
 
     @Test
     public void shouldHaveGeodetic2dAsProfileValue() throws Exception {
-        String request = cut.createRequest(1D, 2D);
+        String request = cut.create(1D, 2D);
 
         assertThat(request, hasXPath("/listServicesByLocation/location/@profile", equalTo("geodetic-2d")));
     }
 
     @Test
     public void shouldHaveRecursiveSetToTrue() throws Exception {
-        String request = cut.createRequest(1D, 2D);
+        String request = cut.create(1D, 2D);
 
         assertThat(request, hasXPath("/listServicesByLocation/@recursive", is("true")));
     }
 
     @Test
     public void shouldContainParametersAsPointCoordinates() throws Exception {
-        String request = cut.createRequest(1.1, 2.2);
+        String request = cut.create(1.1, 2.2);
 
 //        assertThat(request, hasXPath("/listServicesByLocation/location/Point", containsString("1.1 2.2")));
     }

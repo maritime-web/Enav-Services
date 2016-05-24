@@ -35,7 +35,7 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 @Path("/service")
 public class ServiceLookupRestService extends AbstractRestService {
     @Inject
-    private LostService lostService;
+    private ServiceLookupService serviceLookupService;
 
     @Path("/lookup")
     @Produces("application/json")
@@ -60,8 +60,8 @@ public class ServiceLookupRestService extends AbstractRestService {
         res.add(metadata);
 
         try {
-            res = lostService.findAllServices(p1, p2);
-        } catch (LostResourceNotFoundException e) {
+            res = serviceLookupService.findAllServices(p1, p2);
+        } catch (NoServicesFoundException e) {
             throw new WebApplicationException(Response.status(NOT_FOUND).entity("Unable to find any services with a boundary containing [" + p1 + ", " + p2 + "]").build());
         }
 

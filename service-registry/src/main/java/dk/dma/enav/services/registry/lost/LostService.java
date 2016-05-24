@@ -12,7 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.enav.services.registry;
+package dk.dma.enav.services.registry.lost;
+
+import dk.dma.enav.services.registry.ServiceInstanceMetadata;
+import dk.dma.enav.services.registry.ServiceLookupService;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -22,27 +25,33 @@ import java.util.stream.Collectors;
  * Created by Steen on 28-04-2016.
  *
  */
-public class LostService {
+public class LostService implements ServiceLookupService {
     @Inject
-    private LostServiceClient client;
+    private LostHttpClient client;
     @Inject
     private ListServicesByLocationRequestFactory listServicesByLocationRequestFactory;
     @Inject
     private FindServiceRequestFactory findServiceRequestFactory;
     @Inject
-    private LostResponseParser responseParser;
+    private ListServicesByLocationResponseParser listServicesByLocationResponseParser;
+    @Inject
+    private FindServiceResponseParser findServiceResponseParser;
+    @Inject
+    private ErrorConverter errorConverter;
 
+    @Override
     public List<ServiceInstanceMetadata> findAllServices(double p1, double p2) {
         //dummy search coordinates
         p1 = p1 < 0.001 ? 55 : p1;
         p2 = p2 < 0.001 ? 11 : p2;
-        String request = listServicesByLocationRequestFactory.createRequest(p1, p2);
+        String request = listServicesByLocationRequestFactory.create(p1, p2);
         String response = client.post(request);
-        List<String> serviceIds = responseParser.getServiceIds(response);
+        List<String> serviceIds = listServicesByLocationResponseParser.getServiceIds(response);
 
         return getServicesByIdsAndLocation(serviceIds, p1, p2).stream().filter(s -> s != null).collect(Collectors.toList());
     }
 
+    @Override
     public List<ServiceInstanceMetadata> getServicesByIds(List<String> ids) {
         //dummy search coordinates
         double p1 = 55;
@@ -50,14 +59,20 @@ public class LostService {
         return getServicesByIdsAndLocation(ids, p1, p2);
     }
 
+    @Override
     public List<ServiceInstanceMetadata> getServicesByIdsAndLocation(List<String> ids, double p1, double p2) {
         return ids.stream().map(id -> getServiceByIdAndLocation(id, p1, p2)).collect(Collectors.toList());
     }
 
+    @Override
     public ServiceInstanceMetadata getServiceByIdAndLocation(String id, double p1, double p2) {
-        String request = findServiceRequestFactory.createFindServiceRequest(p1, p2, id);
+        String request = findServiceRequestFactory.create(p1, p2, id);
         String response = client.post(request);
 
-        return responseParser.parseFindServiceResponse(response);
+        try {
+            return findServiceResponseParser.parseFindServiceResponse(response);
+        } catch (LostErrorResponseException e) {
+            return new ServiceInstanceMetadata(id, errorConverter.convert(e.getUnmarshalledResponse()));
+        }
     }
 }

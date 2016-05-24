@@ -57,6 +57,7 @@
         </dependency>
 
 
+<!--
         <dependency>
             <groupId>com.vividsolutions</groupId>
             <artifactId>jts</artifactId>
@@ -74,6 +75,7 @@
             <artifactId>jdom2</artifactId>
             <version>2.0.6</version>
         </dependency>
+-->
 
         <dependency>
             <groupId>jaxen</groupId>
@@ -91,6 +93,20 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.2.1</version>
+        </dependency>
+
+        <!-- http://mvnrepository.com/artifact/commons-validator/commons-validator -->
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>1.5.1</version>
+        </dependency>
+
+        <!-- http://mvnrepository.com/artifact/com.google.guava/guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>19.0</version>
         </dependency>
 
         <!-- Test dependencies -->
@@ -134,23 +150,6 @@
                             </sources>
                         </configuration>
                     </execution>
-<!--
-                    <execution>
-                        <id>gml</id>
-                        <goals>
-                            <goal>xjc</goal>
-                        </goals>
-                        <configuration>
-                            &lt;!&ndash;<packageName>net.opengis.gml</packageName>&ndash;&gt;
-                            <xjbSources>
-                                <xjbSource>${basedir}/src/main/resources/gml311/gml_binding.xjb</xjbSource>
-                            </xjbSources>
-                            <sources>
-                                <source>${basedir}/src/main/resources/gml311/gml.xsd</source>
-                            </sources>
-                        </configuration>
-                    </execution>
--->
                 </executions>
                 <configuration>
                     <enableIntrospection>true</enableIntrospection>

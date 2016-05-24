@@ -18,8 +18,8 @@ package dk.dma.enav.services.registry;
  * Created by Steen on 04-05-2016.
  *
  */
-public class LostResourceNotFoundException extends RuntimeException {
-    public LostResourceNotFoundException() {
+public class NoServicesFoundException extends RuntimeException {
+    public NoServicesFoundException() {
         super();
     }
 }

@@ -12,17 +12,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.enav.services.registry;
+package dk.dma.enav.services.registry.lost;
 
 import dk.dma.embryo.common.configuration.LogConfiguration;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.enav.services.registry.ServiceInstanceMetadata;
+import dk.dma.enav.services.registry.ServiceLookupService;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
 
 import javax.inject.Inject;
-import java.net.URL;
 import java.util.List;
 
 import static org.hamcrest.Matchers.empty;
@@ -35,14 +36,11 @@ import static org.junit.Assert.assertThat;
  *
  */
 @RunWith(CdiRunner.class)
-@AdditionalClasses(value = {LogConfiguration.class})
+@AdditionalClasses(value = {LogConfiguration.class, LostService.class, PropertyFileService.class, LostUnmarshalAdapter.class, DomUtil.class})
 public class LostServiceIT {
 
     @Inject
-    private Logger logger;
-
-    @Inject
-    private LostService cut;
+    private ServiceLookupService cut;
 
     @Test
     public void shouldFindAtleastOneService() throws Exception {
@@ -51,13 +49,5 @@ public class LostServiceIT {
         assertThat(services, is(not(empty())));
 
         System.out.println(services);
-    }
-
-    @Test
-    public void testName() throws Exception {
-        String u = "http:niord.e-navigation.net/rest/public/v1/messages";
-        URL url = new URL(u);
-        System.out.println("Host: '" + url.getHost() + "'");
-
     }
 }

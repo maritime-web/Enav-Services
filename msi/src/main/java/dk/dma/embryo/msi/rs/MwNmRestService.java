@@ -16,7 +16,7 @@ package dk.dma.embryo.msi.rs;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dk.dma.enav.services.registry.LostService;
+import dk.dma.enav.services.registry.ServiceLookupService;
 import dk.dma.enav.services.registry.ServiceInstanceMetadata;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.annotations.GZIP;
@@ -66,7 +66,7 @@ public class MwNmRestService {
     @Inject
     private Logger logger;
     @Inject
-    private LostService lostService;
+    private ServiceLookupService serviceLookupService;
 
     private ExecutorService executor;
 
@@ -112,7 +112,7 @@ public class MwNmRestService {
         CompletionService<List<MessageVo>> compService = new ExecutorCompletionService<>(executor);
         int taskNo = 0;
 
-        List<ServiceInstanceMetadata> serviceInstances = lostService.getServicesByIds(instanceIds);
+        List<ServiceInstanceMetadata> serviceInstances = serviceLookupService.getServicesByIds(instanceIds);
         for (String instanceId : instanceIds) {
 
             // Find the service instance

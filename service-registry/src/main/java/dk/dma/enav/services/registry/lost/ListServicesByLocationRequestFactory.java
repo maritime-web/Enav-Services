@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.enav.services.registry;
+package dk.dma.enav.services.registry.lost;
 
-import ietf.lost1.FindService;
+import ietf.lost1.ListServicesByLocation;
 import ietf.lost1.Location;
 import ietf.lost1.ObjectFactory;
 import org.slf4j.Logger;
@@ -35,16 +35,16 @@ import java.io.StringReader;
 import java.util.Locale;
 
 /**
- * Created by Steen on 03-05-2016.
+ * Created by Steen on 28-04-2016.
  *
  */
-public class FindServiceRequestFactory {
+class ListServicesByLocationRequestFactory {
     private static final String POINT_TEMPLATE = "<p2:Point id=\"point1\" srsName=\"urn:ogc:def:crs:EPSG::4326\" xmlns:p2=\"http://www.opengis.net/gml\"><p2:pos>%1$f %2$f</p2:pos></p2:Point>";
 
     @Inject
     private Logger logger;
 
-    public String createFindServiceRequest(double p1, double p2, String serviceId) {
+    String create(double p1, double p2) {
         Document document;
         try {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -54,23 +54,22 @@ public class FindServiceRequestFactory {
         }
 
         ObjectFactory objectFactory = new ObjectFactory();
-        FindService findServiceRequest = objectFactory.createFindService();
-        findServiceRequest.setRecursive(true);
-        findServiceRequest.setService(serviceId);
-        findServiceRequest.setServiceBoundary("value");
+        ListServicesByLocation listServicesByLocationRequest = objectFactory.createListServicesByLocation();
+        listServicesByLocationRequest.setRecursive(true);
         Location location = objectFactory.createLocation();
         location.setId(String.valueOf(document.getDocumentElement().hashCode()));
         location.setProfile("geodetic-2d");
         location.getExtensionPoint().add(document.getDocumentElement());
-        findServiceRequest.getLocation().add(location);
+        listServicesByLocationRequest.getLocation().add(location);
+        listServicesByLocationRequest.setService("urn");
 
         JAXBContext jaxbContext;
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
-            jaxbContext = JAXBContext.newInstance(FindService.class);
+            jaxbContext = JAXBContext.newInstance(ListServicesByLocation.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            jaxbMarshaller.marshal(findServiceRequest, os);
+            jaxbMarshaller.marshal(listServicesByLocationRequest, os);
 
             String res = os.toString("UTF-8");
             logger.debug(res);
@@ -79,6 +78,7 @@ public class FindServiceRequestFactory {
         } catch (JAXBException | IOException e) {
             throw new RuntimeException("");
         }
+
     }
 
 }

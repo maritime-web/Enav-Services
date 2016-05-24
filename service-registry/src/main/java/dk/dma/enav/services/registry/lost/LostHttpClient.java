@@ -12,9 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.enav.services.registry;
+package dk.dma.enav.services.registry.lost;
 
 import dk.dma.embryo.common.configuration.Property;
+import dk.dma.enav.services.registry.NoServicesFoundException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
@@ -30,13 +31,13 @@ import java.io.IOException;
  * Created by Steen on 27-04-2016.
  *
  */
-public class LostServiceClient {
+class LostHttpClient {
 
     private final Logger logger;
     private final String lostUrl;
 
     @Inject
-    public LostServiceClient(Logger logger, @Property("enav-service.service-registry.lost.url") String lostUrl) {
+    LostHttpClient(Logger logger, @Property("enav-service.service-registry.lost.url") String lostUrl) {
         this.logger = logger;
         this.lostUrl = lostUrl;
     }
@@ -62,7 +63,7 @@ public class LostServiceClient {
         if (statusCode != 200) {
             logger.warn("Recieved status code {} from request to {} with request entity:\n{}", statusCode, lostUrl, request);
             if (statusCode == 404) {
-                throw new LostResourceNotFoundException();
+                throw new NoServicesFoundException();
             }
             throw new RuntimeException("statusCode: " + statusCode);
         }
