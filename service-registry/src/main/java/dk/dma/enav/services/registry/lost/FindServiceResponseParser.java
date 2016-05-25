@@ -16,7 +16,6 @@ package dk.dma.enav.services.registry.lost;
 
 import dk.dma.enav.services.registry.ServiceInstanceMetadata;
 import ietf.lost1.DisplayName;
-import ietf.lost1.ExceptionContainer;
 import ietf.lost1.FindServiceResponse;
 import ietf.lost1.LocationInformation;
 import ietf.lost1.Mapping;
@@ -35,22 +34,22 @@ import java.util.stream.Collectors;
  */
 class FindServiceResponseParser {
     private static final Mapping EMPTY_MAPPING = new Mapping();
-    private final LostUnmarshalAdapter lostUnmarshalAdapter;
+    private final JaxbAdapter jaxbAdapter;
     private final DomUtil domUtil;
     private final ErrorConverter errorConverter;
     private final Logger logger;
 
     @SuppressWarnings("CdiInjectionPointsInspection")
     @Inject
-    FindServiceResponseParser(LostUnmarshalAdapter lostUnmarshalAdapter, DomUtil domUtil, ErrorConverter errorConverter, Logger logger) {
-        this.lostUnmarshalAdapter = lostUnmarshalAdapter;
+    FindServiceResponseParser(JaxbAdapter jaxbAdapter, DomUtil domUtil, ErrorConverter errorConverter, Logger logger) {
+        this.jaxbAdapter = jaxbAdapter;
         this.domUtil = domUtil;
         this.errorConverter = errorConverter;
         this.logger = logger;
     }
 
     ServiceInstanceMetadata parseFindServiceResponse(String findServiceResponse) {
-        FindServiceResponse response = lostUnmarshalAdapter.unmarshal(findServiceResponse, FindServiceResponse.class);
+        FindServiceResponse response = jaxbAdapter.unmarshal(findServiceResponse, FindServiceResponse.class);
         Mapping m = chooseMapping(response.getMapping()).orElse(EMPTY_MAPPING);
 
         return convert(m, response);

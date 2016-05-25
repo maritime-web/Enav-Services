@@ -47,7 +47,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class FindServiceResponseParserTest {
     @Mock
-    private LostUnmarshalAdapter lostUnmarshalAdapter;
+    private JaxbAdapter jaxbAdapter;
     @Mock
     private DomUtil domUtil;
     @Mock
@@ -60,7 +60,7 @@ public class FindServiceResponseParserTest {
     public void shouldCreateEmptyResponseIfNoValidMappingIsFound() throws Exception {
         ServiceInstanceMetadata expectedResult = new ServiceInstanceMetadata();
         String response = "<response></response>";
-        when(lostUnmarshalAdapter.unmarshal(response, FindServiceResponse.class)).thenReturn(createFindServiceResponseWithNoValidMapping());
+        when(jaxbAdapter.unmarshal(response, FindServiceResponse.class)).thenReturn(createFindServiceResponseWithNoValidMapping());
 
         ServiceInstanceMetadata result = cut.parseFindServiceResponse(response);
 
@@ -75,7 +75,7 @@ public class FindServiceResponseParserTest {
         expectedResult.setWarnings(singletonList(new Errors(warning.getSource(), singletonList(new ErrorDescription(message, null)))));
         String response = "<response></response>";
         FindServiceResponse serviceResponseWithNoValidMapping = createFindServiceResponseWithNoValidMapping(warning);
-        when(lostUnmarshalAdapter.unmarshal(response, FindServiceResponse.class)).thenReturn(serviceResponseWithNoValidMapping);
+        when(jaxbAdapter.unmarshal(response, FindServiceResponse.class)).thenReturn(serviceResponseWithNoValidMapping);
         when(errorConverter.convert(serviceResponseWithNoValidMapping.getWarnings())).thenReturn(expectedResult.getWarnings());
 
         ServiceInstanceMetadata result = cut.parseFindServiceResponse(response);
@@ -89,7 +89,7 @@ public class FindServiceResponseParserTest {
         FindServiceResponse serviceResponseWithValidMapping = findServiceResponseWithValidMapping();
         serviceResponseWithValidMapping.getMapping().get(0).getDisplayName().add(createDisplayName("fr", "service utile"));
         serviceResponseWithValidMapping.getMapping().get(0).getDisplayName().add(createDisplayName("en", "useful service"));
-        when(lostUnmarshalAdapter.unmarshal(response, FindServiceResponse.class)).thenReturn(serviceResponseWithValidMapping);
+        when(jaxbAdapter.unmarshal(response, FindServiceResponse.class)).thenReturn(serviceResponseWithValidMapping);
 
         ServiceInstanceMetadata result = cut.parseFindServiceResponse(response);
 
@@ -100,7 +100,7 @@ public class FindServiceResponseParserTest {
     public void shouldIncludeUrl() throws Exception {
         String response = "<response></response>";
         FindServiceResponse serviceResponseWithValidMapping = findServiceResponseWithValidMapping();
-        when(lostUnmarshalAdapter.unmarshal(response, FindServiceResponse.class)).thenReturn(serviceResponseWithValidMapping);
+        when(jaxbAdapter.unmarshal(response, FindServiceResponse.class)).thenReturn(serviceResponseWithValidMapping);
 
         ServiceInstanceMetadata result = cut.parseFindServiceResponse(response);
 
@@ -111,7 +111,7 @@ public class FindServiceResponseParserTest {
     public void shouldIncludeServiceId() throws Exception {
         String response = "<response></response>";
         FindServiceResponse serviceResponseWithValidMapping = findServiceResponseWithValidMapping();
-        when(lostUnmarshalAdapter.unmarshal(response, FindServiceResponse.class)).thenReturn(serviceResponseWithValidMapping);
+        when(jaxbAdapter.unmarshal(response, FindServiceResponse.class)).thenReturn(serviceResponseWithValidMapping);
 
         ServiceInstanceMetadata result = cut.parseFindServiceResponse(response);
 
@@ -122,7 +122,7 @@ public class FindServiceResponseParserTest {
     public void shouldIncludeInstanceId() throws Exception {
         String response = "<response></response>";
         FindServiceResponse serviceResponseWithValidMapping = findServiceResponseWithValidMapping();
-        when(lostUnmarshalAdapter.unmarshal(response, FindServiceResponse.class)).thenReturn(serviceResponseWithValidMapping);
+        when(jaxbAdapter.unmarshal(response, FindServiceResponse.class)).thenReturn(serviceResponseWithValidMapping);
 
         ServiceInstanceMetadata result = cut.parseFindServiceResponse(response);
 
@@ -133,7 +133,7 @@ public class FindServiceResponseParserTest {
     public void shouldIncludeBoundary() throws Exception {
         String response = "<response></response>";
         FindServiceResponse serviceResponseWithValidMapping = findServiceResponseWithValidMapping();
-        when(lostUnmarshalAdapter.unmarshal(response, FindServiceResponse.class)).thenReturn(serviceResponseWithValidMapping);
+        when(jaxbAdapter.unmarshal(response, FindServiceResponse.class)).thenReturn(serviceResponseWithValidMapping);
         when(domUtil.toString(any(Element.class))).thenReturn("<exiting><boundary></boundary></exiting>");
 
         ServiceInstanceMetadata result = cut.parseFindServiceResponse(response);

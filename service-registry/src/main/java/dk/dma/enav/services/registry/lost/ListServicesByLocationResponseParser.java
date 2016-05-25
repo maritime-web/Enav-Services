@@ -14,16 +14,9 @@
  */
 package dk.dma.enav.services.registry.lost;
 
-import ietf.lost1.ExceptionContainer;
 import ietf.lost1.ListServicesByLocationResponse;
-import org.slf4j.Logger;
-import org.xml.sax.InputSource;
 
 import javax.inject.Inject;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.StringReader;
 import java.util.List;
 
 /**
@@ -31,24 +24,16 @@ import java.util.List;
  *
  */
 class ListServicesByLocationResponseParser {
+    private final JaxbAdapter jaxbAdapter;
+
     @Inject
-    private Logger logger;
+    public ListServicesByLocationResponseParser(JaxbAdapter jaxbAdapter) {
+        this.jaxbAdapter = jaxbAdapter;
+    }
 
     List<String> getServiceIds(String listServiceResponse) {
-        JAXBContext jaxbContext;
-        try {
-            jaxbContext = JAXBContext.newInstance(ListServicesByLocationResponse.class);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            Object response = unmarshaller.unmarshal(new InputSource(new StringReader(listServiceResponse)));
-            if (response instanceof ListServicesByLocationResponse) {
-                return ((ListServicesByLocationResponse)response).getServiceList();
-            } else if (response instanceof ExceptionContainer) {
-                throw new RuntimeException("Server returned errror\n" + listServiceResponse);
-            } else {
-                throw new RuntimeException("Unrecognized response type\n" + listServiceResponse);
-            }
-        } catch (JAXBException e) {
-            throw new RuntimeException("", e);
-        }
+        ListServicesByLocationResponse res = jaxbAdapter.unmarshal(listServiceResponse, ListServicesByLocationResponse.class);
+
+        return res.getServiceList();
     }
 }

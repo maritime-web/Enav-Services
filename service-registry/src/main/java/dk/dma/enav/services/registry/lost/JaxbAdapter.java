@@ -20,33 +20,34 @@ import org.xml.sax.InputSource;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.StringReader;
 
 /**
  * Created by Steen on 18-05-2016.
  *
  */
-class LostUnmarshalAdapter {
-    private final JAXBContext jaxbContext;
+class JaxbAdapter {
+    private JAXBContext jaxbContext;
 
-    @Inject
-    LostUnmarshalAdapter() {
-        jaxbContext = getContext();
-    }
-
-    private JAXBContext getContext() {
-        String contextPath = "ietf.lost1";
+    String marshal(Object jaxbElement) {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
-            return JAXBContext.newInstance(contextPath, ObjectFactory.class.getClassLoader());
-        } catch (JAXBException e) {
-            throw new RuntimeException("Unable to create JAXBContext for context path \""+contextPath+"\"", e);
+            Marshaller jaxbMarshaller = getMarshaller();
+            jaxbMarshaller.marshal(jaxbElement, os);
+
+            return os.toString("UTF-8");
+        } catch (JAXBException | IOException e) {
+            throw new RuntimeException("Unable to marshal \""+ jaxbElement.getClass().getName()+"\"", e);
         }
     }
 
     <E> E unmarshal(String xmlString, Class<E> expectedType) {
-        Unmarshaller unmarshaller = getUnmarshaller();
         try {
+            Unmarshaller unmarshaller = getUnmarshaller();
             Object unmarshalledResponse = unmarshaller.unmarshal(new InputSource(new StringReader(xmlString)));
 
             if (expectedType.isInstance(unmarshalledResponse)) {
@@ -60,11 +61,27 @@ class LostUnmarshalAdapter {
         }
     }
 
-    private Unmarshaller getUnmarshaller() {
-        try {
-            return jaxbContext.createUnmarshaller();
-        } catch (JAXBException e) {
-            throw new RuntimeException("Unable to create Unmarshaller from context", e);
-        }
+    private Unmarshaller getUnmarshaller() throws JAXBException {
+        return getContext().createUnmarshaller();
     }
+
+    private Marshaller getMarshaller() throws JAXBException {
+        Marshaller jaxbMarshaller = getContext().createMarshaller();
+        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        return jaxbMarshaller;
+    }
+
+    private JAXBContext getContext() {
+        if (jaxbContext == null) {
+            String contextPath = "ietf.lost1";
+            try {
+                jaxbContext = JAXBContext.newInstance(contextPath, ObjectFactory.class.getClassLoader());
+            } catch (JAXBException e) {
+                throw new RuntimeException("Unable to create JAXBContext for context path \""+contextPath+"\"", e);
+            }
+        }
+
+        return jaxbContext;
+    }
+
 }

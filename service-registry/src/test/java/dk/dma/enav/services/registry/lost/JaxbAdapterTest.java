@@ -31,12 +31,12 @@ import static org.junit.Assert.assertThat;
  * Created by Steen on 18-05-2016.
  *
  */
-public class LostUnmarshalAdapterTest {
-    private LostUnmarshalAdapter cut;
+public class JaxbAdapterTest {
+    private JaxbAdapter cut;
 
     @Before
     public void setUp() throws Exception {
-        cut = new LostUnmarshalAdapter();
+        cut = new JaxbAdapter();
     }
 
     @Test

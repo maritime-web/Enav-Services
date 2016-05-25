@@ -41,22 +41,11 @@ public class LostService implements ServiceLookupService {
 
     @Override
     public List<ServiceInstanceMetadata> findAllServices(double p1, double p2) {
-        //dummy search coordinates
-        p1 = p1 < 0.001 ? 55 : p1;
-        p2 = p2 < 0.001 ? 11 : p2;
-        String request = listServicesByLocationRequestFactory.create(p1, p2);
+        String request = listServicesByLocationRequestFactory.create(p1, p2, "u");
         String response = client.post(request);
         List<String> serviceIds = listServicesByLocationResponseParser.getServiceIds(response);
 
         return getServicesByIdsAndLocation(serviceIds, p1, p2).stream().filter(s -> s != null).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ServiceInstanceMetadata> getServicesByIds(List<String> ids) {
-        //dummy search coordinates
-        double p1 = 55;
-        double p2 = 11;
-        return getServicesByIdsAndLocation(ids, p1, p2);
     }
 
     @Override

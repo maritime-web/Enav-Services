@@ -36,7 +36,7 @@ import static org.junit.Assert.assertThat;
  *
  */
 @RunWith(CdiRunner.class)
-@AdditionalClasses(value = {LogConfiguration.class, LostService.class, PropertyFileService.class, LostUnmarshalAdapter.class, DomUtil.class})
+@AdditionalClasses(value = {LogConfiguration.class, LostService.class, PropertyFileService.class, JaxbAdapter.class, DomUtil.class, LocationFactory.class, Geodetic2DFactory.class})
 public class LostServiceIT {
 
     @Inject

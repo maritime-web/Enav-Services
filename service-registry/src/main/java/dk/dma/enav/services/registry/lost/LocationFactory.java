@@ -14,34 +14,32 @@
  */
 package dk.dma.enav.services.registry.lost;
 
-import ietf.lost1.FindService;
+import ietf.lost1.Location;
 import ietf.lost1.ObjectFactory;
+import org.w3c.dom.Element;
 
 import javax.inject.Inject;
 
 /**
- * Created by Steen on 03-05-2016.
+ * Created by Steen on 25-05-2016.
  *
  */
-class FindServiceRequestFactory {
-    private final JaxbAdapter jaxbAdapter;
-    private final LocationFactory locationFactory;
+class LocationFactory {
+    private final Geodetic2DFactory geodetic2DFactory;
 
     @Inject
-    FindServiceRequestFactory(JaxbAdapter jaxbAdapter, LocationFactory locationFactory) {
-        this.jaxbAdapter = jaxbAdapter;
-        this.locationFactory = locationFactory;
+    LocationFactory(Geodetic2DFactory geodetic2DFactory) {
+        this.geodetic2DFactory = geodetic2DFactory;
     }
 
-    String create(double p1, double p2, String serviceId) {
+    Location createLocation(double p1, double p2) {
         ObjectFactory objectFactory = new ObjectFactory();
-        FindService findServiceRequest = objectFactory.createFindService();
-        findServiceRequest.setRecursive(true);
-        findServiceRequest.setService(serviceId);
-        findServiceRequest.setServiceBoundary("value");
-
-        findServiceRequest.getLocation().add(locationFactory.createLocation(p1, p2));
-
-        return jaxbAdapter.marshal(findServiceRequest);
+        Location location = objectFactory.createLocation();
+        Element point = geodetic2DFactory.createPoint(p1, p2);
+        location.setId(String.valueOf(point.hashCode()));
+        location.setProfile("geodetic-2d");
+        location.getExtensionPoint().add(point);
+        return location;
     }
+
 }

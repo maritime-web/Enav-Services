@@ -14,13 +14,21 @@
  */
 package dk.dma.enav.services.registry.lost;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 
 /**
@@ -36,6 +44,16 @@ class DomUtil {
             return writer.toString();
         } catch (TransformerException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    Element createElement(String xml) {
+        try {
+            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document document = documentBuilder.parse(new InputSource(new StringReader(xml)));
+            return document.getDocumentElement();
+        } catch (SAXException | IOException | ParserConfigurationException e) {
+            throw new RuntimeException("Unable to create element from\n\""+xml+"\"", e);
         }
     }
 }

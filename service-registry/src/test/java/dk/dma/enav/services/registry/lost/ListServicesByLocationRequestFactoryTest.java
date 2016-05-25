@@ -14,19 +14,25 @@
  */
 package dk.dma.enav.services.registry.lost;
 
+import ietf.lost1.ListServicesByLocation;
+import ietf.lost1.Location;
+import org.hamcrest.MatcherAssert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.slf4j.Logger;
 
-import java.util.Locale;
-
-import static dk.dma.enav.hamcrest.matchers.EnavMatchers.hasXPath;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyDouble;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Steen on 02-05-2016.
@@ -34,43 +40,52 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ListServicesByLocationRequestFactoryTest {
+    @Captor
+    private ArgumentCaptor<ListServicesByLocation> request;
+
     @Mock
-    private Logger logger;
+    private JaxbAdapter jaxbAdapter;
+    @Mock
+    private LocationFactory locationFactory;
     @InjectMocks
     private ListServicesByLocationRequestFactory cut;
 
-    @Test
-    public void shouldContainListServicesByLocationAsRootElement() throws Exception {
-        String request = cut.create(1D, 2D);
-
-        assertThat(request, hasXPath("/listServicesByLocation"));
-    }
-
-    @Test
-    public void shouldHaveGeodetic2dAsProfileValue() throws Exception {
-        String request = cut.create(1D, 2D);
-
-        assertThat(request, hasXPath("/listServicesByLocation/location/@profile", equalTo("geodetic-2d")));
+    @Before
+    public void setUp() throws Exception {
+        when(jaxbAdapter.marshal(request.capture())).thenReturn("marshalled request");
     }
 
     @Test
     public void shouldHaveRecursiveSetToTrue() throws Exception {
-        String request = cut.create(1D, 2D);
+        cut.create(1D, 2D, "urn:xxx");
 
-        assertThat(request, hasXPath("/listServicesByLocation/@recursive", is("true")));
+        assertThat(request.getValue().getRecursive(), is(true));
     }
 
     @Test
-    public void shouldContainParametersAsPointCoordinates() throws Exception {
-        String request = cut.create(1.1, 2.2);
+    public void shouldHaveRecursiveSetToServiceArgument() throws Exception {
+        String service = "urn:xxx";
+        cut.create(1D, 2D, service);
 
-//        assertThat(request, hasXPath("/listServicesByLocation/location/Point", containsString("1.1 2.2")));
+        assertThat(request.getValue().getService(), is(service));
     }
 
     @Test
-    public void rsAsPointCoordinates() throws Exception {
-        String pointTemplate = "<p2:Point id=\"point1\" srsName=\"urn:ogc:def:crs:EPSG::4326\" xmlns:p2=\"http://www.opengis.net/gml\"><p2:pos>%1$f %2$f</p2:pos></p2:Point>";
-        System.out.printf(String.format(Locale.ENGLISH, pointTemplate, 55.0, 11.0));
+    public void shouldCallLocationFactoryWithParametersP1AndP2() throws Exception {
+        double p1 = 11.0001234;
+        double p2 = 22.0005678;
+        cut.create(p1, p2, "urn:xxx");
 
+        verify(locationFactory).createLocation(eq(p1), eq(p2));
+    }
+
+    @Test
+    public void shouldAddCreatedLocationToRequest() throws Exception {
+        Location createdLocation = new Location();
+        when(locationFactory.createLocation(anyDouble(), anyDouble())).thenReturn(createdLocation);
+
+        cut.create(11D, 22D, "urn:xxx");
+
+        MatcherAssert.assertThat(request.getValue().getLocation(), contains(createdLocation));
     }
 }

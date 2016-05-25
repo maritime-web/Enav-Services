@@ -36,13 +36,14 @@ class LostHttpClient {
     private final Logger logger;
     private final String lostUrl;
 
+    @SuppressWarnings("CdiInjectionPointsInspection")
     @Inject
     LostHttpClient(Logger logger, @Property("enav-service.service-registry.lost.url") String lostUrl) {
         this.logger = logger;
         this.lostUrl = lostUrl;
     }
 
-    public String post(String request) {
+    String post(String request) {
         try {
             HttpResponse response = performRequest(request);
             verifyResponseIsOk(request, response);
