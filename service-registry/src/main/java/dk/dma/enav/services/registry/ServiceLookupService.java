@@ -21,9 +21,9 @@ import java.util.List;
  *
  */
 public interface ServiceLookupService {
-    List<ServiceInstanceMetadata> findAllServices(double p1, double p2);
+    List<ServiceInstanceMetadata> getServiceInstancesForService(String serviceTechnicalDesignId, double p1, double p2);
 
-    List<ServiceInstanceMetadata> getServicesByIdsAndLocation(List<String> ids, double p1, double p2);
+    List<ServiceInstanceMetadata> getServiceInstances(List<String> instanceIds, double p1, double p2);
 
-    ServiceInstanceMetadata getServiceByIdAndLocation(String id, double p1, double p2);
+    ServiceInstanceMetadata getServiceInstance(String instanceId, double p1, double p2);
 }

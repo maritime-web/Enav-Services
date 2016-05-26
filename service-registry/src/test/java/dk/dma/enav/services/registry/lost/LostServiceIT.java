@@ -44,7 +44,7 @@ public class LostServiceIT {
 
     @Test
     public void shouldFindAtleastOneService() throws Exception {
-        List<ServiceInstanceMetadata> services = cut.findAllServices(55D, 11D);
+        List<ServiceInstanceMetadata> services = cut.getServiceInstancesForService("urn:mrnx:mcl:service:dma:nw-nm:rest", 55D, 11D);
 
         assertThat(services, is(not(empty())));
 

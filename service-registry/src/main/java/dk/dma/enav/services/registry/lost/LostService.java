@@ -16,10 +16,10 @@ package dk.dma.enav.services.registry.lost;
 
 import dk.dma.enav.services.registry.ServiceInstanceMetadata;
 import dk.dma.enav.services.registry.ServiceLookupService;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -28,6 +28,9 @@ import static java.util.stream.Collectors.toList;
  *
  */
 public class LostService implements ServiceLookupService {
+    @SuppressWarnings("CdiInjectionPointsInspection")
+    @Inject
+    private Logger logger;
     @Inject
     private LostHttpClient client;
     @Inject
@@ -42,28 +45,41 @@ public class LostService implements ServiceLookupService {
     private ErrorConverter errorConverter;
 
     @Override
-    public List<ServiceInstanceMetadata> findAllServices(double p1, double p2) {
-        String request = listServicesByLocationRequestFactory.create(p1, p2, "u");
+    public List<ServiceInstanceMetadata> getServiceInstancesForService(String serviceTechnicalDesignId, double p1, double p2) {
+        String lostServiceId = mapToLostServiceId(serviceTechnicalDesignId);
+        String request = listServicesByLocationRequestFactory.create(p1, p2, lostServiceId);
         String response = client.post(request);
         List<String> serviceIds = listServicesByLocationResponseParser.getServiceIds(response);
 
-        return getServicesByIdsAndLocation(serviceIds, p1, p2).stream().filter(s -> s != null && s.getInstanceId() != null).collect(toList());
+        return getServiceInstances(serviceIds, p1, p2).stream()
+                .filter(s -> s != null && s.getInstanceId() != null)
+                .map(s -> {s.setServiceId(serviceTechnicalDesignId); return s;})
+                .collect(toList());
+    }
+
+    private String mapToLostServiceId(String serviceTechnicalDesignId) {
+        String res = serviceTechnicalDesignId;
+        if (serviceTechnicalDesignId.equals("urn:mrnx:mcl:service:dma:nw-nm:rest")) {
+            res = "urn:mrnx:mcl:service";
+        }
+
+        return res;
     }
 
     @Override
-    public List<ServiceInstanceMetadata> getServicesByIdsAndLocation(List<String> ids, double p1, double p2) {
-        return ids.stream().map(id -> getServiceByIdAndLocation(id, p1, p2)).collect(toList());
+    public List<ServiceInstanceMetadata> getServiceInstances(List<String> instanceIds, double p1, double p2) {
+        return instanceIds.stream().map(id -> getServiceInstance(id, p1, p2)).collect(toList());
     }
 
     @Override
-    public ServiceInstanceMetadata getServiceByIdAndLocation(String id, double p1, double p2) {
-        String request = findServiceRequestFactory.create(p1, p2, id);
+    public ServiceInstanceMetadata getServiceInstance(String instanceId, double p1, double p2) {
+        String request = findServiceRequestFactory.create(p1, p2, instanceId);
         String response = client.post(request);
 
         try {
             return findServiceResponseParser.parseFindServiceResponse(response);
         } catch (LostErrorResponseException e) {
-            return new ServiceInstanceMetadata(id, errorConverter.convert(e.getUnmarshalledResponse()));
+            return new ServiceInstanceMetadata(instanceId, errorConverter.convert(e.getUnmarshalledResponse()));
         }
     }
 }

@@ -61,7 +61,7 @@ public class LostServiceTest {
         when(client.post("a find service request")).thenReturn("a find service response");
         when(responseParser.parseFindServiceResponse("a find service response")).thenReturn(serviceDescription);
 
-        List<ServiceInstanceMetadata> serviceData = cut.findAllServices(55D, 11D);
+        List<ServiceInstanceMetadata> serviceData = cut.getServiceInstancesForService(55D, 11D);
 
         assertThat(serviceData, hasSize(1));
         assertThat(serviceData, hasItem(serviceDescription));

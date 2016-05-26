@@ -115,7 +115,7 @@ public class MwNmRestService {
         //Dummy coordinates TODO get relevant coordinates from request
         double p1 = 55;
         double p2 = 11;
-        List<ServiceInstanceMetadata> serviceInstances = serviceLookupService.getServicesByIdsAndLocation(instanceIds, p1, p2);
+        List<ServiceInstanceMetadata> serviceInstances = serviceLookupService.getServiceInstances(instanceIds, p1, p2);
         for (String instanceId : instanceIds) {
 
             // Find the service instance

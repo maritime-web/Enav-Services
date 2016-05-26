@@ -23,7 +23,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
@@ -40,17 +39,13 @@ public class ServiceLookupRestService extends AbstractRestService {
     @Path("/lookup")
     @Produces("application/json")
     @GET
-    public List<ServiceInstanceMetadata> lookup(@QueryParam("p1") double p1, @QueryParam("p2") double p2) {
-        //dummy search coordinates if parameters p1 and p2 are zero TODO remove when client sends the coordinates
-        p1 = p1 < 0.001 ? 55 : p1;
-        p2 = p2 < 0.001 ? 11 : p2;
-
+    public List<ServiceInstanceMetadata> lookup(@QueryParam("serviceTechnicalDesignId") String serviceTechnicalDesignId, @QueryParam("p1") double p1, @QueryParam("p2") double p2) {
         List<ServiceInstanceMetadata> res;
 
         try {
-            res = serviceLookupService.findAllServices(p1, p2);
+            res = serviceLookupService.getServiceInstancesForService(serviceTechnicalDesignId, p1, p2);
         } catch (NoServicesFoundException e) {
-            throw new WebApplicationException(Response.status(NOT_FOUND).entity("Unable to find any services with a boundary containing [" + p1 + ", " + p2 + "]").build());
+            throw new WebApplicationException(Response.status(NOT_FOUND).entity("Unable to find any service implementation of \""+serviceTechnicalDesignId+"\" with a boundary containing [" + p1 + ", " + p2 + "]").build());
         }
 
         return res;

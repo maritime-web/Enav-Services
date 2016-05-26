@@ -47,7 +47,7 @@ public class ServiceInstanceMetadata {
     }
 
     public ServiceInstanceMetadata(String id, Errors errorDescriptions) {
-        this(id, null, null, null, null);
+        this(null, id, null, null, null);
         setErrors(errorDescriptions);
     }
 
