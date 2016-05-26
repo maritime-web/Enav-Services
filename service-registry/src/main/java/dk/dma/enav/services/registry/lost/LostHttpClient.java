@@ -73,7 +73,7 @@ class LostHttpClient {
     private String responseAsString(HttpResponse response) throws IOException {
         ByteArrayOutputStream entityStream = new ByteArrayOutputStream();
         response.getEntity().writeTo(entityStream);
-        logger.info("The response:\n{}", entityStream.toString("UTF-8"));
+        logger.debug("The response:\n{}", entityStream.toString("UTF-8"));
         return entityStream.toString("UTF-8");
     }
 

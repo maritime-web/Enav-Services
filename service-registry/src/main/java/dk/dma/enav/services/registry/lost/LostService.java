@@ -21,6 +21,8 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  * Created by Steen on 28-04-2016.
  *
@@ -45,12 +47,12 @@ public class LostService implements ServiceLookupService {
         String response = client.post(request);
         List<String> serviceIds = listServicesByLocationResponseParser.getServiceIds(response);
 
-        return getServicesByIdsAndLocation(serviceIds, p1, p2).stream().filter(s -> s != null).collect(Collectors.toList());
+        return getServicesByIdsAndLocation(serviceIds, p1, p2).stream().filter(s -> s != null && s.getInstanceId() != null).collect(toList());
     }
 
     @Override
     public List<ServiceInstanceMetadata> getServicesByIdsAndLocation(List<String> ids, double p1, double p2) {
-        return ids.stream().map(id -> getServiceByIdAndLocation(id, p1, p2)).collect(Collectors.toList());
+        return ids.stream().map(id -> getServiceByIdAndLocation(id, p1, p2)).collect(toList());
     }
 
     @Override
