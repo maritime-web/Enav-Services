@@ -47,8 +47,12 @@ public class ErrorDescription {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ErrorDescription that = (ErrorDescription) o;
         return Objects.equals(type, that.type) &&
                 Objects.equals(message, that.message) &&
