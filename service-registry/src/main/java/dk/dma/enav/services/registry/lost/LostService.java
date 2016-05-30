@@ -18,6 +18,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import dk.dma.enav.services.registry.NoServicesFoundException;
 import dk.dma.enav.services.registry.ServiceInstanceMetadata;
 import dk.dma.enav.services.registry.ServiceLookupService;
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ import org.slf4j.Logger;
 import javax.inject.Inject;
 import java.util.List;
 
+import static dk.dma.enav.services.registry.lost.ErrorType.NOT_FOUND;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -53,12 +55,25 @@ public class LostService implements ServiceLookupService {
         String lostServiceId = mapToLostServiceId(serviceTechnicalDesignId);
         String request = listServicesByLocationRequestFactory.create(p1, p2, lostServiceId);
         String response = client.post(request);
-        List<String> serviceIds = listServicesByLocationResponseParser.getServiceIds(response);
+        List<String> serviceIds;
+        try {
+            serviceIds = listServicesByLocationResponseParser.getServiceIds(response);
+        } catch (LostErrorResponseException e) {
+            if (representsNoServiceFound(e)) {
+                throw new NoServicesFoundException(e);
+            } else {
+                throw e;
+            }
+        }
 
         return getServiceInstances(serviceIds, p1, p2).stream()
                 .filter(s -> s != null && s.getInstanceId() != null)
                 .map(s -> {s.setServiceId(serviceTechnicalDesignId); return s;})
                 .collect(toList());
+    }
+
+    private boolean representsNoServiceFound(LostErrorResponseException e) {
+        return errorConverter.convert(e.getUnmarshalledResponse()).getDescriptions().stream().anyMatch(ed -> ed.getType().equals(NOT_FOUND.getName()));
     }
 
     @Override

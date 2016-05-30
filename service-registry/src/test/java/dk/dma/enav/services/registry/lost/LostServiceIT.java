@@ -20,6 +20,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.WKTWriter;
 import dk.dma.embryo.common.configuration.LogConfiguration;
 import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.enav.services.registry.NoServicesFoundException;
 import dk.dma.enav.services.registry.ServiceInstanceMetadata;
 import dk.dma.enav.services.registry.ServiceLookupService;
 import org.jglue.cdiunit.AdditionalClasses;
@@ -69,5 +70,16 @@ public class LostServiceIT {
         assertThat(services, is(not(empty())));
 
         System.out.println(services);
+    }
+
+    @Test(expected = NoServicesFoundException.class)
+    public void shouldGetNoServiceFoundErrorFromServer() throws Exception {
+        GeometryFactory fac = new GeometryFactory();
+        Polygon poly = fac.createPolygon(new Coordinate[]{new Coordinate(2D, 80D), new Coordinate(2D, 90D), new Coordinate(3D, 90D), new Coordinate(3D, 80D), new Coordinate(2D, 80D)});
+        WKTWriter w = new WKTWriter();
+
+        String location = w.write(poly);
+
+        cut.getServiceInstancesForService("urn:mrnx:mcl:service:dma:nw-nm:rest", location);
     }
 }

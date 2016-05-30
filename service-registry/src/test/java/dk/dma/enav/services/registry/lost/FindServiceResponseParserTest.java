@@ -30,6 +30,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.w3c.dom.Element;
 
+import static dk.dma.enav.services.registry.lost.ErrorType.DEFAULT_MAPPING_RETURNED;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -72,7 +73,7 @@ public class FindServiceResponseParserTest {
         String message = "message";
         ExceptionContainer warning = createWarning("id", message);
         ServiceInstanceMetadata expectedResult = new ServiceInstanceMetadata();
-        expectedResult.setWarnings(singletonList(new Errors(warning.getSource(), singletonList(new ErrorDescription(message, null)))));
+        expectedResult.setWarnings(singletonList(new Errors(warning.getSource(), singletonList(new ErrorDescription(DEFAULT_MAPPING_RETURNED.getName(), message, null)))));
         String response = "<response></response>";
         FindServiceResponse serviceResponseWithNoValidMapping = createFindServiceResponseWithNoValidMapping(warning);
         when(jaxbAdapter.unmarshal(response, FindServiceResponse.class)).thenReturn(serviceResponseWithNoValidMapping);

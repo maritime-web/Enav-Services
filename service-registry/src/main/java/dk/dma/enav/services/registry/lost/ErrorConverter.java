@@ -25,6 +25,7 @@ import javax.xml.bind.JAXBElement;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static dk.dma.enav.services.registry.lost.ErrorType.LOCATION_PROFILE_UNRECOGNIZED;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
@@ -73,11 +74,11 @@ class ErrorConverter {
         ErrorDescription res = null;
         if (LocationProfileUnrecognized.class.isInstance(o)) {
             LocationProfileUnrecognized desc = (LocationProfileUnrecognized) o;
-            res = new ErrorDescription(desc.getMessage(), desc.getUnsupportedProfiles().stream().collect(joining(", ")));
+            res = new ErrorDescription(LOCATION_PROFILE_UNRECOGNIZED.getName(), desc.getMessage(), desc.getUnsupportedProfiles().stream().collect(joining(", ")));
         } else if (JAXBElement.class.isInstance(o)) {
             String errorName = ((JAXBElement)o).getName().getLocalPart();
             BasicException desc = (BasicException)  ((JAXBElement)o).getValue();
-            res = new ErrorDescription(desc.getMessage(), errorName);
+            res = new ErrorDescription(errorName, desc.getMessage(), null);
         }
         return res;
     }

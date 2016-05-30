@@ -22,4 +22,8 @@ public class NoServicesFoundException extends RuntimeException {
     public NoServicesFoundException() {
         super();
     }
+
+    public NoServicesFoundException(Throwable cause) {
+        super(cause);
+    }
 }

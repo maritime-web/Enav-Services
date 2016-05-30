@@ -23,12 +23,18 @@ import java.util.Objects;
  *
  */
 public class ErrorDescription {
+    private final String type;
     private final String message;
     private final String details;
 
-    public ErrorDescription(String message, String details) {
+    public ErrorDescription(String type, String message, String details) {
+        this.type = type;
         this.message = message;
         this.details = details;
+    }
+
+    public String getType() {
+        return type;
     }
 
     public String getMessage() {
@@ -41,25 +47,23 @@ public class ErrorDescription {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         ErrorDescription that = (ErrorDescription) o;
-        return Objects.equals(message, that.message) &&
+        return Objects.equals(type, that.type) &&
+                Objects.equals(message, that.message) &&
                 Objects.equals(details, that.details);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(message, details);
+        return Objects.hash(type, message, details);
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
+                .add("type", type)
                 .add("message", message)
                 .add("details", details)
                 .toString();
