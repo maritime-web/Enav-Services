@@ -99,7 +99,7 @@ public class MwNmRestService {
         List<MessageVo> result = new CopyOnWriteArrayList<>();
 
         // Sanity check
-        if (instanceIds.isEmpty()) {
+        if (instanceIds == null || instanceIds.isEmpty()) {
             return result;
         }
 

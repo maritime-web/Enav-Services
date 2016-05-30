@@ -23,7 +23,10 @@ import java.util.List;
 public interface ServiceLookupService {
     List<ServiceInstanceMetadata> getServiceInstancesForService(String serviceTechnicalDesignId, double p1, double p2);
 
+    List<ServiceInstanceMetadata> getServiceInstancesForService(String serviceTechnicalDesignId, String location);
+
     List<ServiceInstanceMetadata> getServiceInstances(List<String> instanceIds, double p1, double p2);
 
     ServiceInstanceMetadata getServiceInstance(String instanceId, double p1, double p2);
+
 }

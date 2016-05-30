@@ -14,6 +14,10 @@
  */
 package dk.dma.enav.services.registry.lost;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.io.WKTWriter;
 import dk.dma.embryo.common.configuration.LogConfiguration;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.enav.services.registry.ServiceInstanceMetadata;
@@ -45,6 +49,22 @@ public class LostServiceIT {
     @Test
     public void shouldFindAtleastOneService() throws Exception {
         List<ServiceInstanceMetadata> services = cut.getServiceInstancesForService("urn:mrnx:mcl:service:dma:nw-nm:rest", 55D, 11D);
+
+        assertThat(services, is(not(empty())));
+
+        System.out.println(services);
+    }
+
+    @Test
+    public void shouldFindAtleastOneServiceWkt() throws Exception {
+        GeometryFactory fac = new GeometryFactory();
+        Polygon poly = fac.createPolygon(new Coordinate[]{new Coordinate(6D, 50D), new Coordinate(6D, 60D), new Coordinate(19D, 60D), new Coordinate(19D, 50D), new Coordinate(6D, 50D)});
+        WKTWriter w = new WKTWriter();
+
+        String location = w.write(poly);
+        System.out.println(poly);
+
+        List<ServiceInstanceMetadata> services = cut.getServiceInstancesForService("urn:mrnx:mcl:service:dma:nw-nm:rest", location);
 
         assertThat(services, is(not(empty())));
 

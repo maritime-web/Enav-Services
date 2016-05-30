@@ -14,6 +14,10 @@
  */
 package dk.dma.enav.services.registry.lost;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 import dk.dma.enav.services.registry.ServiceInstanceMetadata;
 import dk.dma.enav.services.registry.ServiceLookupService;
 import org.slf4j.Logger;
@@ -55,6 +59,23 @@ public class LostService implements ServiceLookupService {
                 .filter(s -> s != null && s.getInstanceId() != null)
                 .map(s -> {s.setServiceId(serviceTechnicalDesignId); return s;})
                 .collect(toList());
+    }
+
+    @Override
+    public List<ServiceInstanceMetadata> getServiceInstancesForService(String serviceTechnicalDesignId, String location) {
+        Point p = toPoint(location);
+        return getServiceInstancesForService(serviceTechnicalDesignId, p.getY(), p.getX());
+    }
+
+    private Point toPoint(String location) {
+        WKTReader reader = new WKTReader();
+        try {
+            Geometry geometry = reader.read(location);
+
+            return geometry.getCentroid();
+        } catch (ParseException e) {
+            throw new RuntimeException("Can't parse location as well known text");
+        }
     }
 
     private String mapToLostServiceId(String serviceTechnicalDesignId) {

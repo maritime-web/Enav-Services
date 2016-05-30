@@ -19,6 +19,7 @@ import dk.dma.embryo.common.json.AbstractRestService;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
@@ -46,6 +47,21 @@ public class ServiceLookupRestService extends AbstractRestService {
             res = serviceLookupService.getServiceInstancesForService(serviceTechnicalDesignId, p1, p2);
         } catch (NoServicesFoundException e) {
             throw new WebApplicationException(Response.status(NOT_FOUND).entity("Unable to find any service implementation of \""+serviceTechnicalDesignId+"\" with a boundary containing [" + p1 + ", " + p2 + "]").build());
+        }
+
+        return res;
+    }
+
+    @Path("/lookup/{serviceTechnicalDesignId}")
+    @Produces("application/json")
+    @GET
+    public List<ServiceInstanceMetadata> lookupInstances(@PathParam("serviceTechnicalDesignId") String serviceTechnicalDesignId, @QueryParam("wkt") String location) {
+        List<ServiceInstanceMetadata> res;
+
+        try {
+            res = serviceLookupService.getServiceInstancesForService(serviceTechnicalDesignId, location);
+        } catch (NoServicesFoundException e) {
+            throw new WebApplicationException(Response.status(NOT_FOUND).entity("Unable to find any service implementation of \""+serviceTechnicalDesignId+"\" with a boundary defined by \"" + location + "\"").build());
         }
 
         return res;
