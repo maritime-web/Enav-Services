@@ -46,7 +46,7 @@ public class ServiceLookupRestService extends AbstractRestService {
         try {
             res = serviceLookupService.getServiceInstancesForService(serviceTechnicalDesignId, p1, p2);
         } catch (NoServicesFoundException e) {
-            throw new WebApplicationException(Response.status(NOT_FOUND).entity("Unable to find any service implementation of \""+serviceTechnicalDesignId+"\" with a boundary containing [" + p1 + ", " + p2 + "]").build());
+            throw new WebApplicationException(Response.status(NOT_FOUND).entity(new String[] {"Unable to find any service implementation of \""+serviceTechnicalDesignId+"\" with a boundary containing [" + p1 + ", " + p2 + "]"}).build());
         }
 
         return res;
@@ -61,7 +61,7 @@ public class ServiceLookupRestService extends AbstractRestService {
         try {
             res = serviceLookupService.getServiceInstancesForService(serviceTechnicalDesignId, location);
         } catch (NoServicesFoundException e) {
-            throw new WebApplicationException(Response.status(NOT_FOUND).entity("Unable to find any service implementation of \""+serviceTechnicalDesignId+"\" with a boundary defined by \"" + location + "\"").build());
+            throw new WebApplicationException(Response.status(NOT_FOUND).entity(new String[] {"Unable to find any service implementation of \""+serviceTechnicalDesignId+"\" with a boundary defined by \"" + location + "\""}).build());
         }
 
         return res;
