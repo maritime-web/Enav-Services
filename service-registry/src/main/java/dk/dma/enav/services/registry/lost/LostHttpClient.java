@@ -50,7 +50,9 @@ class LostHttpClient {
 
             return responseAsString(response);
         } catch (IOException e) {
-            throw new RuntimeException("", e);
+            logger.error("problems connecting to the LoST server @" + lostUrl + " cause:" + e.getMessage() );
+         //   throw new RuntimeException("", e);
+            return null;
         }
     }
 
