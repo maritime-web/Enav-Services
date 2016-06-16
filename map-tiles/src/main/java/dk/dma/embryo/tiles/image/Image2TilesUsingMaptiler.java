@@ -42,20 +42,12 @@ public class Image2TilesUsingMaptiler implements Image2Tiles {
 
     Logger logger = LoggerFactory.getLogger(Image2TilesUsingMaptiler.class);
 
-    @Inject
-    @Property(value = "embryo.tiles.maptiler.executable", substituteSystemProperties = true)
     private String mapTilerExecutable;
 
-    @Inject
-    @Property(value = "embryo.tiler.maptiler.logDir", substituteSystemProperties = true)
     private String logDir;
 
-    @Inject
-    @Property(value = "embryo.tiler.maptiler.daysToKeepLogs")
     private Integer daysToKeepLogs;
 
-    @Inject
-    @Property(value = "embryo.tiler.maptiler.defaults")
     private String defaults;
 
     private File logDirectory;
@@ -63,9 +55,15 @@ public class Image2TilesUsingMaptiler implements Image2Tiles {
     public Image2TilesUsingMaptiler() {
     }
 
-    public Image2TilesUsingMaptiler(String executable, String logDir, String defaults) {
+    @Inject
+    public Image2TilesUsingMaptiler(
+            @Property(value = "embryo.tiles.maptiler.executable", substituteSystemProperties = true) String executable,
+            @Property(value = "embryo.tiler.maptiler.logDir", substituteSystemProperties = true) String logDir,
+            @Property(value = "embryo.tiler.maptiler.daysToKeepLogs") Integer daysToKeepLogs,
+            @Property(value = "embryo.tiler.maptiler.defaults") String defaults) {
         this.mapTilerExecutable = executable;
         this.logDir = logDir;
+        this.daysToKeepLogs = daysToKeepLogs;
         this.defaults = defaults;
     }
 
@@ -112,15 +110,16 @@ public class Image2TilesUsingMaptiler implements Image2Tiles {
         String name = destinationFile.getName().replaceAll(".mbtiles", "");
         ProcessBuilder builder = new ProcessBuilder(cmds);
 
+        logger.debug("ProcessBuilder commands: {}", commands);
+        logger.debug("ProcessBuilder system environment: {}", builder.environment());
+
         File errorLog = new File(logDirectory, name + "-error.log");
         File outputLog = new File(logDirectory, name + "-output.log");
-
-        logger.debug("ProcessBuilder commands: {}", commands);
-        logger.debug("Error log file: {}", errorLog.getAbsolutePath());
-        logger.debug("Output log file: {}", outputLog.getAbsolutePath());
-
         builder.redirectError(errorLog);
         builder.redirectOutput(outputLog);
+
+        logger.debug("Error log file: {}", errorLog.getAbsolutePath());
+        logger.debug("Output log file: {}", outputLog.getAbsolutePath());
 
         try {
             Process proc = builder.start();
