@@ -30,6 +30,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import dk.dma.embryo.user.couchdb.CouchToken;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
@@ -62,6 +63,9 @@ public class AuthenticationService extends AbstractRestService {
     private EmbryoLogService embryoLogService;
 
     @Inject
+    private CouchToken couchToken;
+
+    @Inject
     @Property("embryo.osm.url")
     private String osm;
 
@@ -87,6 +91,7 @@ public class AuthenticationService extends AbstractRestService {
         details.setUserName(user.getUserName());
         details.setPermissions(rolesJson);
         details.setOsm(osm);
+        details.setT(couchToken.generate(user.getUserName()));
 
         logger.info("details() : {}", details);
         
@@ -222,6 +227,7 @@ public class AuthenticationService extends AbstractRestService {
         private String userName;
         private String[] permissions;
         private String osm;
+        private String t;
 
         @Override
         public String toString() {
@@ -274,5 +280,13 @@ public class AuthenticationService extends AbstractRestService {
         public void setOsm(String osm) {
             this.osm = osm;
         }
+
+        public String getT() {
+            return t;
+        }
+        public void setT(String t) {
+            this.t = t;
+        }
+
     }
 }
