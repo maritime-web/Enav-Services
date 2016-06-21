@@ -16,6 +16,7 @@ package dk.dma.embryo.common.servlet;
 
 import org.apache.commons.io.IOUtils;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
@@ -70,6 +71,18 @@ public class MultiReadHttpServletRequest extends HttpServletRequestWrapper {
         @Override
         public int read() throws IOException {
             return input.read();
+        }
+
+        public boolean isReady(){
+            return true;
+        }
+
+        public void setReadListener(ReadListener listener){
+
+        }
+
+        public boolean isFinished(){
+            return true;
         }
     }
 }

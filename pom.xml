@@ -31,7 +31,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <shiro.version>1.2.2</shiro.version>
-        <version.org.jboss.spec.javaee6>3.0.2.Final</version.org.jboss.spec.javaee6>
+        <version.org.jboss.spec.javaee7>1.0.3.Final</version.org.jboss.spec.javaee7>
         <hibernate.version>4.2.0.Final</hibernate.version>
         <jodatime.version>4.0.1.Final</jodatime.version>
     </properties>
@@ -40,8 +40,8 @@
         <dependencies>
             <dependency>
                 <groupId>org.jboss.spec</groupId>
-                <artifactId>jboss-javaee-6.0</artifactId>
-                <version>${version.org.jboss.spec.javaee6}</version>
+                <artifactId>jboss-javaee-7.0</artifactId>
+                <version>${version.org.jboss.spec.javaee7}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
