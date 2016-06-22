@@ -34,6 +34,10 @@ public class CouchToken {
 
     private final String secret;
 
+    public CouchToken(){
+        secret = null;
+    }
+
     @Inject
     public CouchToken(@Property(value = "embryo.users.couchdb.secret", defaultValue = "") String secret){
         this.secret = secret;
