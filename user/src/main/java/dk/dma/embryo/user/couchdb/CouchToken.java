@@ -39,12 +39,12 @@ public class CouchToken {
     }
 
     @Inject
-    public CouchToken(@Property(value = "embryo.users.couchdb.secret", defaultValue = "") String secret){
+    public CouchToken(@Property(value = "embryo.users.couchdb.secret", defaultValue = "-") String secret){
         this.secret = secret;
     }
 
     public String generate(String userName){
-        if(secret == null || secret.trim().length() == 0) {
+        if(secret == null || secret.trim().length() == 0 || "-".equals(secret)) {
             return null;
         }
         try{
