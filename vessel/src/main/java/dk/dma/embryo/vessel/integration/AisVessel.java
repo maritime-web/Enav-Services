@@ -220,9 +220,22 @@ public class AisVessel {
     // Object methods
     // //////////////////////////////////////////////////////////////////////
 
-
     @Override
     public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((mmsi == null) ? 0 : mmsi.hashCode());
+        return result;
+    }
+
+    /*
+     * Introduced because usage in VesselDetails of hashCode yielded wrong result for Rest Service
+     * (304 were sent even though data were updated)
+     * Am however not sure wether hashCode and equals are used in Collections and the like
+     * Therefore introducing this method as a temporary fix.
+     * hashCode and equals should be rewritten if not breaking existing functionality
+     */
+    public int hashCodeAllFields() {
         int result = country != null ? country.hashCode() : 0;
         result = 31 * result + (sourceRegion != null ? sourceRegion.hashCode() : 0);
         result = 31 * result + (lastReport != null ? lastReport.hashCode() : 0);

@@ -97,7 +97,7 @@ public class VesselDetails {
         result = prime * result + ((iceClass == null)               ? 0 : iceClass.hashCode());
         result = prime * result + ((helipad == null)                ? 0 : helipad.hashCode());
         result = prime * result + ((additionalInformation == null)  ? 0 : additionalInformation.hashCode());
-        result = prime * result + ((aisVessel == null)              ? 0 : aisVessel.hashCode());
+        result = prime * result + ((aisVessel == null)              ? 0 : aisVessel.hashCodeAllFields());
         
         return result;
     }
