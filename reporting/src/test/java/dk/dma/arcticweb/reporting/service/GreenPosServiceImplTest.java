@@ -14,171 +14,59 @@
  */
 package dk.dma.arcticweb.reporting.service;
 
-import dk.dma.arcticweb.reporting.model.GreenPosReport;
-import dk.dma.arcticweb.reporting.model.GreenPosSailingPlanReport;
-import dk.dma.arcticweb.reporting.model.ReportedRoute;
-import dk.dma.arcticweb.reporting.model.ReportedWayPoint;
+import dk.dma.arcticweb.reporting.model.GreenposMinimal;
 import dk.dma.arcticweb.reporting.persistence.GreenPosDao;
-import dk.dma.arcticweb.reporting.persistence.GreenPosDaoImpl;
-import dk.dma.embryo.common.mail.MailSender;
-import dk.dma.embryo.user.model.SailorRole;
-import dk.dma.embryo.user.model.SecuredUser;
-import dk.dma.embryo.user.persistence.RealmDao;
-import dk.dma.embryo.user.security.Subject;
-import dk.dma.embryo.vessel.model.Position;
-import dk.dma.embryo.vessel.model.Route;
-import dk.dma.embryo.vessel.model.Vessel;
-import dk.dma.embryo.vessel.model.Voyage;
-import dk.dma.embryo.vessel.model.WayPoint;
-import dk.dma.embryo.vessel.persistence.ScheduleDao;
-import dk.dma.embryo.vessel.persistence.VesselDao;
-import dk.dma.embryo.vessel.persistence.VesselDaoImpl;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
  * @author Jesper Tejlgaard
  */
 public class GreenPosServiceImplTest {
 
-    private static EntityManagerFactory factory;
-
-    private static Vessel vessel;
-
-    private EntityManager entityManager;
-
-    private RealmDao realmDao;
-
-    private Subject subject;
-
     private GreenPosService greenPosService;
-
-    private VesselDao vesselDao;
-
     private GreenPosDao greenPosDao;
-
-    private MailSender mailSender;
-
-    private ScheduleDao scheduleDao;
-
-    @BeforeClass
-    public static void setupForAll() {
-        factory = Persistence.createEntityManagerFactory("componentTest");
-
-        EntityManager entityManager = factory.createEntityManager();
-        entityManager.getTransaction().begin();
-
-        vessel = new Vessel();
-        vessel.getAisData().setName("MyShip");
-        vessel.getAisData().setCallsign("AA");
-        vessel.setMmsi(0L);
-
-        entityManager.persist(vessel);
-
-        Voyage v = new Voyage("Nuuk", "64 10.4N", "051 43.5W", DateTime.now(DateTimeZone.UTC), DateTime.now(
-                DateTimeZone.UTC).plusDays(2), 12, 0, true);
-        vessel.addVoyageEntry(v);
-        entityManager.persist(v);
-
-        entityManager.getTransaction().commit();
-        entityManager.close();
-    }
 
     @Before
     public void setup() {
-        entityManager = factory.createEntityManager();
-        vesselDao = new VesselDaoImpl(entityManager);
-        greenPosDao = new GreenPosDaoImpl(entityManager);
-
-        subject = Mockito.mock(Subject.class);
-        realmDao = Mockito.mock(RealmDao.class);
-        mailSender = Mockito.mock(MailSender.class);
-        scheduleDao = Mockito.mock(ScheduleDao.class);
-
-        greenPosService = new GreenPosServiceImpl(greenPosDao, vesselDao, subject, realmDao, mailSender, scheduleDao);
-
-    }
-
-    @After
-    public void tearDown() {
-        entityManager.close();
+        greenPosDao = Mockito.mock(GreenPosDao.class);
+        greenPosService = new GreenPosServiceImpl(greenPosDao, null, null, null, null, null);
     }
 
     @Test
-    public void testSave_GreenPosSailingPlanReport() {
+    public void testGetLatest() {
+        List<GreenposMinimal> fromDb = new ArrayList<>();
+        fromDb.add(new GreenposMinimal("MyShip", 123456789L, "SP", DateTime.parse("2016-10-07T18:00").toDate()));
+        fromDb.add(new GreenposMinimal("MyShip", 123456789L, "PR", DateTime.parse("2016-10-07T12:00").toDate()));
+        fromDb.add(new GreenposMinimal("MyVessel", 999999999L, "SP", DateTime.parse("2016-10-07T12:00").toDate()));
+        fromDb.add(new GreenposMinimal("MyVessel", 999999999L, "FR", DateTime.parse("2016-10-08T06:00").toDate()));
+        fromDb.add(new GreenposMinimal("MyVessel", 999999999L, "PR", DateTime.parse("2016-10-07T18:00").toDate()));
 
-        DateTime datetime = DateTime.now(DateTimeZone.UTC);
+        Mockito.when(greenPosDao.getFromLast7Days()).thenReturn(fromDb);
 
-        GreenPosSailingPlanReport spReport = new GreenPosSailingPlanReport("MyShip", 0L, "AA", new Position(
-                "64 10.400N", "051 43.500W"), 1, "Weather", "Ice", 12.0, 343, "Nuuk", datetime, 12,
-                "Route with no particular good description", null);
+        // Execute //
+        List<GreenposMinimal> result = greenPosService.getLatest();
 
-        entityManager.getTransaction().begin();
+        // Expectations
+        Assert.assertEquals(2, result.size());
 
-        Mockito.when(subject.hasRole(SailorRole.class)).thenReturn(true);
-        Mockito.when(subject.getUser()).thenReturn(new SecuredUser("Hans", "pwd", null));
-        Mockito.when(subject.getUserId()).thenReturn(1L);
-        SailorRole role = new SailorRole();
-        role.setVessel(vessel);
-        Mockito.when(realmDao.getSailor(1L)).thenReturn(role);
+        GreenposMinimal report = result.get(0);
+        Assert.assertEquals("MyVessel", report.getName());
+        Assert.assertEquals(Long.valueOf(999999999L), report.getMmsi());
+        Assert.assertEquals("FR", report.getType());
+        Assert.assertEquals(DateTime.parse("2016-10-08T06:00").toDate(), report.getTs());
 
-        Route route = new Route("myKey", "myName", "myOrigin", "myDestination");
-        route.addWayPoint(new WayPoint("wp1", 60.0, -60.0, 1.0, 1.0));
-        route.addWayPoint(new WayPoint("wp2", 62.0, -62.0, 1.0, 1.0));
-        route.addWayPoint(new WayPoint("wp3", 64.0, -64.0, 1.0, 1.0));
-        Mockito.when(scheduleDao.getActiveRoute(0L)).thenReturn(route);
-
-        greenPosService.saveReport(spReport, null, null, Boolean.TRUE, "greenpos");
-
-        entityManager.getTransaction().commit();
-
-        entityManager.clear();
-
-        entityManager.getTransaction().begin();
-
-        List<GreenPosReport> reports = greenPosService.listReports();
-        Assert.assertEquals(1, reports.size());
-
-        GreenPosSailingPlanReport spResult = (GreenPosSailingPlanReport) reports.get(0);
-
-        Assert.assertEquals("MyShip", spResult.getVesselName());
-        Assert.assertEquals(Long.valueOf(0L), spResult.getVesselMmsi());
-        Assert.assertEquals("AA", spResult.getVesselCallSign());
-        Assert.assertEquals("64 10.400N", spResult.getPosition().getLatitudeAsString());
-        Assert.assertEquals("051 43.500W", spResult.getPosition().getLongitudeAsString());
-        Assert.assertEquals("Weather", spResult.getWeather());
-        Assert.assertEquals("Ice", spResult.getIceInformation());
-        Assert.assertEquals(12.0, spResult.getSpeed(), 0.0);
-        Assert.assertEquals(Integer.valueOf(343), spResult.getCourse());
-        Assert.assertEquals("Nuuk", spResult.getDestination());
-        Assert.assertEquals(datetime.getMillis(), spResult.getEtaOfArrival().getMillis());
-        Assert.assertEquals(Integer.valueOf(12), spResult.getPersonsOnBoard());
-        Assert.assertEquals("Route with no particular good description", spResult.getRouteDescription());
-
-        ReportedRoute reported = spReport.getRoute();
-        assertEquals("myKey", reported.getEnavId());
-        assertEquals("myName", reported.getName());
-
-        List<ReportedWayPoint> expected = Arrays.asList(new ReportedWayPoint("wp1", 60.0, -60.0), new ReportedWayPoint(
-                "wp2", 62.0, -62.0), new ReportedWayPoint("wp3", 64.0, -64.0));
-        assertReflectionEquals(expected, reported.getWayPoints());
-
-        entityManager.getTransaction().commit();
+        report = result.get(1);
+        Assert.assertEquals("MyShip", report.getName());
+        Assert.assertEquals(Long.valueOf(123456789L), report.getMmsi());
+        Assert.assertEquals("SP", report.getType());
+        Assert.assertEquals(DateTime.parse("2016-10-07T18:00").toDate(), report.getTs());
     }
 
 }

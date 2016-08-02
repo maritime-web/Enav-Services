@@ -43,7 +43,11 @@ import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptors;
 import javax.interceptor.InvocationContext;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -185,7 +189,28 @@ public class GreenPosServiceImpl implements GreenPosService {
 
     @Override
     public List<GreenposMinimal> getLatest() {
-        return greenPosDao.getLatest();
+        List<GreenposMinimal> fromLast7Days = greenPosDao.getFromLast7Days();
+        Map<Long, GreenposMinimal> latest = new HashMap<>();
+        for(GreenposMinimal report : fromLast7Days){
+            Long mmsi = report.getMmsi();
+            if(!latest.containsKey(mmsi)){
+                latest.put(mmsi, report);
+            } else if(latest.get(mmsi).getTs().getTime() < report.getTs().getTime()){
+                latest.put(mmsi, report);
+            }
+        }
+
+        List<GreenposMinimal> result = latest.values().stream().collect(Collectors.toList());
+
+        result.sort(new Comparator<GreenposMinimal>() {
+            @Override
+            public int compare(GreenposMinimal rep1, GreenposMinimal rep2) {
+                int result = (int)(rep2.getTs().getTime() - rep1.getTs().getTime());
+                return result;
+            }
+        });
+        return result;
+
     }
 
     @Override
