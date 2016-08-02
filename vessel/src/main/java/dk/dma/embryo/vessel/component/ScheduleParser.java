@@ -31,9 +31,13 @@ import org.joda.time.DateTimeZone;
 
 import dk.dma.embryo.vessel.json.ScheduleResponse;
 import dk.dma.embryo.vessel.json.Voyage;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 @Named
 public class ScheduleParser {
+
+    private DateTimeFormatter tsFormatter;
 
     public ScheduleResponse parse(InputStream stream) throws IOException {
         if (stream == null) {
@@ -91,15 +95,8 @@ public class ScheduleParser {
                 if (siteCell != null && siteCell.getStringCellValue() != null && siteCell.getStringCellValue().length() > 0) {
                     String berthName = siteCell.getStringCellValue();
 
-                    HSSFCell departureCell = row.getCell(departureId);
-                    Date departure = departureCell.getDateCellValue();
-                    int offset = new DateTime(departure).getZone().getOffset(departure.getTime());
-                    departure = new DateTime(departure.getTime() + offset, DateTimeZone.UTC).toDate();
-
-                    HSSFCell arrivalCell = row.getCell(arrivalId);
-                    Date arrival = arrivalCell.getDateCellValue();
-                    offset = new DateTime(arrival).getZone().getOffset(arrival.getTime());
-                    arrival = new DateTime(arrival.getTime() + offset, DateTimeZone.UTC).toDate();
+                    Date departure = getDateTimeValue(row.getCell(departureId));
+                    Date arrival = getDateTimeValue(row.getCell(arrivalId));
 
                     String id = idId == -1 ? null : row.getCell(idId).getStringCellValue();
 
@@ -123,5 +120,31 @@ public class ScheduleParser {
         }
         return response;
     }
+
+    private Date getDateTimeValue(HSSFCell dateCell){
+        switch (dateCell.getCellType()){
+            case HSSFCell.CELL_TYPE_STRING:{
+                String value = dateCell.getStringCellValue();
+                DateTime ts = getDateTimeFormatter().parseDateTime(value);
+                return ts.toDate();
+            }
+            case HSSFCell.CELL_TYPE_NUMERIC: {
+                Date dateTime = dateCell.getDateCellValue();
+                int offset = new DateTime(dateTime).getZone().getOffset(dateTime.getTime());
+                return new DateTime(dateTime.getTime() + offset, DateTimeZone.UTC).toDate();
+            }
+            default : {
+                throw new IllegalArgumentException("Cell type '" + dateCell.getCellType() + "' can not be handled for date columns");
+            }
+        }
+    }
+
+    private DateTimeFormatter getDateTimeFormatter(){
+        if(tsFormatter == null){
+            tsFormatter = DateTimeFormat.forPattern("dd-MM-yyyy HH:mm").withZoneUTC();
+        }
+        return tsFormatter;
+    }
+
 
 }
