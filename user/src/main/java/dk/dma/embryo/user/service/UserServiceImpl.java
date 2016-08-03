@@ -155,4 +155,8 @@ public class UserServiceImpl implements UserService {
 
         SecuredUser savedUser = this.realmDao.saveEntityWithFlush(userReadyForUpdate);
     }
+
+    public List<Object[]> rolesCount(){
+        return this.realmDao.rolesCount();
+    }
 }

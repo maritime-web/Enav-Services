@@ -37,4 +37,6 @@ public interface UserService {
     void changePassword(String uuid, String password) throws FinderException;
 
     void updateAreasOfInterest(List<AreasOfInterest> areasOfInterests, String userName) throws FinderException;
+
+    List<Object[]> rolesCount();
 }

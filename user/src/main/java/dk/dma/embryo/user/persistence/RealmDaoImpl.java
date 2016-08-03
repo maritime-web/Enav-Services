@@ -18,6 +18,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import dk.dma.embryo.common.persistence.DaoImpl;
@@ -75,6 +76,16 @@ public class RealmDaoImpl extends DaoImpl implements RealmDao {
         TypedQuery<SecuredUser> query = em.createNamedQuery("SecuredUser:findByUuid", SecuredUser.class);
         query.setParameter("uuid", uuid);
         return getSingleOrNull(query.getResultList());
+    }
+
+
+    @Override
+    public List<Object[]> rolesCount(){
+        Query query = em.createQuery("SELECT r.logicalName AS name, COUNT(su) AS total FROM SecuredUser su JOIN su.role r GROUP BY r.logicalName ORDER BY r.logicalName ASC");
+        //Query query = em.createNativeQuery("SELECT logicalName, count(*) FROM SecuredUser INNER JOIN Role r ON Role_id = r.id GROUP BY roleName");
+
+        List<Object[]> list = (List<Object[]>) query.getResultList();
+        return query.getResultList();
     }
 
 }
