@@ -16,6 +16,9 @@ package dk.dma.embryo.vessel.component;
 
 import java.util.Date;
 
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.Period;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,6 +26,9 @@ import dk.dma.enav.model.voyage.Route;
 import dk.dma.enav.model.voyage.RouteLeg;
 import dk.dma.enav.model.voyage.RouteLeg.Heading;
 import dk.dma.enav.model.voyage.Waypoint;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 /**
  * @author Jesper Tejlgaard
@@ -51,10 +57,32 @@ public class RouteDecoratorTest {
     public void testConstruction_NoWaypointEtas() {
         RouteDecorator dec = new RouteDecorator(route);
     }
+    
     @Test
     public void testConstruction_FirstWaypointEtas() {
         route.getWaypoints().get(0).setEta(new Date());
         RouteDecorator dec = new RouteDecorator(route);
     }
 
+    @Test
+    public void shouldCalculateWaypointEtaToBeOneHourFromDeparture() throws Exception {
+        //Distance between waypoints is be 10 nautical miles (meassured using google maps)
+        Route route = new Route();
+        Waypoint wp = new Waypoint("wp1", 64.110604, -52.4, 0.0, 0.0);
+        wp.setRouteLeg(new RouteLeg(10.0, Heading.RL, 0.0, 0.0));
+        route.getWaypoints().add(wp);
+
+        wp = new Waypoint("wp2", 64.2772, -52.40, 0.0, 0.0);
+        wp.setRouteLeg(new RouteLeg(0.0, Heading.RL, 0.0, 0.0));
+        route.getWaypoints().add(wp);
+
+        DateTime departure = DateTime.now().withDate(2016, 5, 1).withTimeAtStartOfDay();
+
+        RouteDecorator cut = new RouteDecorator(route, departure.toDate());
+
+        DateTime secondWaypointEta =  DateTime.now().withMillis(cut.getWaypoints().get(1).getEta().getTime());
+        Duration durationBetweenFirstAndSecondWaypoint = new Duration(departure, secondWaypointEta);
+
+        assertThat(durationBetweenFirstAndSecondWaypoint.getStandardHours(), equalTo(1L));
+    }
 }
