@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -161,7 +162,7 @@ public class DatabaseInitializer {
 
     }
 
-    private static String getUserName(SecuredUser user) {
+    private static String getName(SecuredUser user) {
         String name = user.getUserName();
         if (user.getRole().getClass() == SailorRole.class) {
             Vessel vessel = ((SailorRole) user.getRole()).getVessel();
@@ -196,16 +197,17 @@ public class DatabaseInitializer {
             String id = user.getId().toString();
             if (!couchUsers.containsKey(id)) {
                 String mmsi = getMmsi(user);
-                String name = getUserName(user);
-                newOrModifiedUsers.add(new User(id, name, mmsi));
+                String name = getName(user);
+                newOrModifiedUsers.add(new User(id, user.getUserName(), name, mmsi));
                 logger.info("Adding user with id={} and name={}", user.getId(), name);
             } else {
                 User couchUser = couchUsers.get(id);
                 String mmsi = getMmsi(user);
-                String name = getUserName(user);
-                if (!couchUser.getName().equals(name) || !ObjectUtils.equals(couchUser.getMmsi(), mmsi)) {
-                    couchUser.setMmsi(mmsi.toString());
+                String name = getName(user);
+                if (!Objects.equals(couchUser.getName(),name) || !Objects.equals(couchUser.getMmsi(), mmsi) || !Objects.equals(couchUser.getUserName(), user.getUserName())) {
+                    couchUser.setMmsi(mmsi);
                     couchUser.setName(name);
+                    couchUser.setUserName(user.getUserName());
                     logger.info("Updating user with id={} and name={}", id, name);
                     newOrModifiedUsers.add(couchUser);
                 }

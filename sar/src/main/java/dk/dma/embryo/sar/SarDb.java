@@ -16,7 +16,9 @@ package dk.dma.embryo.sar;
 
 import com.n1global.acc.CouchDb;
 import com.n1global.acc.CouchDbConfig;
+import com.n1global.acc.CouchDbValidator;
 import com.n1global.acc.annotation.JsView;
+import com.n1global.acc.annotation.ValidateDocUpdate;
 import com.n1global.acc.json.CouchDbDocument;
 import com.n1global.acc.view.CouchDbMapView;
 
@@ -24,6 +26,30 @@ public class SarDb extends CouchDb {
     public SarDb(CouchDbConfig config) {
         super(config);
     }
+
+
+    // TODO modify async-couchdb-client such that javascript attribute is not added to design documents.
+    @ValidateDocUpdate(designName = "sar", predicate = "var isAppAdmin = userCtx.roles.indexOf('Administration') >= 0;" +
+            "var isDbAdmin = userCtx.roles.indexOf('_admin') >= 0;" +
+            "if(oldDoc && oldDoc['@type'] === 'SearchArea'){ " +
+            "  var isCoordinator = oldDoc.coordinator.userName === userCtx.name; " +
+            "  if(!isAppAdmin && !isDbAdmin && !isCoordinator){" +
+            "    throw({forbidden : 'permission to edit denied'});" +
+            "  }" +
+            "} else if(oldDoc && (oldDoc['@type'] === 'Pattern' || oldDoc['@type'] === 'Allocation')){ " +
+            "  if(!isAppAdmin && !isDbAdmin && oldDoc.coordinator !== userCtx.name){" +
+            "    throw({forbidden : 'permission to edit denied'});" +
+            "  }" +
+            "} else if(!oldDoc && newDoc['@type'] === 'SearchArea'){" +
+            "  if(!isAppAdmin && !isDbAdmin && newDoc.coordinator.userName !== userCtx.name){" +
+            "    throw({forbidden : 'permission to create SAR doc denied'});" +
+            "  }" +
+            "} else if(!oldDoc && (newDoc['@type'] === 'Pattern' || newDoc['@type'] === 'Allocation')){ " +
+            "  if(!isAppAdmin && !isDbAdmin && newDoc.coordinator !== userCtx.name){" +
+            "    throw({forbidden : 'permission to create SAR doc denied'});" +
+            "  }" +
+            "}")
+    public CouchDbValidator validateDocUpdate;
 
 
     // TODO modify async-couchdb-client such that javascript attribute is not added to design documents.

@@ -29,9 +29,9 @@ public class UserTest {
     @Test
     public void testToMap() {
         List<User> data = new ArrayList<>();
-        data.add(new User("1", "John", null));
-        data.add(new User("2", "Dea", null));
-        data.add(new User("3", "Cruiser", "123456789"));
+        data.add(new User("1", "john", "John", null));
+        data.add(new User("2", "dea", "Dea", null));
+        data.add(new User("3", "cruiser", "Cruiser", "123456789"));
 
         Map<String, User> result = User.toMap(data);
 
