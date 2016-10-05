@@ -33,7 +33,7 @@
         <dependency>
             <groupId>com.n1global</groupId>
             <artifactId>async-couchdb-client</artifactId>
-            <version>0.62-1-SNAPSHOT</version>
+            <version>0.62.MW.2</version>
             <type>jar</type>
             <exclusions>
                 <exclusion>
