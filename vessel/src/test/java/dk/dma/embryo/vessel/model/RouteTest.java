@@ -92,37 +92,4 @@ public class RouteTest {
         Assert.assertEquals("departure", transformed.getOrigin());
         Assert.assertEquals("destination", transformed.getDestination());
     }
-
-    @Test
-    public void name() throws Exception {
-//        String s = "";
-        String s = "";
-
-        String ds = new String(Base64.getDecoder().decode(s.getBytes()));
-
-        System.out.println(ds);
-    }
-
-    @Test
-    public void base64ToWord() throws Exception {
-
-        File doc = new File("VIS_design.docx");
-        doc.createNewFile();
-
-        File input = new File("C:\\dev\\projekter\\Enav-Services\\VIS_design_base64.txt");
-        FileInputStream fis = new FileInputStream(input);
-        System.out.println(input.length());
-        ByteBuffer bb = ByteBuffer.allocate((int) input.length());
-        fis.getChannel().read(bb);
-        System.out.println(bb.capacity());
-        System.out.println(bb.hasRemaining());
-        System.out.println(bb.limit());
-        bb.rewind();
-        System.out.println(bb.position());
-        FileOutputStream fos = new FileOutputStream(doc);
-        fos.getChannel().write(Base64.getDecoder().decode(bb));
-        fos.close();
-
-
-    }
 }
