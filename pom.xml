@@ -542,6 +542,7 @@
         <module>sar</module>
         <module>reporting</module>
         <module>weather</module>
+        <module>vrmt</module>
     </modules>
 
 </project>
