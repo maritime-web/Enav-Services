@@ -15,6 +15,10 @@
 package dk.dma.enav.services.registry;
 
 import dk.dma.embryo.common.json.AbstractRestService;
+import dk.dma.enav.services.registry.api.EnavServiceRegister;
+import dk.dma.enav.services.registry.api.NoServicesFoundException;
+import dk.dma.enav.services.registry.api.InstanceMetadata;
+import dk.dma.enav.services.registry.api.TechnicalDesignId;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -35,31 +39,18 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 @Path("/service")
 public class ServiceLookupRestService extends AbstractRestService {
     @Inject
-    private ServiceLookupService serviceLookupService;
+    private EnavServiceRegister enavServiceRegister;
 
-    @Path("/lookup")
+    @Path("/lookup/{serviceTechnicalDesignId}/{version}")
     @Produces("application/json")
     @GET
-    public List<ServiceInstanceMetadata> lookup(@QueryParam("serviceTechnicalDesignId") String serviceTechnicalDesignId, @QueryParam("p1") double p1, @QueryParam("p2") double p2) {
-        List<ServiceInstanceMetadata> res;
+    public List<InstanceMetadata> lookupInstances(@PathParam("serviceTechnicalDesignId") String serviceTechnicalDesignId,
+                                                  @PathParam("version") String version,
+                                                  @QueryParam("wkt") String location) {
+        List<InstanceMetadata> res;
 
         try {
-            res = serviceLookupService.getServiceInstancesForService(serviceTechnicalDesignId, p1, p2);
-        } catch (NoServicesFoundException e) {
-            throw new WebApplicationException(Response.status(NOT_FOUND).entity(new String[] {"Unable to find any service implementation of \""+serviceTechnicalDesignId+"\" with a boundary containing [" + p1 + ", " + p2 + "]"}).build());
-        }
-
-        return res;
-    }
-
-    @Path("/lookup/{serviceTechnicalDesignId}")
-    @Produces("application/json")
-    @GET
-    public List<ServiceInstanceMetadata> lookupInstances(@PathParam("serviceTechnicalDesignId") String serviceTechnicalDesignId, @QueryParam("wkt") String location) {
-        List<ServiceInstanceMetadata> res;
-
-        try {
-            res = serviceLookupService.getServiceInstancesForService(serviceTechnicalDesignId, location);
+            res = enavServiceRegister.getServiceInstances(new TechnicalDesignId(serviceTechnicalDesignId, version), location);
         } catch (NoServicesFoundException e) {
             throw new WebApplicationException(Response.status(NOT_FOUND).entity(new String[] {"Unable to find any service implementation of \""+serviceTechnicalDesignId+"\" with a boundary defined by \"" + location + "\""}).build());
         }

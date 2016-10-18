@@ -16,8 +16,8 @@ package dk.dma.embryo.msi.rs;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dk.dma.enav.services.registry.ServiceInstanceMetadata;
-import dk.dma.enav.services.registry.ServiceLookupService;
+import dk.dma.enav.services.registry.api.InstanceMetadata;
+import dk.dma.enav.services.registry.api.EnavServiceRegister;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
@@ -66,7 +66,7 @@ public class MwNmRestService {
     @Inject
     private Logger logger;
     @Inject
-    private ServiceLookupService serviceLookupService;
+    private EnavServiceRegister enavServiceRegister;
 
     private ExecutorService executor;
 
@@ -112,14 +112,11 @@ public class MwNmRestService {
         CompletionService<List<MessageVo>> compService = new ExecutorCompletionService<>(executor);
         int taskNo = 0;
 
-        //Dummy coordinates TODO get relevant coordinates from request
-        double p1 = 55;
-        double p2 = 11;
-        List<ServiceInstanceMetadata> serviceInstances = serviceLookupService.getServiceInstances(instanceIds, p1, p2);
+        List<InstanceMetadata> serviceInstances = enavServiceRegister.getServiceInstances(instanceIds);
         for (String instanceId : instanceIds) {
 
             // Find the service instance
-            ServiceInstanceMetadata service = serviceInstances.stream()
+            InstanceMetadata service = serviceInstances.stream()
                     .filter(s -> s.getInstanceId().equals(instanceId))
                     .findFirst()
                     .orElse(null);

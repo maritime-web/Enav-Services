@@ -15,6 +15,7 @@
 package dk.dma.enav.services.registry;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.dma.enav.services.registry.api.ErrorDescription;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
