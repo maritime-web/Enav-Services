@@ -16,7 +16,6 @@ package dk.dma.enav.services.registry.mc;
 
 import dk.dma.enav.services.registry.mc.api.XsdresourceApi;
 import dk.dma.enav.services.registry.mc.model.Xsd;
-import org.apache.commons.collections.iterators.ArrayListIterator;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.junit.Test;
 import org.xml.sax.InputSource;
@@ -30,7 +29,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
@@ -101,10 +99,13 @@ public class ATest {
         byte[] theXml = new Base64Decoder().decode(xsd);
         FileWriterWithEncoding writer;
         try {
-            writer = new FileWriterWithEncoding(xsd.getName(), StandardCharsets.UTF_8);
+            File tempFile = File.createTempFile(xsd.getName(), "");
+            tempFile.deleteOnExit();
+            writer = new FileWriterWithEncoding(tempFile, StandardCharsets.UTF_8);
             writer.write(new String(theXml, StandardCharsets.UTF_8));
             writer.flush();
             writer.close();
+            System.out.println("Wrote " + xsd.getName() + " to file " + tempFile);
         } catch (IOException e) {
             e.printStackTrace();
         }

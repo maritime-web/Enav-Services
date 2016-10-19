@@ -12,16 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.msi.rs;
+package dk.dma.enav.services.nwnm;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import dk.dma.enav.services.registry.api.InstanceMetadata;
+import dk.dma.enav.services.nwnm.api.MessagelistApi;
+import dk.dma.enav.services.nwnm.model.Message;
 import dk.dma.enav.services.registry.api.EnavServiceRegister;
-import org.apache.commons.lang.StringUtils;
+import dk.dma.enav.services.registry.api.InstanceMetadata;
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
-import org.niord.model.message.MessageVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,11 +36,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
@@ -54,14 +48,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
- * Created by Steen on 03-05-2016.
- *
+ * REST endpoint for searching NW-NM services as defined in the Maritime Cloud Service Registry.
+ * <p>
+ * The endpoint is called with a list of service instance ID's, which are then queried in parallel.
+ * <p>
+ * TODO: The service should be called with a configurable list of NW-NM domains. For now we fetch NW's.
  */
 @Singleton
 @Startup
 @Path("/nw-nm")
 @Lock(LockType.READ)
-public class MwNmRestService {
+public class NwNmRestService {
     @SuppressWarnings("CdiInjectionPointsInspection")
     @Inject
     private Logger logger;
@@ -80,6 +77,7 @@ public class MwNmRestService {
         executor.shutdown();
     }
 
+
     /**
      * Fetches the published messages from the given service instances in parallel
      * @param instanceIds the MC Service Registry instance IDs to fetch messages from
@@ -91,41 +89,38 @@ public class MwNmRestService {
     @Produces("application/json;charset=UTF-8")
     @GZIP
     @NoCache
-    public List<MessageVo> getNwNmMessages(
+    public List<Message> getNwNmMessages(
             @QueryParam("instanceId") List<String> instanceIds,
             @QueryParam("lang") @DefaultValue("en") String lang,
             @QueryParam("wkt") String wkt)  {
 
-        List<MessageVo> result = new CopyOnWriteArrayList<>();
+        List<Message> result = new CopyOnWriteArrayList<>();
 
         // Sanity check
         if (instanceIds == null || instanceIds.isEmpty()) {
             return result;
         }
 
-        // Compose the parameters
-        StringBuilder params = new StringBuilder();
-        checkConcatParam(params, "lang", lang);
-        checkConcatParam(params, "wkt", wkt);
-
         // Start the message download in parallel
-        CompletionService<List<MessageVo>> compService = new ExecutorCompletionService<>(executor);
+        CompletionService<List<Message>> compService = new ExecutorCompletionService<>(executor);
         int taskNo = 0;
 
         List<InstanceMetadata> serviceInstances = enavServiceRegister.getServiceInstances(instanceIds);
         for (String instanceId : instanceIds) {
 
             // Find the service instance
-            InstanceMetadata service = serviceInstances.stream()
+            InstanceMetadata serviceInstance = serviceInstances.stream()
                     .filter(s -> s.getInstanceId().equals(instanceId))
                     .findFirst()
                     .orElse(null);
 
-            if (service != null) {
-                // Create the URL
-                String url = service.getUrl() + params;
+            if (serviceInstance != null) {
+                MessagelistApi nwNmApi = new MessagelistApiBuilder()
+                        .basePath(serviceInstance.getUrl())
+                        .build();
+
                 // Start the download
-                compService.submit(new MessageLoaderTask(url));
+                compService.submit(new MessageLoaderTask(nwNmApi, lang, wkt));
                 taskNo++;
             }
         }
@@ -133,7 +128,7 @@ public class MwNmRestService {
         // Collect the results
         for (int x = 0; x < taskNo; x++) {
             try {
-                Future<List<MessageVo>> future = compService.take();
+                Future<List<Message>> future = compService.take();
                 result.addAll(future.get());
             } catch (Exception e) {
                 logger.error("Error loading messages", e);
@@ -145,59 +140,42 @@ public class MwNmRestService {
     }
 
 
-    /** If defined, appends the given parameter */
-    private StringBuilder checkConcatParam(StringBuilder params, String name, String value) {
-        if (StringUtils.isNotBlank(value)) {
-            try {
-                params.append(params.length() == 0 ? "?" : "&");
-                params.append(name).append("=").append(URLEncoder.encode(value, "UTF-8"));
-            } catch (UnsupportedEncodingException ignored) {
-            }
-        }
-        return params;
-    }
-
-
     /**
-     * Task that downloads messages from a given url
+     * Task that fetches messages from a given Maritime Cloud NW-NM service instance
      */
-    private static final class MessageLoaderTask implements Callable<List<MessageVo>> {
+    private static final class MessageLoaderTask implements Callable<List<Message>> {
 
-        String url;
+        final MessagelistApi nwNmApi;
+        final String lang;
+        final String wkt;
+
         Logger logger = LoggerFactory.getLogger(MessageLoaderTask.class);
 
         /** Constructor */
-        MessageLoaderTask(String url){
-            this.url = Objects.requireNonNull(url);
+        MessageLoaderTask(MessagelistApi nwNmApi, String lang, String wkt)  {
+            this.nwNmApi = Objects.requireNonNull(nwNmApi);
+            this.lang = lang;
+            this.wkt = wkt;
         }
 
-        /** Download the messages from the given service instance. */
+        /** Fetch the messages from the given service instance. */
         @Override
-        public List<MessageVo> call() throws Exception {
-            long t0 = System.currentTimeMillis();
+        public List<Message> call() throws Exception {
             try {
-                URLConnection con = new URL(url).openConnection();
-                con.setConnectTimeout(5000); //  5 seconds
-                con.setReadTimeout(10000);   // 10 seconds
+                long t0 = System.currentTimeMillis();
 
-                try (InputStream is = con.getInputStream()) {
-                    ObjectMapper mapper = new ObjectMapper();
-                    List<MessageVo> messages = mapper.readValue(is, new TypeReference<List<MessageVo>>(){});
+                // TODO: Should be called with a configurable list of domains. For now we just fetch NW's
 
-                    logger.info(String.format(
-                            "Loaded %d NW-NM messages in %s ms",
-                            messages.size(),
-                            System.currentTimeMillis() - t0));
-
-                    return messages;
-                }
+                List<Message> messages = nwNmApi.search(lang, null, null, Collections.singletonList("NW"), wkt);
+                logger.info("NW-NM search found " + messages.size() + " messages in "
+                        + (System.currentTimeMillis() - t0) + " ms");
+                return messages;
 
             } catch (Exception e) {
-                logger.error("Failed loading NW-NM messages: " + e.getMessage());
+                logger.error("Error fetching NW-NM messages from " + nwNmApi.getApiClient().getBasePath()
+                        + ": " + e.getMessage());
                 throw new WebApplicationException("Failed loading NW-NM messages: " + e.getMessage(), 500);
             }
         }
     }
-
-
 }
