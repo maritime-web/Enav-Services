@@ -14,7 +14,6 @@
  */
 package dk.dma.enav.services.nwnm;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.dma.enav.services.nwnm.api.MessagelistApi;
 import dk.dma.enav.services.nwnm.model.Message;
 import org.junit.Ignore;
@@ -47,14 +46,13 @@ public class NwNmServiceTest {
             log.info("NW-NM search found " + messages.size() + " messages in "
                     + (System.currentTimeMillis() - t0) + " ms");
 
-            new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(System.out, messages);
+            MessageListFormatter.createMessageObjectMappper()
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValue(System.out, messages);
 
         } catch (Exception e) {
             log.error("Error fetching NW-NM messages from " + nwNmApi.getApiClient().getBasePath()
                     + ": " + e.getMessage(), e);
         }
-
-
     }
-
 }

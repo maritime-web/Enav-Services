@@ -89,54 +89,57 @@ public class NwNmRestService {
     @Produces("application/json;charset=UTF-8")
     @GZIP
     @NoCache
-    public List<Message> getNwNmMessages(
+    public String getNwNmMessages(
             @QueryParam("instanceId") List<String> instanceIds,
             @QueryParam("lang") @DefaultValue("en") String lang,
-            @QueryParam("wkt") String wkt)  {
+            @QueryParam("wkt") String wkt) throws Exception {
 
         List<Message> result = new CopyOnWriteArrayList<>();
 
         // Sanity check
-        if (instanceIds == null || instanceIds.isEmpty()) {
-            return result;
-        }
+        if (instanceIds != null && !instanceIds.isEmpty()) {
 
-        // Start the message download in parallel
-        CompletionService<List<Message>> compService = new ExecutorCompletionService<>(executor);
-        int taskNo = 0;
+            // Start the message download in parallel
+            CompletionService<List<Message>> compService = new ExecutorCompletionService<>(executor);
+            int taskNo = 0;
 
-        List<InstanceMetadata> serviceInstances = enavServiceRegister.getServiceInstances(instanceIds);
-        for (String instanceId : instanceIds) {
+            List<InstanceMetadata> serviceInstances = enavServiceRegister.getServiceInstances(instanceIds);
+            for (String instanceId : instanceIds) {
 
-            // Find the service instance
-            InstanceMetadata serviceInstance = serviceInstances.stream()
-                    .filter(s -> s.getInstanceId().equals(instanceId))
-                    .findFirst()
-                    .orElse(null);
+                // Find the service instance
+                InstanceMetadata serviceInstance = serviceInstances.stream()
+                        .filter(s -> s.getInstanceId().equals(instanceId))
+                        .findFirst()
+                        .orElse(null);
 
-            if (serviceInstance != null) {
-                MessagelistApi nwNmApi = new MessagelistApiBuilder()
-                        .basePath(serviceInstance.getUrl())
-                        .build();
+                if (serviceInstance != null) {
+                    MessagelistApi nwNmApi = new MessagelistApiBuilder()
+                            .basePath(serviceInstance.getUrl())
+                            .build();
 
-                // Start the download
-                compService.submit(new MessageLoaderTask(nwNmApi, lang, wkt));
-                taskNo++;
+                    // Start the download
+                    compService.submit(new MessageLoaderTask(nwNmApi, lang, wkt));
+                    taskNo++;
+                }
+            }
+
+            // Collect the results
+            for (int x = 0; x < taskNo; x++) {
+                try {
+                    Future<List<Message>> future = compService.take();
+                    result.addAll(future.get());
+                } catch (Exception e) {
+                    logger.error("Error loading messages", e);
+                    // Do not re-throw exception, since others may succeed
+                }
             }
         }
 
-        // Collect the results
-        for (int x = 0; x < taskNo; x++) {
-            try {
-                Future<List<Message>> future = compService.take();
-                result.addAll(future.get());
-            } catch (Exception e) {
-                logger.error("Error loading messages", e);
-                // Do not re-throw exception, since others may succeed
-            }
-        }
 
-        return result;
+        // Serialize the result
+        return MessageListFormatter
+                .createMessageObjectMappper()
+                .writeValueAsString(result);
     }
 
 

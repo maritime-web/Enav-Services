@@ -79,7 +79,7 @@ public class MessagelistApiBuilder {
     /**
      * Process data time as Unix Epoch timestamps
      */
-    private static class EpochDateTimeTypeAdapter extends TypeAdapter<DateTime> {
+    public static class EpochDateTimeTypeAdapter extends TypeAdapter<DateTime> {
 
         @Override
         public void write(JsonWriter out, DateTime date) throws IOException {
@@ -103,5 +103,4 @@ public class MessagelistApiBuilder {
             }
         }
     }
-
 }

@@ -149,7 +149,6 @@
             <configuration>
               <verbose>true</verbose>
               <target>2.0</target>
-              <sei />
               <keep>true</keep>
               <sourceDestDir>${project.build.directory}/generated</sourceDestDir>
               <wsdlDirectory>${basedir}/src/main/resources/wsdl</wsdlDirectory>
