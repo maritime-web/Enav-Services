@@ -56,7 +56,7 @@ import java.util.concurrent.Future;
 @Lock(LockType.READ)
 public class NwNmRestService {
 
-    public final static String NW_NM_API = "public/v1/messages";
+    public static final String NW_NM_API = "public/v1/messages";
 
     @SuppressWarnings("CdiInjectionPointsInspection")
     @Inject
