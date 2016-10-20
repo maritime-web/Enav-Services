@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  *
  */
 class InstanceIterator implements Iterator<List<Instance>> {
-    private final static Pattern LINK_PATTERN = Pattern.compile(".*page=(?<page>\\d+).*size=(?<size>\\d+)");
+    private static final Pattern LINK_PATTERN = Pattern.compile(".*page=(?<page>\\d+).*size=(?<size>\\d+)");
     private ServiceinstanceresourceApi api;
     private Optional<Link> next;
 
