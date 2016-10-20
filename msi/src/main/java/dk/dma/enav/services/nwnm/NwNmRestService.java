@@ -91,6 +91,7 @@ public class NwNmRestService {
     @NoCache
     public List<MessageVo> getNwNmMessages(
             @QueryParam("instanceId") List<String> instanceIds,
+            @QueryParam("mainType") String mainType,
             @QueryParam("lang") @DefaultValue("en") String lang,
             @QueryParam("wkt") String wkt) throws Exception {
 
@@ -99,7 +100,7 @@ public class NwNmRestService {
 
         // Compose the parameters
         StringBuilder params = new StringBuilder();
-        checkConcatParam(params, "mainType", "NW"); // TODO: Should be configurable
+        checkConcatParam(params, "mainType", mainType);
         checkConcatParam(params, "lang", lang);
         checkConcatParam(params, "wkt", wkt);
 
