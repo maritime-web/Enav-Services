@@ -57,7 +57,7 @@ public class MessagelistApiBuilder {
         MessagelistApi nwNmApi;
 
         if (StringUtils.isNotBlank(basePath)) {
-            apiClient.setBasePath("https://niord.e-navigation.net/rest");
+            apiClient.setBasePath(basePath);
             nwNmApi = new MessagelistApi(apiClient);
         } else {
             nwNmApi = new MessagelistApi();
