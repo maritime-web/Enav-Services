@@ -26,7 +26,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Created by Steen on 17-10-2016.
  *
  */
 public class InstanceXmlParser {
@@ -41,7 +40,6 @@ public class InstanceXmlParser {
         InstanceDetails res;
         try {
             byte[] decodedInstance = decoder.decode(xml);
-            System.out.println(new String(decodedInstance, StandardCharsets.UTF_8));
             XPath xPath = XPathFactory.newInstance().newXPath();
             xPath.setNamespaceContext(ServiceRegisterNamespaceContext.getInstance());
             String url = xPath.evaluate("//s:serviceInstance/URL", createInputSource(decodedInstance));

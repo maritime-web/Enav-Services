@@ -32,7 +32,7 @@ public class Base64Decoder {
         return decode(xmlRef.getContent());
     }
 
-    byte[] decode(Xsd xsdRef) {
+    public byte[] decode(Xsd xsdRef) {
         assertNotNull(xsdRef, "xsd reference must not be null");
         assertNotNull(xsdRef.getContent(), "xsd reference must refer to xsd content");
         assertValidcontentType(xsdRef.getContentContentType());

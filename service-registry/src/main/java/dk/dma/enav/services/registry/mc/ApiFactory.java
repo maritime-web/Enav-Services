@@ -14,17 +14,42 @@
  */
 package dk.dma.enav.services.registry.mc;
 
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.enav.services.registry.mc.api.InstanceResourceApi;
 import dk.dma.enav.services.registry.mc.api.ServiceinstanceresourceApi;
 import dk.dma.enav.services.registry.mc.api.TechnicaldesignresourceApi;
+
+import javax.inject.Inject;
 
 /**
  * Created by Steen on 17-10-2016.
  *
  */
 public class ApiFactory {
+    private final String url;
+    private final int connectionTimeout;
+
+    @Inject
+    public ApiFactory(@Property("enav-service.service-registry.mc.endpoint.url") String url,
+                      @Property("enav-service.service-registry.mc.connect.timeout") int connectionTimeout) {
+        this.url = url;
+        this.connectionTimeout = connectionTimeout;
+    }
+
+    InstanceResourceApi createInstanceResourceApi() {
+        return new InstanceResourceApi(createApiClient());
+    }
 
     ServiceinstanceresourceApi createServiceinstanceresourceApi() {
-        return new ServiceinstanceresourceApi();
+        return new ServiceinstanceresourceApi(createApiClient());
     }
-    TechnicaldesignresourceApi createTechnicaldesignresourceApi() {return new TechnicaldesignresourceApi();}
+
+    TechnicaldesignresourceApi createTechnicaldesignresourceApi() {return new TechnicaldesignresourceApi(createApiClient());}
+
+    private ApiClient createApiClient() {
+        ApiClient apiClient = new ApiClient();
+        apiClient.setBasePath(url);
+        apiClient.setConnectTimeout(connectionTimeout);
+        return apiClient;
+    }
 }

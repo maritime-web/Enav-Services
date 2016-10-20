@@ -18,12 +18,14 @@ import dk.dma.enav.services.registry.api.InstanceMetadata;
 import dk.dma.enav.services.registry.api.TechnicalDesignId;
 import dk.dma.enav.services.registry.mc.api.ServiceinstanceresourceApi;
 import dk.dma.enav.services.registry.mc.model.Instance;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 
 /**
@@ -31,26 +33,50 @@ import static org.hamcrest.Matchers.is;
  *
  */
 public class MaritimeCloudServiceRegistryIT {
+    private MaritimeCloudServiceRegistry cut;
+
+    @Before
+    public void setUp() throws Exception {
+        ApiFactory apiFactory = new ApiFactory("http://195.34.146.186:8080/", 2000);
+        InstanceMapper mapper = new InstanceMapper(new InstanceXmlParser(new Base64Decoder()));
+        cut = new MaritimeCloudServiceRegistry(new InstanceRepository(apiFactory, mapper, 5));
+    }
+
     @Test
     public void shouldBeAbleToMapAllInstancesToInstanceMetaData() throws Exception {
         ServiceinstanceresourceApi api = new ServiceinstanceresourceApi();
         List<String> ids = api.getAllInstancesUsingGET(null, null, null).stream().map(Instance::getInstanceId).collect(Collectors.toList());
-        MaritimeCloudServiceRegistry cut = new MaritimeCloudServiceRegistry(new ApiFactory(), new InstanceMapper(new InstanceXmlParser(new Base64Decoder())));
 
         List<InstanceMetadata> serviceInstances = cut.getServiceInstances(ids);
-
-        serviceInstances.forEach(System.out::println);
 
         assertThat(serviceInstances.size(), is(ids.size()));
     }
 
     @Test
     public void shouldGetTheNwNmService() throws Exception {
-        MaritimeCloudServiceRegistry cut = new MaritimeCloudServiceRegistry(new ApiFactory(), new InstanceMapper(new InstanceXmlParser(new Base64Decoder())));
-//        List<InstanceMetadata> res = cut.getServiceInstances(new TechnicalDesignId("urn:mrnx:mcl:service:dma:nw-nm:rest", "0.1"), "POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))");
+        List<InstanceMetadata> res = cut.getServiceInstances(new TechnicalDesignId("urn:mrnx:mcl:service:dma:nw-nm:rest", "0.1"), "POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))");
+
+        assertThat(res.size(), is(greaterThan(0)));
+    }
+
+    @Test
+    public void shouldGetTheNwNmServiceWhenWKTLocationFilterIsNull() throws Exception {
         List<InstanceMetadata> res = cut.getServiceInstances(new TechnicalDesignId("urn:mrnx:mcl:service:dma:nw-nm:rest", "0.1"), null);
 
-        res.forEach(System.out::println);
-//        assertThat(res.size(), is(greaterThan(0)));
+        assertThat(res.size(), is(greaterThan(0)));
+    }
+
+    @Test
+    public void shouldNotGetTheNwNmServiceWhenTechnicalDesignIdIsNull() throws Exception {
+        List<InstanceMetadata> res = cut.getServiceInstances(null, null);
+
+        assertThat(res.size(), is(0));
+    }
+
+    @Test
+    public void shouldNotGetTheNwNmServiceWhenTechnicalDesignIdVersionIsNull() throws Exception {
+        List<InstanceMetadata> res = cut.getServiceInstances(new TechnicalDesignId("urn:mrnx:mcl:service:dma:nw-nm:rest", null), null);
+
+        assertThat(res.size(), is(0));
     }
 }

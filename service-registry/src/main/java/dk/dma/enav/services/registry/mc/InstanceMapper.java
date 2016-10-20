@@ -35,7 +35,6 @@ public class InstanceMapper {
     }
 
     InstanceMetadata toMetaData(Instance instance) {
-        System.out.println(instance);
         String instanceId = instance.getInstanceId();
         String name = instance.getName();
         String boundary;

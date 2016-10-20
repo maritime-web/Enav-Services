@@ -61,30 +61,14 @@
         </dependency>
 
 
+        <!-- WKT handling -->
         <dependency>
             <groupId>com.vividsolutions</groupId>
             <artifactId>jts</artifactId>
             <version>1.13</version>
         </dependency>
 
-        <dependency>
-            <groupId>jaxen</groupId>
-            <artifactId>jaxen</artifactId>
-            <version>1.1.6</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>fluent-hc</artifactId>
-            <version>4.2.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-validator</groupId>
-            <artifactId>commons-validator</artifactId>
-            <version>1.5.1</version>
-        </dependency>
-
+        <!-- Cache functionality -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -144,29 +128,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jaxb2-maven-plugin</artifactId>
-                <version>2.2</version>
-                <executions>
-                    <execution>
-                        <id>lost</id>
-                        <goals>
-                            <goal>xjc</goal>
-                        </goals>
-                        <configuration>
-                            <packageName>ietf.lost1</packageName>
-                            <sources>
-                                <source>${basedir}/src/main/resources/LoST.xsd</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <enableIntrospection>true</enableIntrospection>
-                    <extension>true</extension>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>io.swagger</groupId>
