@@ -29,8 +29,14 @@
       <artifactId>service-registry</artifactId>
     </dependency>
 
-    <!-- Added here again because weld jar contains older version of slf4j. This must be first in the classpath for Eclipse
-      to work -->
+      <dependency>
+          <groupId>org.niord</groupId>
+          <artifactId>niord-model</artifactId>
+          <version>1.0-SNAPSHOT</version>
+      </dependency>
+
+      <!-- Added here again because weld jar contains older version of slf4j. This must be first in the classpath for Eclipse
+        to work -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -160,33 +166,6 @@
           </execution>
         </executions>
       </plugin>
-
-
-        <!-- Generate NW-NM API and model classes from Swagger spec file -->
-        <plugin>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-codegen-maven-plugin</artifactId>
-            <version>2.2.1</version>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>generate</goal>
-                    </goals>
-                    <configuration>
-                        <inputSpec>${basedir}/src/main/resources/swagger/nw-nm-spec.json</inputSpec>
-                        <language>java</language>
-                        <modelPackage>dk.dma.enav.services.nwnm.model</modelPackage>
-                        <apiPackage>dk.dma.enav.services.nwnm.api</apiPackage>
-                        <environmentVariables>
-                            <apiTests>false</apiTests>
-                            <apiDocs>false</apiDocs>
-                            <modelDocs>false</modelDocs>
-                            <modelTests>false</modelTests>
-                        </environmentVariables>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
 
     </plugins>
   </build>

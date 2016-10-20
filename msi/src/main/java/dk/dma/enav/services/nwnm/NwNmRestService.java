@@ -14,14 +14,13 @@
  */
 package dk.dma.enav.services.nwnm;
 
-import dk.dma.enav.services.nwnm.api.MessagelistApi;
-import dk.dma.enav.services.nwnm.model.Message;
 import dk.dma.enav.services.registry.api.EnavServiceRegister;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
+import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
+import org.niord.model.message.MessageVo;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -35,11 +34,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import java.util.Collections;
+import java.net.URLEncoder;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorCompletionService;
@@ -59,9 +55,13 @@ import java.util.concurrent.Future;
 @Path("/nw-nm")
 @Lock(LockType.READ)
 public class NwNmRestService {
+
+    public final static String NW_NM_API = "public/v1/messages";
+
     @SuppressWarnings("CdiInjectionPointsInspection")
     @Inject
     private Logger logger;
+
     @Inject
     private EnavServiceRegister enavServiceRegister;
 
@@ -89,18 +89,26 @@ public class NwNmRestService {
     @Produces("application/json;charset=UTF-8")
     @GZIP
     @NoCache
-    public String getNwNmMessages(
+    public List<MessageVo> getNwNmMessages(
             @QueryParam("instanceId") List<String> instanceIds,
             @QueryParam("lang") @DefaultValue("en") String lang,
             @QueryParam("wkt") String wkt) throws Exception {
 
-        List<Message> result = new CopyOnWriteArrayList<>();
+        List<MessageVo> result = new CopyOnWriteArrayList<>();
+
+
+        // Compose the parameters
+        StringBuilder params = new StringBuilder();
+        checkConcatParam(params, "mainType", "NW"); // TODO: Should be configurable
+        checkConcatParam(params, "lang", lang);
+        checkConcatParam(params, "wkt", wkt);
+
 
         // Sanity check
         if (instanceIds != null && !instanceIds.isEmpty()) {
 
             // Start the message download in parallel
-            CompletionService<List<Message>> compService = new ExecutorCompletionService<>(executor);
+            CompletionService<List<MessageVo>> compService = new ExecutorCompletionService<>(executor);
             int taskNo = 0;
 
             List<InstanceMetadata> serviceInstances = enavServiceRegister.getServiceInstances(instanceIds);
@@ -113,12 +121,15 @@ public class NwNmRestService {
                         .orElse(null);
 
                 if (serviceInstance != null) {
-                    MessagelistApi nwNmApi = new MessagelistApiBuilder()
-                            .basePath(serviceInstance.getUrl())
-                            .build();
+                    // Create the URL
+                    String url = serviceInstance.getUrl();
+                    if (!url.endsWith("/"))  {
+                        url += "/";
+                    }
+                    url += NW_NM_API + params;
 
                     // Start the download
-                    compService.submit(new MessageLoaderTask(nwNmApi, lang, wkt));
+                    compService.submit(new MessageLoaderTask(url));
                     taskNo++;
                 }
             }
@@ -126,7 +137,7 @@ public class NwNmRestService {
             // Collect the results
             for (int x = 0; x < taskNo; x++) {
                 try {
-                    Future<List<Message>> future = compService.take();
+                    Future<List<MessageVo>> future = compService.take();
                     result.addAll(future.get());
                 } catch (Exception e) {
                     logger.error("Error loading messages", e);
@@ -136,49 +147,21 @@ public class NwNmRestService {
         }
 
 
-        // Serialize the result
-        return MessageListFormatter
-                .createMessageObjectMappper()
-                .writeValueAsString(result);
+        return result;
     }
 
 
-    /**
-     * Task that fetches messages from a given Maritime Cloud NW-NM service instance
-     */
-    private static final class MessageLoaderTask implements Callable<List<Message>> {
-
-        final MessagelistApi nwNmApi;
-        final String lang;
-        final String wkt;
-
-        Logger logger = LoggerFactory.getLogger(MessageLoaderTask.class);
-
-        /** Constructor */
-        MessageLoaderTask(MessagelistApi nwNmApi, String lang, String wkt)  {
-            this.nwNmApi = Objects.requireNonNull(nwNmApi);
-            this.lang = lang;
-            this.wkt = wkt;
-        }
-
-        /** Fetch the messages from the given service instance. */
-        @Override
-        public List<Message> call() throws Exception {
+    /** If defined, appends the given parameter */
+    private StringBuilder checkConcatParam(StringBuilder params, String name, String value) {
+        if (StringUtils.isNotBlank(value)) {
             try {
-                long t0 = System.currentTimeMillis();
-
-                // TODO: Should be called with a configurable list of domains. For now we just fetch NW's
-
-                List<Message> messages = nwNmApi.search(lang, null, null, Collections.singletonList("NW"), wkt);
-                logger.info("NW-NM search found " + messages.size() + " messages in "
-                        + (System.currentTimeMillis() - t0) + " ms");
-                return messages;
-
-            } catch (Exception e) {
-                logger.error("Error fetching NW-NM messages from " + nwNmApi.getApiClient().getBasePath()
-                        + ": " + e.getMessage());
-                throw new WebApplicationException("Failed loading NW-NM messages: " + e.getMessage(), 500);
+                params.append(params.length() == 0 ? "?" : "&");
+                params.append(name).append("=").append(URLEncoder.encode(value, "UTF-8"));
+            } catch (Exception ignored) {
             }
         }
+        return params;
     }
+
+
 }
