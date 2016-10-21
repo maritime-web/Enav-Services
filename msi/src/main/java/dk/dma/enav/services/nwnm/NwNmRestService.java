@@ -18,7 +18,6 @@ import dk.dma.enav.services.registry.api.EnavServiceRegister;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.NoCache;
 import org.niord.model.message.MessageVo;
 import org.slf4j.Logger;
 
@@ -34,7 +33,13 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -42,6 +47,7 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * REST endpoint for searching NW-NM services as defined in the Maritime Cloud Service Registry.
@@ -57,6 +63,7 @@ import java.util.concurrent.Future;
 public class NwNmRestService {
 
     public static final String NW_NM_API = "public/v1/messages";
+    private static final int CACHE_TIMEOUT_MINUTES = 3;
 
     @SuppressWarnings("CdiInjectionPointsInspection")
     @Inject
@@ -88,14 +95,15 @@ public class NwNmRestService {
     @Path("/messages")
     @Produces("application/json;charset=UTF-8")
     @GZIP
-    @NoCache
-    public List<MessageVo> getNwNmMessages(
+    public Response getNwNmMessages(
             @QueryParam("instanceId") List<String> instanceIds,
             @QueryParam("mainType") String mainType,
             @QueryParam("lang") @DefaultValue("en") String lang,
-            @QueryParam("wkt") String wkt) throws Exception {
+            @QueryParam("wkt") String wkt,
+            @Context Request request,
+            @Context UriInfo uriInfo) throws Exception {
 
-        List<MessageVo> result = new CopyOnWriteArrayList<>();
+        List<MessageVo> messages = new CopyOnWriteArrayList<>();
 
 
         // Compose the parameters
@@ -139,7 +147,7 @@ public class NwNmRestService {
             for (int x = 0; x < taskNo; x++) {
                 try {
                     Future<List<MessageVo>> future = compService.take();
-                    result.addAll(future.get());
+                    messages.addAll(future.get());
                 } catch (Exception e) {
                     logger.error("Error loading messages", e);
                     // Do not re-throw exception, since others may succeed
@@ -147,8 +155,38 @@ public class NwNmRestService {
             }
         }
 
+        // Compute caching expiration
+        Date expirationDate = new Date(System.currentTimeMillis() + 1000L * 60L * CACHE_TIMEOUT_MINUTES);
 
-        return result;
+        // Check for an ETag match
+        EntityTag etag = new EntityTag(etagForMessages(instanceIds, mainType, lang, messages), true);
+        Response.ResponseBuilder responseBuilder = request.evaluatePreconditions(etag);
+        if (responseBuilder != null) {
+            // ETag match
+            return responseBuilder
+                    .expires(expirationDate)
+                    .build();
+        }
+
+        return Response
+                .ok(messages)
+                .expires(expirationDate)
+                .tag(etag)
+                .build();
+    }
+
+
+    /** Computes a E-tag value for the message list **/
+    private String etagForMessages(List<String> instanceIds, String mainType, String lang, List<MessageVo> messages) {
+        // We create an etag value that excludes the WKT but include all other parameters and the
+        // accumulated update timestamp of the messages.
+        // Should allow us to return a match if the bounding box changes, but the search result is the same
+
+
+        AtomicLong ts = new AtomicLong();
+        instanceIds.forEach(i -> ts.addAndGet(i.hashCode()));
+        messages.forEach(m -> ts.addAndGet(m.getUpdated().getTime()));
+        return messages.size() + "_"+ ts + "_" + mainType + "_" + lang;
     }
 
 
