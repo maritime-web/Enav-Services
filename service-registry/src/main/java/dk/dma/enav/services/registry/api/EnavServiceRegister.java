@@ -26,7 +26,8 @@ public interface EnavServiceRegister {
      * given area.
      * @param id identifies a technical design.
      * @param wktLocationFilter wkt describing the area of interest
-     * @return instance describtions
+     * @return instance descriptions
+     * @throws NoServicesFoundException if no service instances matching the parameters can be found
      */
     List<InstanceMetadata> getServiceInstances(TechnicalDesignId id, String wktLocationFilter);
 

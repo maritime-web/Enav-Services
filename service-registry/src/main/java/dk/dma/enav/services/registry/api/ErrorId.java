@@ -15,19 +15,13 @@
 package dk.dma.enav.services.registry.api;
 
 /**
- * Created by Steen on 04-05-2016.
  *
  */
-public class NoServicesFoundException extends RuntimeException {
-    public NoServicesFoundException() {
-        super();
-    }
+public enum ErrorId {
+    MISSING_INSTANCE_NAME,
+    MISSING_DESIGN_ID,
+    MISSING_URL,
+    MISSING_BOUNDARY,
+    INVALID_DATA
 
-    public NoServicesFoundException(String message) {
-        super(message);
-    }
-
-    public NoServicesFoundException(Throwable cause) {
-        super(cause);
-    }
 }

@@ -15,15 +15,19 @@
 package dk.dma.enav.services.registry.mc;
 
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.net.URL;
+
+import static org.junit.Assert.fail;
 
 /**
  *
@@ -31,14 +35,17 @@ import java.net.URL;
 public class InstanceXmlParserTest {
 
     @Test
-    public void name() throws Exception {
+    public void shouldValidateInstanceAgainstSchema() throws Exception {
         URL schemaUrl = InstanceXmlParserTest.class.getResource("/mc/ServiceInstanceSchema.xsd");
-        System.out.println(schemaUrl);
 
         Schema schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(schemaUrl);
 
         URL instanceUrl = InstanceXmlParserTest.class.getResource("/mc/instance.xml");
-        System.out.println(instanceUrl);
-        schema.newValidator().validate(new StreamSource(new FileReader(new File(instanceUrl.toURI()))), new StreamResult(System.out));
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            schema.newValidator().validate(new StreamSource(new FileReader(new File(instanceUrl.toURI()))), new StreamResult(baos));
+        } catch (SAXException e) {
+            fail("Schema validation failed with message '"+e.getMessage()+"'");
+        }
     }
 }

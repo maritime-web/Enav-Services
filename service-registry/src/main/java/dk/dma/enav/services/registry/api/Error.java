@@ -19,30 +19,33 @@ import com.google.common.base.MoreObjects;
 import java.util.Objects;
 
 /**
- * Created by Steen on 23-05-2016.
  *
  */
-public class ErrorDescription {
-    private final String type;
-    private final String message;
-    private final String details;
+public class Error {
+    private final ErrorId id;
+    private final ErrorType errorType;
+    private final String description;
 
-    public ErrorDescription(String type, String message, String details) {
-        this.type = type;
-        this.message = message;
-        this.details = details;
+    public Error(ErrorId id, ErrorType errorType, String errorDescription) {
+        this.id = id;
+        this.errorType = errorType;
+        description = errorDescription;
     }
 
-    public String getType() {
-        return type;
+    public Error(IllegalArgumentException e) {
+        this(ErrorId.INVALID_DATA, ErrorType.INVALID_DATA, e.getMessage());
     }
 
-    public String getMessage() {
-        return message;
+    public ErrorId getId() {
+        return id;
     }
 
-    public String getDetails() {
-        return details;
+    public ErrorType getErrorType() {
+        return errorType;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     @Override
@@ -53,23 +56,23 @@ public class ErrorDescription {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ErrorDescription that = (ErrorDescription) o;
-        return Objects.equals(type, that.type) &&
-                Objects.equals(message, that.message) &&
-                Objects.equals(details, that.details);
+        Error error = (Error) o;
+        return id == error.id &&
+                errorType == error.errorType &&
+                Objects.equals(description, error.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, message, details);
+        return Objects.hash(id, errorType, description);
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("type", type)
-                .add("message", message)
-                .add("details", details)
+                .add("id", id)
+                .add("errorType", errorType)
+                .add("description", description)
                 .toString();
     }
 }

@@ -16,6 +16,7 @@ package dk.dma.enav.services.registry.mc;
 
 import dk.dma.enav.services.registry.api.EnavServiceRegister;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
+import dk.dma.enav.services.registry.api.NoServicesFoundException;
 import dk.dma.enav.services.registry.api.TechnicalDesignId;
 
 import javax.inject.Inject;
@@ -36,17 +37,24 @@ public class MaritimeCloudServiceRegistry implements EnavServiceRegister {
 
     @Override
     public List<InstanceMetadata> getServiceInstances(TechnicalDesignId id, String wktLocationFilter) {
-        return instanceRepository.getAllInstances().stream()
+        List<InstanceMetadata> result = instanceRepository.getAllInstances().stream()
                 .filter(instance -> instance.getTechnicalDesignId() != null)
                 .filter(instance -> instance.getTechnicalDesignId().equals(id))
                 .filter(instance -> wktLocationFilter == null || instance.intersects(wktLocationFilter))
                 .collect(Collectors.toList());
+
+        if (result.isEmpty()) {
+            throw new NoServicesFoundException();
+        }
+
+        return result;
     }
 
     @Override
     public List<InstanceMetadata> getServiceInstances(List<String> instanceIds) {
-            return instanceRepository.getAllInstances().stream()
-                    .filter(instance -> instanceIds.contains(instance.getInstanceId()))
-                    .collect(Collectors.toList());
+
+        return instanceRepository.getAllInstances().stream()
+                .filter(instance -> instanceIds.contains(instance.getInstanceId()))
+                .collect(Collectors.toList());
     }
 }

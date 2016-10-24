@@ -14,19 +14,24 @@
  */
 package dk.dma.enav.services.registry.mc;
 
+import dk.dma.enav.services.registry.api.TechnicalDesignId;
+
 /**
  * Created by Steen on 13-10-2016.
  *
  */
 class InstanceDetails {
     static final String DEFAULT_COVERAGE = "POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))";
-    private final String url;
+    private String url;
     private String coverage;
-    private String designId;
-    private String designVersion;
+    private TechnicalDesignId designId;
 
-    InstanceDetails(String url) {
+    InstanceDetails() {
+    }
+
+    InstanceDetails withUrl(String url) {
         this.url = url;
+        return this;
     }
 
     InstanceDetails withCoverage(String coverage) {
@@ -34,13 +39,8 @@ class InstanceDetails {
         return this;
     }
 
-    InstanceDetails withDesignId(String designId) {
+    InstanceDetails withDesignId(TechnicalDesignId designId) {
         this.designId = designId;
-        return this;
-    }
-
-    InstanceDetails withDesignVersion(String designVersion) {
-        this.designVersion = designVersion;
         return this;
     }
 
@@ -52,11 +52,8 @@ class InstanceDetails {
         return coverage != null ? coverage : DEFAULT_COVERAGE;
     }
 
-    String getDesignId() {
+    TechnicalDesignId getDesignId() {
         return designId;
     }
 
-    String getDesignVersion() {
-        return designVersion;
-    }
 }

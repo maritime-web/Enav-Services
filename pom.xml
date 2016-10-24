@@ -528,6 +528,13 @@
                                     </activeProfiles>
 
                                 replace the file:///... with the path to your integration test properties
+
+                                IntelliJ setup:
+                                add the test property file location to the JUnit default confiuration
+                                    1. goto Run->Edit Configurations...->Defaults->JUnit
+                                    2. add the property location under VM options e.g.
+
+                                "-Denav-services-integration-test.configuration=file:///C:/test-configuration.properties"
                                 -->
                                 <enav-services-integration-test.configuration>${enav-services-integration-test.location}</enav-services-integration-test.configuration>
                             </systemPropertyVariables>

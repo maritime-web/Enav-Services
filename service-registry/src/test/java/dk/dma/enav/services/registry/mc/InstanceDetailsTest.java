@@ -27,14 +27,14 @@ public class InstanceDetailsTest {
 
     @Test
     public void shouldReturnDefaultCoverageIfNoneIsSet() throws Exception {
-        InstanceDetails cut = new InstanceDetails("ftp://someserver.org");
+        InstanceDetails cut = new InstanceDetails();
 
         assertThat(cut.getCoverage(), is(equalTo(InstanceDetails.DEFAULT_COVERAGE)));
     }
 
     @Test
     public void shouldReturnDefaultCoverageIfNullIsSet() throws Exception {
-        InstanceDetails cut = new InstanceDetails("ftp://someserver.org");
+        InstanceDetails cut = new InstanceDetails();
 
         cut.withCoverage(null);
 

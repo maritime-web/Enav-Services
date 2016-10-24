@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Decorating @link{dk.dma.enav.services.registry.mc.api.ServiceinstanceresourceApi}
  */
 public class InstanceResourceApi {
     private static final int PAGE_SIZE = 7;

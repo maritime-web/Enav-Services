@@ -15,26 +15,31 @@
 package dk.dma.enav.services.registry;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dk.dma.enav.services.registry.api.ErrorDescription;
+import dk.dma.enav.services.registry.api.Error;
+import dk.dma.enav.services.registry.api.ErrorId;
+import dk.dma.enav.services.registry.api.ErrorType;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 
+
 /**
  * Created by Steen on 31-05-2016.
  *
  */
-public class ErrorDescriptionTest {
+public class ErrorTest {
     @Test
     public void shouldBeJsonSerializable() throws Exception {
-        ErrorDescription cut = new ErrorDescription("bad_request", "You didn't ask right", "1. 2. 3.");
+        Error cut = new Error(ErrorId.MISSING_URL, ErrorType.INVALID_DATA, null);
 
         ObjectMapper mapper = new ObjectMapper();
 
-        assertThat(mapper.canSerialize(ErrorDescription.class), is(true));
-        assertThat(mapper.writeValueAsString(cut), containsString("type"));
+        assertThat(mapper.canSerialize(Error.class), is(true));
+        assertThat(mapper.writeValueAsString(cut), containsString("id"));
+        assertThat(mapper.writeValueAsString(cut), containsString("errorType"));
+        assertThat(mapper.writeValueAsString(cut), containsString("description"));
+        assertThat(mapper.writeValueAsString(cut), containsString(ErrorId.MISSING_URL.toString()));
     }
-
 }

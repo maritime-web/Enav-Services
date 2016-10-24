@@ -33,7 +33,6 @@ import java.util.List;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
 /**
- * Created by Steen on 20-04-2016.
  *
  */
 @Path("/service")

@@ -14,47 +14,74 @@
  */
 package dk.dma.enav.services.registry;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.dma.enav.services.registry.api.Error;
+import dk.dma.enav.services.registry.api.ErrorId;
+import dk.dma.enav.services.registry.api.ErrorType;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
 import dk.dma.enav.services.registry.api.TechnicalDesignId;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.iterableWithSize;
 import static org.hamcrest.Matchers.notNullValue;
 
 /**
- * Created by Steen on 24-05-2016.
  *
  */
 public class InstanceMetadataTest {
 
     @Test
-    public void shouldEnsureThatWarningsListIsInitializedOnCreationWithEmptyConstructor() throws Exception {
-        InstanceMetadata cut = new InstanceMetadata();
-
-        assertThat(cut.getWarnings(), notNullValue());
-    }
-
-    @Test
     public void shouldEnsureThatWarningsListIsInitializedOnCreationWithNormalConstructor() throws Exception {
-        InstanceMetadata cut = new InstanceMetadata(null, null, null, null, null);
+        InstanceMetadata cut = new InstanceMetadata("some id");
 
         assertThat(cut.getWarnings(), notNullValue());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldEnsureThatAddedWarningCanNotBeNull() throws Exception {
+        InstanceMetadata cut = new InstanceMetadata("Some id");
+
+        cut.addWarning(null);
     }
 
     @Test
-    public void shouldEnsureThatWarningsListIsInitializedOnCreationWithErrorConstructor() throws Exception {
-        InstanceMetadata cut = new InstanceMetadata(null, null);
+    public void shouldIgnoreDuplicateErrors() throws Exception {
+        InstanceMetadata cut = new InstanceMetadata("some id");
+        Error e = new Error(ErrorId.MISSING_URL, ErrorType.INVALID_DATA, "message");
 
-        assertThat(cut.getWarnings(), notNullValue());
+        cut.addError(e).addError(e);
+        assertThat(cut.getErrors(), iterableWithSize(1));
     }
 
     @Test
-    public void shouldEnsureThatWarningsListIsNotNulledByCallingSetWarnings() throws Exception {
-        InstanceMetadata cut = new InstanceMetadata();
+    public void shouldBeAbleToSerializeToJson() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
 
-        cut.setWarnings(null);
-
-        assertThat(cut.getWarnings(), notNullValue());
+        String url = "http://test.dk";
+        String boundary = "POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))";
+        String name = "test";
+        String designId = "designtest";
+        String version = "1";
+        InstanceMetadata inst = new InstanceMetadata("aa")
+                .withUrl(url)
+                .withBoundary(boundary)
+                .withInstanceName(name)
+                .withTechnicalDesignId(new TechnicalDesignId(designId, version))
+                .addError(new Error(ErrorId.MISSING_URL, ErrorType.INVALID_DATA, ""));
+        String json = mapper.writeValueAsString(inst);
+        assertThat(json, allOf(containsString(url), containsString(boundary), containsString(name), containsString(designId), containsString(version)));
     }
 
+    @Test
+    public void shouldSerializeToJsonWithClassAttributeNames() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+
+        InstanceMetadata inst = new InstanceMetadata("aa");
+        String json = mapper.writeValueAsString(inst);
+        //noinspection unchecked
+        assertThat(json, allOf(containsString("instanceId\":"), containsString("name\":"), containsString("technicalDesignId\":"), containsString("boundary\":"), containsString("url\":"), containsString("errors\":[]"), containsString("warnings\":[]")));
+    }
 }

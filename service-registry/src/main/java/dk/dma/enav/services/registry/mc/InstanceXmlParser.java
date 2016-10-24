@@ -14,6 +14,7 @@
  */
 package dk.dma.enav.services.registry.mc;
 
+import dk.dma.enav.services.registry.api.TechnicalDesignId;
 import dk.dma.enav.services.registry.mc.model.Xml;
 import org.xml.sax.InputSource;
 
@@ -37,7 +38,7 @@ public class InstanceXmlParser {
     }
 
     InstanceDetails parseInstanceXml(Xml xml) {
-        InstanceDetails res;
+        InstanceDetails res = new InstanceDetails();
         try {
             byte[] decodedInstance = decoder.decode(xml);
             XPath xPath = XPathFactory.newInstance().newXPath();
@@ -46,14 +47,23 @@ public class InstanceXmlParser {
             String coverage = xPath.evaluate("//s:serviceInstance/coversAreas/coversArea/geometryAsWKT", createInputSource(decodedInstance));
             String designId = xPath.evaluate("//s:serviceInstance/implementsServiceDesign/id", createInputSource(decodedInstance));
             String designVersion = xPath.evaluate("//s:serviceInstance/implementsServiceDesign/version", createInputSource(decodedInstance));
-            res = new InstanceDetails(url)
+            TechnicalDesignId technicalDesignId = createTechnicalDesignId(designId, designVersion);
+            res
+                    .withUrl(url)
                     .withCoverage(coverage)
-                    .withDesignId(designId)
-                    .withDesignVersion(designVersion);
+                    .withDesignId(technicalDesignId);
         } catch (XPathExpressionException e) {
             throw new RuntimeException(e);
         }
         return res;
+    }
+
+    private TechnicalDesignId createTechnicalDesignId(String designId, String designVersion) {
+        try {
+            return new TechnicalDesignId(designId, designVersion);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     private InputSource createInputSource(byte[] xmlBytes) {

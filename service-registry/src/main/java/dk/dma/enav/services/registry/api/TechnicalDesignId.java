@@ -15,6 +15,7 @@
 package dk.dma.enav.services.registry.api;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Strings;
 
 import java.util.Objects;
 
@@ -26,6 +27,9 @@ public class TechnicalDesignId {
     private final String version;
 
     public TechnicalDesignId(String id, String version) {
+        if (Strings.isNullOrEmpty(id)) {
+            throw new IllegalArgumentException("Id must not be null");
+        }
         this.id = id;
         this.version = version;
     }

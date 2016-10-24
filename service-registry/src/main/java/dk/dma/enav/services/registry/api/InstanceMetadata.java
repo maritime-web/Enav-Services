@@ -15,13 +15,15 @@
 package dk.dma.enav.services.registry.api;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Strings;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Created by Steen on 27-04-2016.
@@ -33,25 +35,16 @@ public class InstanceMetadata {
     private TechnicalDesignId technicalDesignId;
     private String boundary;
     private String url;
-    private Errors errors;
-    private List<Errors> warnings;
+    private Set<Error> errors;
+    private List<Error> warnings;
 
-    public InstanceMetadata() {
-        this(null, null, null, null, null);
-    }
-
-    public InstanceMetadata(String instanceId, String name, TechnicalDesignId technicalDesignId, String boundary, String url) {
+    public InstanceMetadata(String instanceId) {
+        if (instanceId == null) {
+            throw new IllegalArgumentException("Can not create InstanceMetadata with missing instanceId");
+        }
         this.instanceId = instanceId;
-        this.name = name;
-        this.technicalDesignId = technicalDesignId;
-        this.boundary = boundary;
-        this.url = url;
         this.warnings = new ArrayList<>();
-    }
-
-    public InstanceMetadata(String id, Errors errorDescriptions) {
-        this(id, null, null, null, null);
-        setErrors(errorDescriptions);
+        this.errors = new HashSet<>();
     }
 
     public boolean intersects(String wktFilter) {
@@ -62,10 +55,87 @@ public class InstanceMetadata {
 
             return serviceBoundary.intersects(filter);
         } catch (Exception e) {
-//            throw new RuntimeException("Can't parse WKT", e);
             return false;
         }
+    }
 
+    public List<Error> validate() {
+        ArrayList<Error> res = new ArrayList<>();
+        res.addAll(errors);
+        if (Strings.isNullOrEmpty(name)) {
+            res.add(createErrorforMissingAttribute(ErrorId.MISSING_INSTANCE_NAME, "name"));
+        }
+        if (technicalDesignId == null) {
+            res.add(createErrorforMissingAttribute(ErrorId.MISSING_DESIGN_ID, "technicalDesignId"));
+        }
+        if (Strings.isNullOrEmpty(boundary)) {
+            res.add(createErrorforMissingAttribute(ErrorId.MISSING_BOUNDARY, "boundary"));
+        }
+        if (Strings.isNullOrEmpty(url)) {
+            res.add(createErrorforMissingAttribute(ErrorId.MISSING_URL, "url"));
+        }
+        return res;
+    }
+
+    private Error createErrorforMissingAttribute(ErrorId id,  String attributeName) {
+        return new Error(id, ErrorType.MISSING_DATA , "Missing required attribute '"+attributeName+"'");
+    }
+
+    public InstanceMetadata withInstanceName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public InstanceMetadata withTechnicalDesignId(TechnicalDesignId technicalDesignId) {
+        this.technicalDesignId = technicalDesignId;
+        return this;
+    }
+
+    /**
+     * Sets the geographical area from which the service instance is accessible.
+     * @param boundary as WKT
+     * @return this
+     * @throws IllegalArgumentException if boundary is not valid WKT
+     */
+    public InstanceMetadata withBoundary(String boundary) {
+        WKTReader reader = new WKTReader();
+        try {
+            reader.read(boundary);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Boundary could not be parsed as WKT '"+boundary+"'", e);
+        }
+        this.boundary = boundary;
+        return this;
+    }
+
+    public InstanceMetadata withUrl(String url) {
+        this.url = url;
+        return this;
+    }
+
+    public InstanceMetadata addWarning(Error warning) {
+        if (warning == null) {
+            throw new IllegalArgumentException("Warning must not be null");
+        }
+        this.warnings.add(warning);
+        return this;
+    }
+
+    public InstanceMetadata addError(Error error) {
+        if (error == null) {
+            throw new IllegalArgumentException("Error must not be null");
+        }
+        this.errors.add(error);
+        return this;
+    }
+
+    public InstanceMetadata addAllErrors(List<Error> errors) {
+        if (errors == null) {
+            throw new IllegalArgumentException("Error list must not be null");
+        }
+
+        errors.forEach(this::addError);
+        return this;
     }
 
     public String getInstanceId() {
@@ -88,40 +158,12 @@ public class InstanceMetadata {
         return url;
     }
 
-    public void setInstanceId(String instanceId) {
-        this.instanceId = instanceId;
+    public List<Error> getErrors() {
+        return new ArrayList<>(errors);
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setTechnicalDesignId(TechnicalDesignId technicalDesignId) {
-        this.technicalDesignId = technicalDesignId;
-    }
-
-    public void setBoundary(String boundary) {
-        this.boundary = boundary;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public Errors getErrors() {
-        return errors;
-    }
-
-    public void setErrors(Errors errors) {
-        this.errors = errors;
-    }
-
-    public List<Errors> getWarnings() {
-        return warnings;
-    }
-
-    public void setWarnings(List<Errors> warnings) {
-        this.warnings = warnings != null ? warnings : this.warnings;
+    public List<Error> getWarnings() {
+        return new ArrayList<>(warnings);
     }
 
     @Override

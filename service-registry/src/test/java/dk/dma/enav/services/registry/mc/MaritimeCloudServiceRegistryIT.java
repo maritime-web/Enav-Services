@@ -15,6 +15,7 @@
 package dk.dma.enav.services.registry.mc;
 
 import dk.dma.enav.services.registry.api.InstanceMetadata;
+import dk.dma.enav.services.registry.api.NoServicesFoundException;
 import dk.dma.enav.services.registry.api.TechnicalDesignId;
 import dk.dma.enav.services.registry.mc.api.ServiceinstanceresourceApi;
 import dk.dma.enav.services.registry.mc.model.Instance;
@@ -37,7 +38,7 @@ public class MaritimeCloudServiceRegistryIT {
 
     @Before
     public void setUp() throws Exception {
-        ApiFactory apiFactory = new ApiFactory("http://195.34.146.186:8080/", 2000);
+        ApiFactory apiFactory = new ApiFactory("http://195.34.146.186:8080/", 20);
         InstanceMapper mapper = new InstanceMapper(new InstanceXmlParser(new Base64Decoder()));
         cut = new MaritimeCloudServiceRegistry(new InstanceRepository(apiFactory, mapper, 5));
     }
@@ -66,17 +67,18 @@ public class MaritimeCloudServiceRegistryIT {
         assertThat(res.size(), is(greaterThan(0)));
     }
 
-    @Test
+    @Test(expected = NoServicesFoundException.class)
     public void shouldNotGetTheNwNmServiceWhenTechnicalDesignIdIsNull() throws Exception {
-        List<InstanceMetadata> res = cut.getServiceInstances(null, null);
-
-        assertThat(res.size(), is(0));
+        cut.getServiceInstances(null, null);
     }
 
-    @Test
+    @Test(expected = NoServicesFoundException.class)
     public void shouldNotGetTheNwNmServiceWhenTechnicalDesignIdVersionIsNull() throws Exception {
-        List<InstanceMetadata> res = cut.getServiceInstances(new TechnicalDesignId("urn:mrnx:mcl:service:dma:nw-nm:rest", null), null);
+        cut.getServiceInstances(new TechnicalDesignId("urn:mrnx:mcl:service:dma:nw-nm:rest", null), null);
+    }
 
-        assertThat(res.size(), is(0));
+    @Test(expected = NoServicesFoundException.class)
+    public void shouldThrowNoServicesFoundExceptionWhenSearchingForUnkownId() throws Exception {
+        cut.getServiceInstances(new TechnicalDesignId("urn:mrnx:mcl:service:dma:non:existing:service", "1.0"), null);
     }
 }

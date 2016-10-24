@@ -46,7 +46,7 @@ class InstanceIterator implements Iterator<List<Instance>> {
 
     @Override
     public List<Instance> next() {
-        Link link = next.orElseThrow(() -> new RuntimeException(""));
+        Link link = next.get();
         ApiResponse<List<Instance>> response = call(link.page, link.size);
         next = createNextLink(getLinkHeader(response));
         return response.getData();

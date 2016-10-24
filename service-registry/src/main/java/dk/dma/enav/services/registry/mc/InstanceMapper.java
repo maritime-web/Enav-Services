@@ -14,16 +14,14 @@
  */
 package dk.dma.enav.services.registry.mc;
 
-import dk.dma.enav.services.registry.api.ErrorDescription;
-import dk.dma.enav.services.registry.api.Errors;
+import dk.dma.enav.services.registry.api.Error;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
-import dk.dma.enav.services.registry.api.TechnicalDesignId;
 import dk.dma.enav.services.registry.mc.model.Instance;
 
 import javax.inject.Inject;
+import java.util.List;
 
 /**
- * Created by Steen on 17-10-2016.
  *
  */
 public class InstanceMapper {
@@ -35,26 +33,30 @@ public class InstanceMapper {
     }
 
     InstanceMetadata toMetaData(Instance instance) {
-        String instanceId = instance.getInstanceId();
-        String name = instance.getName();
-        String boundary;
-        String url;
-        String designId;
-        String designVersion;
+        InstanceMetadata result = new InstanceMetadata(instance.getInstanceId())
+                .withInstanceName(instance.getName());
+
+        InstanceDetails details = getDetails(instance);
+        result
+                .withUrl(details.getUrl())
+                .withTechnicalDesignId(details.getDesignId());
         try {
-            InstanceDetails details = getDetails(instance);
-            boundary = details.getCoverage();
-            url = details.getUrl();
-            designId = details.getDesignId();
-            designVersion = details.getDesignVersion();
+            result.withBoundary(details.getCoverage());
         } catch (IllegalArgumentException e) {
-            return new InstanceMetadata(instanceId, new Errors("No details", new ErrorDescription("No details", e.getMessage(), null)));
+            result.addError(new Error(e));
         }
 
-        return new InstanceMetadata(instanceId, name, new TechnicalDesignId(designId, designVersion), boundary, url);
+        List<Error> validationErrors = result.validate();
+        result.addAllErrors(validationErrors);
+
+        return result;
     }
 
     private InstanceDetails getDetails(Instance instance) {
-        return instanceXmlParser.parseInstanceXml(instance.getInstanceAsXml());
+        try {
+            return instanceXmlParser.parseInstanceXml(instance.getInstanceAsXml());
+        } catch (Exception e) {
+            return new InstanceDetails();
+        }
     }
 }
