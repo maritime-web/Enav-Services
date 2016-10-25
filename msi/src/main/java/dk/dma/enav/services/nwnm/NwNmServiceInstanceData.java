@@ -27,8 +27,8 @@ import java.util.Objects;
  */
 public class NwNmServiceInstanceData implements Serializable {
 
-    final private List<MessageVo> messages;
-    final private Map<String, List<Geometry>> geometries;
+    private final List<MessageVo> messages;
+    private final Map<String, List<Geometry>> geometries;
 
     /** Constructor **/
     public NwNmServiceInstanceData(List<MessageVo> messages, Map<String, List<Geometry>> geometries) {

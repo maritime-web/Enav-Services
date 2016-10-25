@@ -44,9 +44,9 @@ import org.niord.model.geojson.PolygonVo;
  * Copied from the Niord project.
  */
 @SuppressWarnings("unused")
-public class JtsConverter {
+public final class JtsConverter {
 
-    final static GeometryFactory factory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING));
+    static final GeometryFactory FACTORY = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING));
 
     private JtsConverter() {
     }
@@ -71,7 +71,7 @@ public class JtsConverter {
      * @return the corresponding JTS geometry
      */
     public static Geometry toJtsPoint(double lat, double lon) {
-        return factory.createPoint(toJtsCoords(new double[]{lon, lat}));
+        return FACTORY.createPoint(toJtsCoords(new double[]{lon, lat}));
     }
 
 
@@ -113,13 +113,13 @@ public class JtsConverter {
         if (g == null) {
             return null;
         } if (g instanceof PointVo) {
-            return factory.createPoint(toJtsCoords(((PointVo)g).getCoordinates()));
+            return FACTORY.createPoint(toJtsCoords(((PointVo)g).getCoordinates()));
         } else if (g instanceof LineStringVo) {
-            return factory.createLineString(toJtsCoords(((LineStringVo)g).getCoordinates()));
+            return FACTORY.createLineString(toJtsCoords(((LineStringVo)g).getCoordinates()));
         } else if (g instanceof PolygonVo) {
             return toJtsPolygon(((PolygonVo)g).getCoordinates());
         } else if (g instanceof MultiPointVo) {
-            return factory.createMultiPoint(toJtsCoords(((MultiPointVo)g).getCoordinates()));
+            return FACTORY.createMultiPoint(toJtsCoords(((MultiPointVo)g).getCoordinates()));
         } else if (g instanceof MultiLineStringVo) {
             return toJtsMultiLineString((MultiLineStringVo)g);
         } else if (g instanceof MultiPolygonVo) {
@@ -176,17 +176,17 @@ public class JtsConverter {
     }
 
     private static Polygon toJtsPolygon(double[][][] coordinates) {
-        LinearRing outerRing = factory.createLinearRing(toJtsCoords(coordinates[0]));
+        LinearRing outerRing = FACTORY.createLinearRing(toJtsCoords(coordinates[0]));
 
         if (coordinates.length > 1) {
             int size = coordinates.length - 1;
             LinearRing[] innerRings = new LinearRing[size];
             for (int i = 0; i < size; i++) {
-                innerRings[i] = factory.createLinearRing(toJtsCoords(coordinates[i + 1]));
+                innerRings[i] = FACTORY.createLinearRing(toJtsCoords(coordinates[i + 1]));
             }
-            return factory.createPolygon(outerRing, innerRings);
+            return FACTORY.createPolygon(outerRing, innerRings);
         } else {
-            return factory.createPolygon(outerRing);
+            return FACTORY.createPolygon(outerRing);
         }
     }
 
@@ -194,9 +194,9 @@ public class JtsConverter {
         int size = multiLineString.getCoordinates().length;
         LineString[] lineStrings = new LineString[size];
         for (int i = 0; i < size; i++) {
-            lineStrings[i] = factory.createLineString(toJtsCoords(multiLineString.getCoordinates()[i]));
+            lineStrings[i] = FACTORY.createLineString(toJtsCoords(multiLineString.getCoordinates()[i]));
         }
-        return factory.createMultiLineString(lineStrings);
+        return FACTORY.createMultiLineString(lineStrings);
     }
 
     private static MultiPolygon toJtsMultiPolygon(MultiPolygonVo multiPolygon) {
@@ -205,7 +205,7 @@ public class JtsConverter {
         for (int i = 0; i < size; i++) {
             polygons[i] = toJtsPolygon(multiPolygon.getCoordinates()[i]);
         }
-        return factory.createMultiPolygon(polygons);
+        return FACTORY.createMultiPolygon(polygons);
     }
 
     private static GeometryCollection toJtsGeometryCollection(GeometryCollectionVo gc) {
@@ -214,7 +214,7 @@ public class JtsConverter {
         for (int i = 0; i < size; i++) {
             geometries[i] = toJts(gc.getGeometries()[i]);
         }
-        return factory.createGeometryCollection(geometries);
+        return FACTORY.createGeometryCollection(geometries);
     }
 
 
