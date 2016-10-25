@@ -22,6 +22,13 @@ import dk.dma.enav.model.voyage.RouteLeg;
 import dk.dma.enav.model.voyage.RouteLeg.Heading;
 import dk.dma.enav.model.voyage.Waypoint;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.ByteBuffer;
+import java.util.Base64;
+
 public class RouteTest {
 
     @Test
@@ -85,5 +92,4 @@ public class RouteTest {
         Assert.assertEquals("departure", transformed.getOrigin());
         Assert.assertEquals("destination", transformed.getDestination());
     }
-
 }

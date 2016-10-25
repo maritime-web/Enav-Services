@@ -14,7 +14,6 @@
  */
 package dk.dma.embryo.vessel.service;
 
-import dk.dma.embryo.common.area.Area;
 import dk.dma.embryo.common.area.AreaFilter;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.log.EmbryoLogService;
@@ -33,7 +32,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;

@@ -53,15 +53,15 @@ public class Berth extends BaseEntity<Long> {
     public Berth() {
     }
 
-    public Berth(String name, String lattitude, String longitude) {
+    public Berth(String name, String latitude, String longitude) {
         this.name = name;
-        this.position = new Position(lattitude, longitude);
+        this.position = new Position(latitude, longitude);
     }
 
-    public Berth(String name, String alias, String lattitude, String longitude) {
+    public Berth(String name, String alias, String latitude, String longitude) {
         this.name = name;
         this.alias = alias;
-        this.position = new Position(lattitude, longitude);
+        this.position = new Position(latitude, longitude);
     }
 
     // //////////////////////////////////////////////////////////////////////

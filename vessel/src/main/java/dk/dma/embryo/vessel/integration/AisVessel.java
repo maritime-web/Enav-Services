@@ -219,11 +219,50 @@ public class AisVessel {
     // //////////////////////////////////////////////////////////////////////
     // Object methods
     // //////////////////////////////////////////////////////////////////////
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((mmsi == null) ? 0 : mmsi.hashCode());
+        return result;
+    }
+
+    /*
+     * Introduced because usage in VesselDetails of hashCode yielded wrong result for Rest Service
+     * (304 were sent even though data were updated)
+     * Am however not sure wether hashCode and equals are used in Collections and the like
+     * Therefore introducing this method as a temporary fix.
+     * hashCode and equals should be rewritten if not breaking existing functionality
+     */
+    public int hashCodeAllFields() {
+        int result = country != null ? country.hashCode() : 0;
+        result = 31 * result + (sourceRegion != null ? sourceRegion.hashCode() : 0);
+        result = 31 * result + (lastReport != null ? lastReport.hashCode() : 0);
+        result = 31 * result + (mmsi != null ? mmsi.hashCode() : 0);
+        result = 31 * result + (sourceCountry != null ? sourceCountry.hashCode() : 0);
+        result = 31 * result + (sourceType != null ? sourceType.hashCode() : 0);
+        result = 31 * result + (targetType != null ? targetType.hashCode() : 0);
+        result = 31 * result + (callsign != null ? callsign.hashCode() : 0);
+        result = 31 * result + (cog != null ? cog.hashCode() : 0);
+        result = 31 * result + (destination != null ? destination.hashCode() : 0);
+        result = 31 * result + (draught != null ? draught.hashCode() : 0);
+        result = 31 * result + (eta != null ? eta.hashCode() : 0);
+        result = 31 * result + (heading != null ? heading.hashCode() : 0);
+        result = 31 * result + (imoNo != null ? imoNo.hashCode() : 0);
+        result = 31 * result + (lat != null ? lat.hashCode() : 0);
+        result = 31 * result + (length != null ? length.hashCode() : 0);
+        result = 31 * result + (lon != null ? lon.hashCode() : 0);
+        result = 31 * result + (moored != null ? moored.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (navStatus != null ? navStatus.hashCode() : 0);
+        result = 31 * result + (rot != null ? rot.hashCode() : 0);
+        result = 31 * result + (sog != null ? sog.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (vesselType != null ? vesselType.hashCode() : 0);
+        result = 31 * result + (width != null ? width.hashCode() : 0);
+        result = 31 * result + (maxSpeed != null ? maxSpeed.hashCode() : 0);
+        result = 31 * result + (maxSpeedOrigin != null ? maxSpeedOrigin.hashCode() : 0);
         return result;
     }
 

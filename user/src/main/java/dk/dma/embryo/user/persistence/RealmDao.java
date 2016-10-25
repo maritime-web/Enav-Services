@@ -38,4 +38,6 @@ public interface RealmDao extends Dao {
     SecuredUser findByUuid(String uuid);
 
     SecuredUser findByMaritimeCloudId(String maritimeCloudId);
+
+    List<Object[]> rolesCount();
 }

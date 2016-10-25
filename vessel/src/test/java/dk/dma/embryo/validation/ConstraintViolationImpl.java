@@ -88,4 +88,18 @@ public class ConstraintViolationImpl implements ConstraintViolation {
         return null;
     }
 
+    @Override
+    public Object getExecutableReturnValue(){
+        return null;
+    }
+
+    @Override
+    public Object[] getExecutableParameters(){
+        return null;
+    }
+
+    @Override
+    public Object unwrap(Class aClass) {
+        return null;
+    }
 }

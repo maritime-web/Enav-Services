@@ -49,6 +49,7 @@ public abstract class AbstractRestService {
     protected static final int MAX_AGE_15_MINUTES = 60 * 15;
     protected static final int MAX_AGE_10_MINUTES = 60 * 10;
     protected static final int MAX_AGE_5_MINUTES = 60 * 5;
+    protected static final int MAX_AGE_10_SECONDS = 10;
     protected static final int MAX_AGE_1_DAY = 60 * 60 * 24;
     
     /** The logger. */

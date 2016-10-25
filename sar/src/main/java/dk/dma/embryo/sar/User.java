@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 
 public class User extends CouchDbDocument {
 
+    private String userName;
     private String name;
     private String mmsi;
 
@@ -40,15 +41,17 @@ public class User extends CouchDbDocument {
     }
 
     @JsonCreator
-    public User(@JsonProperty("name") String name, @JsonProperty("mmsi") String mmsi) {
+    public User(@JsonProperty("userName") String userName, @JsonProperty("name") String name, @JsonProperty("mmsi") String mmsi) {
         this.name = name;
+        this.userName = userName;
         this.mmsi = mmsi;
     }
 
 
-    public User(String id, String name, String mmsi) {
+    public User(String id, String userName, String name, String mmsi) {
         super(id);
         this.name = name;
+        this.userName = userName;
         this.mmsi = mmsi;
     }
 
@@ -62,6 +65,14 @@ public class User extends CouchDbDocument {
     // //////////////////////////////////////////////////////////////////////
     // Property methods
     // //////////////////////////////////////////////////////////////////////
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public String getName() {
         return name;
     }

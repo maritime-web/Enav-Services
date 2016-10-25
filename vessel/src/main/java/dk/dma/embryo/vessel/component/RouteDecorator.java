@@ -29,7 +29,7 @@ public class RouteDecorator {
     
     private Long estimatedTotalTime;
 
-    private ArrayList<Waypoint> waypoints = new ArrayList<Waypoint>();
+    private ArrayList<WaypointDecorator> waypoints = new ArrayList<WaypointDecorator>();
     
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -56,9 +56,9 @@ public class RouteDecorator {
         
         this.route = route;
 
-        Waypoint lastWp = null;
+        WaypointDecorator lastWp = null;
         for(dk.dma.enav.model.voyage.Waypoint wp : route.getWaypoints()){
-            Waypoint waypoint = new Waypoint(wp);
+            WaypointDecorator waypoint = new WaypointDecorator(wp);
             waypoints.add(waypoint);
             if(lastWp != null){
                 lastWp.getRouteLeg().setTo(waypoint);
@@ -71,7 +71,7 @@ public class RouteDecorator {
         
         this.estimatedTotalTime = 0L;
         
-        for(Waypoint wp : waypoints){
+        for(WaypointDecorator wp : waypoints){
             if(lastWp != null){
                 if(lastWp.getEta() != null  && lastWp.getRouteLeg().getSpeed() != null && wp.getEta() == null){
                     long eta = lastWp.getEta().getTime() + lastWp.getRouteLeg().calcTtg();
@@ -125,175 +125,9 @@ public class RouteDecorator {
         route.setName(name);
     }
 
-    public ArrayList<Waypoint> getWaypoints() {
+    public ArrayList<WaypointDecorator> getWaypoints() {
         return waypoints;
     }
 
 
-    
-    // //////////////////////////////////////////////////////////////////////
-    // Inner classes
-    // //////////////////////////////////////////////////////////////////////
-    public static class Waypoint{
-        private dk.dma.enav.model.voyage.Waypoint waypoint;
-        private RouteLeg routeLeg;
-        
-        Waypoint(dk.dma.enav.model.voyage.Waypoint wp){
-            this.routeLeg = new RouteLeg(wp.getRouteLeg(), this);
-            this.waypoint = wp;
-        }
-        
-        
-        // //////////////////////////////////////////////////////////////////////
-        // Inner class Property methods
-        // //////////////////////////////////////////////////////////////////////
-        public Date getEta() {
-            return waypoint.getEta();
-        }
-
-        public double getLatitude() {
-            return waypoint.getLatitude();
-        }
-
-        public double getLongitude() {
-            return waypoint.getLongitude();
-        }
-
-        public String getName() {
-            return waypoint.getName();
-        }
-
-        public Double getRot() {
-            return waypoint.getRot();
-        }
-
-        public RouteLeg getRouteLeg() {
-            return routeLeg;
-        }
-
-        public Double getTurnRad() {
-            return waypoint.getTurnRad();
-        }
-
-        public void setEta(Date eta) {
-            waypoint.setEta(eta);
-        }
-
-        public void setLatitude(double latitude) {
-            waypoint.setLatitude(latitude);
-        }
-
-        public void setLongitude(double longitude) {
-            waypoint.setLongitude(longitude);
-        }
-
-        public void setName(String name) {
-            waypoint.setName(name);
-        }
-
-        public void setRot(Double rot) {
-            waypoint.setRot(rot);
-        }
-
-//        public void setRouteLeg(RouteLeg routeLeg) {
-//            waypoint.setRouteLeg(routeLeg);
-//        }
-
-        public void setTurnRad(Double turnRad) {
-            waypoint.setTurnRad(turnRad);
-        }
-    }
-    
-    public static class RouteLeg{
-        private Waypoint from, to;
-        private dk.dma.enav.model.voyage.RouteLeg routeLeg;
-        
-        public RouteLeg(dk.dma.enav.model.voyage.RouteLeg routeLeg, Waypoint from) {
-            super();
-            this.from = from;
-            this.routeLeg = routeLeg;
-        }
-        
-        
-        // //////////////////////////////////////////////////////////////////////
-        // Logic
-        // //////////////////////////////////////////////////////////////////////
-        public double calcRange() {
-            double meters;
-            
-            Position pos1 = Position.create(from.getLatitude(), from.getLongitude());
-            Position pos2 = Position.create(to.getLatitude(), to.getLongitude());
-            
-            if (getHeading() == Heading.RL) {
-                meters = pos1.rhumbLineDistanceTo(pos2);
-            } else {
-                meters = pos1.geodesicDistanceTo(pos2);
-            }
-            return Converter.metersToNm(meters);
-        }
-        
-        public long calcTtg() {
-            if (getSpeed() < 0.1) {
-                return -1L;
-            }
-            return Math.round(calcRange() * 3600.0 / getSpeed() * 1000.0);
-        }
-
-
-        
-        // //////////////////////////////////////////////////////////////////////
-        // Inner class Property methods
-        // //////////////////////////////////////////////////////////////////////
-        void setTo(Waypoint to) {
-            this.to = to;
-        }
-
-        public Double getSFLen() {
-            return routeLeg.getSFLen();
-        }
-
-        public Double getSFWidth() {
-            return routeLeg.getSFWidth();
-        }
-
-        public Double getSpeed() {
-            return routeLeg.getSpeed();
-        }
-
-        public Heading getHeading() {
-            return routeLeg.getHeading();
-        }
-
-        public Double getXtdPort() {
-            return routeLeg.getXtdPort();
-        }
-
-        public Double getXtdStarboard() {
-            return routeLeg.getXtdStarboard();
-        }
-
-        public void setSFLen(Double sFLen) {
-            routeLeg.setSFLen(sFLen);
-        }
-
-        public void setSFWidth(Double sFWidth) {
-            routeLeg.setSFWidth(sFWidth);
-        }
-
-        public void setSpeed(Double speed) {
-            routeLeg.setSpeed(speed);
-        }
-
-        public void setXtdPort(Double xtdPort) {
-            routeLeg.setXtdPort(xtdPort);
-        }
-
-        public void setXtdStarboard(Double xtdStarboard) {
-            routeLeg.setXtdStarboard(xtdStarboard);
-        }
-        
-        public void setHeading(Heading heading) {
-            routeLeg.setHeading(heading);
-        }
-    }    
 }

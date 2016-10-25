@@ -42,4 +42,6 @@ public interface UserService {
     void updateAreasOfInterest(List<AreasOfInterest> areasOfInterests, String userName) throws FinderException;
 
     void createFrom(User user);
+
+    List<Object[]> rolesCount();
 }

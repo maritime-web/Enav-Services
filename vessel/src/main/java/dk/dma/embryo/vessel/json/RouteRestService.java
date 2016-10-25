@@ -15,7 +15,7 @@
 package dk.dma.embryo.vessel.json;
 
 import dk.dma.embryo.vessel.component.RouteDecorator;
-import dk.dma.embryo.vessel.component.RouteDecorator.Waypoint;
+import dk.dma.embryo.vessel.component.WaypointDecorator;
 import dk.dma.embryo.vessel.service.ScheduleService;
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
@@ -72,8 +72,8 @@ public class RouteRestService {
             
             // Should be empty, however.
             result.getWps().clear();
-            ArrayList<dk.dma.embryo.vessel.json.Waypoint> jsonWaypoints = new ArrayList<dk.dma.embryo.vessel.json.Waypoint>();
-            for (Waypoint decoratorWayPoint : decorator.getWaypoints()) {
+            ArrayList<dk.dma.embryo.vessel.json.Waypoint> jsonWaypoints = new ArrayList<>();
+            for (WaypointDecorator decoratorWayPoint : decorator.getWaypoints()) {
                 dk.dma.embryo.vessel.json.Waypoint jsonWaypoint = new dk.dma.embryo.vessel.json.Waypoint(
                             decoratorWayPoint.getName(),
                             decoratorWayPoint.getLatitude(),
@@ -116,24 +116,6 @@ public class RouteRestService {
         }
 
         logger.debug("getRoutes({}) : {}", ids, result);
-        return result;
-    }
-
-    @GET
-    @Path("/active/{mmsi}")
-    @Produces("application/json")
-    @GZIP
-    @NoCache
-    public Route getActive(@PathParam("mmsi") String mmsi) {
-        logger.debug("getActive({})", mmsi);
-
-        dk.dma.embryo.vessel.model.Route route;
-
-        route = scheduleService.getActiveRoute(Long.valueOf(mmsi));
-
-        Route result = route != null ? route.toJsonModel() : null;
-
-        logger.debug("getActive({}) : {}", mmsi, result);
         return result;
     }
 

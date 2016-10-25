@@ -21,6 +21,7 @@ import dk.dma.embryo.metoc.json.client.DmiSejlRuteService;
 import dk.dma.embryo.metoc.json.client.DmiSejlRuteService.Forecast;
 import dk.dma.embryo.metoc.json.client.DmiSejlRuteService.Waypoint;
 import dk.dma.embryo.vessel.component.RouteDecorator;
+import dk.dma.embryo.vessel.component.WaypointDecorator;
 import dk.dma.embryo.vessel.model.Route;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.persistence.VesselDao;
@@ -82,7 +83,7 @@ public class MetocServiceImpl implements MetocService {
         Waypoint[] waypoints = new Waypoint[r.getWaypoints().size()];
         int count = 0;
 
-        for (RouteDecorator.Waypoint waypoint : r.getWaypoints()) {
+        for (WaypointDecorator waypoint : r.getWaypoints()) {
             waypoints[count] = new DmiSejlRuteService.Waypoint();
             waypoints[count].setEta(DmiSejlRuteService.DATE_FORMAT.format(waypoint.getEta()));
             waypoints[count].setHeading(waypoint.getRouteLeg().getHeading().toString());

@@ -1,4 +1,4 @@
-embryo-msi
+msi
 =========
 
 ## How to include in a web-application
@@ -8,7 +8,7 @@ Add dependency to your POM:
 
     <dependency>
       <groupId>dk.dma.enav.services</groupId>
-      <artifactId>embryo-msi</artifactId>
+      <artifactId>msi</artifactId>
       <version>1.6</version>
     </dependency>
 

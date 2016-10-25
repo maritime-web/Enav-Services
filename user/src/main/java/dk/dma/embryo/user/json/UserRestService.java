@@ -98,5 +98,14 @@ public class UserRestService extends AbstractRestService {
         return super.getResponse(request, sourceFilterNames, MAX_AGE_15_MINUTES);
     }
 
+    @GET
+    @Path("/roles-count")
+    @Produces("application/json")
+    @GZIP
+    public Response rolesCount(@Context Request request) {
+        logger.info("/user/roles-count called.");
+        List<Object[]> rolesCount = userService.rolesCount();
+        return super.getResponse(request, rolesCount, NO_CACHE);
+    }
 
 }

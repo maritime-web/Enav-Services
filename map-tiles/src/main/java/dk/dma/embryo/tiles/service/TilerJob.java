@@ -17,6 +17,7 @@ package dk.dma.embryo.tiles.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -93,6 +94,11 @@ public class TilerJob {
     private Integer ageInDays;
 
     @Inject
+    @Property("embryo.tiles.invalidateConvertingJobsOlderThan")
+    private String invalidateConvertingJobsOlderThan;
+
+
+    @Inject
     @Property(value = "embryo.tiles.directory", substituteSystemProperties = true)
     private String tilesDirectory;
 
@@ -125,6 +131,7 @@ public class TilerJob {
         try {
             logger.debug("Max concurrent jobs: {}", maxConcurrentJobs);
             DateTime youngerThan = DateTime.now(DateTimeZone.UTC).minusDays(ageInDays).minusDays(1);
+            DateTime invalidateConvertingOlderThan = DateTime.now(DateTimeZone.UTC).minus(Duration.parse(invalidateConvertingJobsOlderThan).toMillis());
 
             notifications.clearOldThanMinutes(60 * 24);
 
@@ -132,6 +139,7 @@ public class TilerJob {
             for (Provider provider : providers) {
                 result = result.merge(deleteOldImages(provider, youngerThan));
                 result = result.merge(markOldTileSetsForDeletion(provider, youngerThan));
+                result = result.merge(markUnfinishedTiling4Deletion(provider, invalidateConvertingOlderThan));
                 result = result.merge(deleteOldTileSets(provider, youngerThan.minusDays(2)));
                 result = result.merge(deleteOldTiles(provider));
                 result = result.merge(saveNewTileSetEntries(provider, youngerThan));
@@ -156,6 +164,12 @@ public class TilerJob {
 
     private Result deleteOldImages(Provider provider, DateTime limit) throws Exception {
         DeleteGeoImageVisitor visitor = new DeleteGeoImageVisitor(limit, tileSetDao, embryoLogService);
+        provider.accept(visitor);
+        return visitor.getResult();
+    }
+
+    private Result markUnfinishedTiling4Deletion(Provider provider, DateTime limit) {
+        MarkUnfinishedTiling4DeletionVisitor visitor = new MarkUnfinishedTiling4DeletionVisitor(limit, tileSetDao, embryoLogService);
         provider.accept(visitor);
         return visitor.getResult();
     }

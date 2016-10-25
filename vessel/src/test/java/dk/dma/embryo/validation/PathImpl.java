@@ -17,6 +17,7 @@ package dk.dma.embryo.validation;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import javax.validation.ElementKind;
 import javax.validation.Path;
 
 public class PathImpl implements Path {
@@ -62,6 +63,15 @@ public class PathImpl implements Path {
             return null;
         }
 
+        @Override
+        public ElementKind getKind() {
+            return null;
+        }
+
+        @Override
+        public <T extends Node> T as(Class<T> aClass) {
+            return null;
+        }
     }
 
 }

@@ -65,9 +65,9 @@ public class UserServiceImpl implements UserService {
             realmDao.saveEntity(authority);
             return authority;
         case "Administration":
-            AdministratorRole administator = new AdministratorRole();
-            realmDao.saveEntity(administator);
-            return administator;
+            AdministratorRole administrator = new AdministratorRole();
+            realmDao.saveEntity(administrator);
+            return administrator;
         }
         return null;
     }
@@ -175,6 +175,10 @@ public class UserServiceImpl implements UserService {
         }
 
         SecuredUser savedUser = this.realmDao.saveEntityWithFlush(userReadyForUpdate);
+    }
+
+    public List<Object[]> rolesCount(){
+        return this.realmDao.rolesCount();
     }
 
 }

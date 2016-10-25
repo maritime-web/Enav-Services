@@ -32,5 +32,5 @@ public interface GreenPosDao extends Dao {
 
     GreenPosReport findLatest(Long vesselMmsi);
     
-    List<GreenposMinimal> getLatest();
+    List<GreenposMinimal> getFromLast7Days();
 }
