@@ -91,19 +91,19 @@
 
             <dependency>
                 <groupId>dk.dma.enav.services</groupId>
-                <artifactId>embryo-msi</artifactId>
+                <artifactId>msi</artifactId>
                 <version>${enav-services.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>dk.dma.enav.services</groupId>
-                <artifactId>embryo-reporting</artifactId>
+                <artifactId>reporting</artifactId>
                 <version>${enav-services.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>dk.dma.enav.services</groupId>
-                <artifactId>embryo-weather</artifactId>
+                <artifactId>weather</artifactId>
                 <version>${enav-services.version}</version>
             </dependency>
 
@@ -484,6 +484,32 @@
                             <includes>
                                 <include>dk/dma/**/*IT.java</include>
                             </includes>
+                            <systemPropertyVariables>
+                                <!--
+                                For running the integration tests locally
+                                add this to your settings.xml
+                                    <profiles>
+                                        <profile>
+                                            <id>localIntegrationTest</id>
+                                            <properties>
+                                                <enav-services-integration-test.location>
+                                                    file:///C:/dev/projekter/enav-configuration/conf/junit-integration-test/enav-services-integration-test-configuration.properties
+                                                </enav-services-integration-test.location>
+                                            </properties>
+                                        </profile>
+                                    </profiles>
+                                    <activeProfiles>
+                                        <activeProfile>localIntegrationTest</activeProfile>
+                                    </activeProfiles>
+                                replace the file:///... with the path to your integration test properties
+                                IntelliJ setup:
+                                add the test property file location to the JUnit default confiuration
+                                    1. goto Run->Edit Configurations...->Defaults->JUnit
+                                    2. add the property location under VM options e.g.
+                                "-Denav-services-integration-test.configuration=file:///C:/test-configuration.properties"
+                                -->
+                                <enav-services-integration-test.configuration>${enav-services-integration-test.location}</enav-services-integration-test.configuration>
+                            </systemPropertyVariables>
                         </configuration>
                     </plugin>
                 </plugins>
