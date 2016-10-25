@@ -34,13 +34,12 @@ import static org.hamcrest.Matchers.is;
  * Created by Steen on 13-10-2016.
  *
  */
-@Ignore
 public class MaritimeCloudServiceRegistryIT {
     private MaritimeCloudServiceRegistry cut;
 
     @Before
     public void setUp() throws Exception {
-        ApiFactory apiFactory = new ApiFactory("http://195.34.146.186:8080/", 20);
+        ApiFactory apiFactory = new ApiFactory("http://195.34.146.186:8080/", 2000);
         InstanceMapper mapper = new InstanceMapper(new InstanceXmlParser(new Base64Decoder()));
         cut = new MaritimeCloudServiceRegistry(new InstanceRepository(apiFactory, mapper, 5));
     }
