@@ -20,6 +20,7 @@ import dk.dma.enav.services.registry.api.TechnicalDesignId;
 import dk.dma.enav.services.registry.mc.api.ServiceinstanceresourceApi;
 import dk.dma.enav.services.registry.mc.model.Instance;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -33,6 +34,7 @@ import static org.hamcrest.Matchers.is;
  * Created by Steen on 13-10-2016.
  *
  */
+@Ignore
 public class MaritimeCloudServiceRegistryIT {
     private MaritimeCloudServiceRegistry cut;
 
