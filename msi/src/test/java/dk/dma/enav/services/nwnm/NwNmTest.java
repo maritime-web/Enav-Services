@@ -14,10 +14,10 @@
  */
 package dk.dma.enav.services.nwnm;
 
+import dk.dma.enav.services.nwnm.MessageLoaderTask.MessageLoaderTaskBuilder;
+import dk.dma.enav.services.registry.api.InstanceMetadata;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import java.net.URLEncoder;
 
 /**
  * Test loading NW-NM messages
@@ -30,12 +30,20 @@ public class NwNmTest {
     public void messageLoaderTest() throws Exception {
 
         // Check the redirect works
-        String url = "http://niord.e-navigation.net/rest/"
-                + NwNmRestService.NW_NM_API
-                + "?lang=en&mainType=NW&wkt=" + URLEncoder.encode("POLYGON((7 54, 7 57, 13 56, 13 57, 7 54))", "UTF-8");
+        String url = "http://niord.e-navigation.net/rest/";
 
         try {
-            MessageLoaderTask task = new MessageLoaderTask(url);
+            InstanceMetadata instance = new InstanceMetadata("test-nwnm")
+                    .withUrl(url);
+
+            MessageLoaderTask task =
+                    new MessageLoaderTaskBuilder()
+                            .serviceInstance(instance)
+                            .mainType("NW")
+                            .lang("en")
+                            .wkt("POLYGON((7 54, 7 57, 13 56, 13 57, 7 54))")
+                            .build();
+
             System.out.println("URL " + url + " returned " + task.call().size() + " messages");
         } catch (Exception e) {
             e.printStackTrace();
