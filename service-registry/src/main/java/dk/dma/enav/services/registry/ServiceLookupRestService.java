@@ -31,6 +31,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 
 /**
  *
@@ -51,7 +52,7 @@ public class ServiceLookupRestService extends AbstractRestService {
         try {
             res = enavServiceRegister.getServiceInstances(new TechnicalDesignId(serviceTechnicalDesignId, version), location);
         } catch (NoServicesFoundException e) {
-            throw new WebApplicationException(Response.status(NOT_FOUND).entity(new String[] {"Unable to find any service implementation of \""+serviceTechnicalDesignId+"\" with a boundary defined by \"" + location + "\""}).build());
+            throw new WebApplicationException(Response.status(NO_CONTENT).entity(new String[] {"Unable to find any service implementation of \""+serviceTechnicalDesignId+"\" with a boundary defined by \"" + location + "\""}).build());
         }
 
         return res;
