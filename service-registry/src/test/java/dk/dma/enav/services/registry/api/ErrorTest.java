@@ -12,12 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.enav.services.registry;
+package dk.dma.enav.services.registry.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dk.dma.enav.services.registry.api.Error;
-import dk.dma.enav.services.registry.api.ErrorId;
-import dk.dma.enav.services.registry.api.ErrorType;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;

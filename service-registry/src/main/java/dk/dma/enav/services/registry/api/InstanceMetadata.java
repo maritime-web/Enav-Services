@@ -26,23 +26,32 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Created by Steen on 27-04-2016.
  *
  */
 public class InstanceMetadata {
     private String instanceId;
+    private String version;
     private String name;
+    private String description;
+    private String status;
+    private Float availability;
     private TechnicalDesignId technicalDesignId;
     private String boundary;
     private String url;
+    private VendorInfo producedBy;
+    private VendorInfo providedBy;
     private Set<Error> errors;
     private List<Error> warnings;
 
-    public InstanceMetadata(String instanceId) {
+    public InstanceMetadata(String instanceId, String version) {
         if (instanceId == null) {
             throw new IllegalArgumentException("Can not create InstanceMetadata with missing instanceId");
         }
+        if (version == null) {
+            throw new IllegalArgumentException("Can not create InstanceMetadata with missing version");
+        }
         this.instanceId = instanceId;
+        this.version = version;
         this.warnings = new ArrayList<>();
         this.errors = new HashSet<>();
     }
@@ -74,6 +83,21 @@ public class InstanceMetadata {
         if (Strings.isNullOrEmpty(url)) {
             res.add(createErrorforMissingAttribute(ErrorId.MISSING_URL, "url"));
         }
+        if (Strings.isNullOrEmpty(description)) {
+            res.add(createErrorforMissingAttribute(ErrorId.MISSING_DESCRIPTION, "description"));
+        }
+        if (Strings.isNullOrEmpty(status)) {
+            res.add(createErrorforMissingAttribute(ErrorId.MISSING_STATUS, "status"));
+        }
+        if (availability == null) {
+            res.add(createErrorforMissingAttribute(ErrorId.MISSING_AVAILABILITY, "availability"));
+        }
+        if (producedBy == null) {
+            res.add(createErrorforMissingAttribute(ErrorId.MISSING_PRODUCED_BY, "producedBy"));
+        }
+        if (providedBy == null) {
+            res.add(createErrorforMissingAttribute(ErrorId.MISSING_PROVIDED_BY, "providedBy"));
+        }
         return res;
     }
 
@@ -83,6 +107,21 @@ public class InstanceMetadata {
 
     public InstanceMetadata withInstanceName(String name) {
         this.name = name;
+        return this;
+    }
+
+    public InstanceMetadata withDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public InstanceMetadata withAvailability(Float availability) {
+        this.availability = availability;
+        return this;
+    }
+
+    public InstanceMetadata withStatus(String status) {
+        this.status = status;
         return this;
     }
 
@@ -110,6 +149,16 @@ public class InstanceMetadata {
 
     public InstanceMetadata withUrl(String url) {
         this.url = url;
+        return this;
+    }
+
+    public InstanceMetadata withProducedBy(VendorInfo producedBy) {
+        this.producedBy = producedBy;
+        return this;
+    }
+
+    public InstanceMetadata withProvidedBy(VendorInfo providedBy) {
+        this.providedBy = providedBy;
         return this;
     }
 
@@ -142,8 +191,24 @@ public class InstanceMetadata {
         return instanceId;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public Float getAvailability() {
+        return availability;
     }
 
     public TechnicalDesignId getTechnicalDesignId() {
@@ -156,6 +221,14 @@ public class InstanceMetadata {
 
     public String getUrl() {
         return url;
+    }
+
+    public VendorInfo getProducedBy() {
+        return producedBy;
+    }
+
+    public VendorInfo getProvidedBy() {
+        return providedBy;
     }
 
     public List<Error> getErrors() {

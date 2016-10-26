@@ -153,6 +153,29 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <id>instance-schema</id>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                        <configuration>
+                            <packageName>org.efficiensea2.maritimecloud.serviceregistry.v1</packageName>
+                            <sources>
+                                <source>${basedir}/src/spec/ServiceInstanceSchema.xsd</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <enableIntrospection>true</enableIntrospection>
+                    <extension>true</extension>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

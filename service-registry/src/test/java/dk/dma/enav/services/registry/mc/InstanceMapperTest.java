@@ -41,10 +41,10 @@ public class InstanceMapperTest {
     private InstanceMapper cut;
 
     @Test
-    public void shouldReturnMetaDataWithErrorInstanceDetailsCantBeObtained() throws Exception {
+    public void shouldReturnMetaDataWithError() throws Exception {
         when(instanceXmlParser.parseInstanceXml(any(Xml.class))).thenThrow(new IllegalArgumentException("Nothing works"));
 
-        InstanceMetadata instanceMetadata = cut.toMetaData(new Instance().instanceId("anId"));
+        InstanceMetadata instanceMetadata = cut.toMetaData(new Instance().instanceId("anId").version("1.1"));
 
         assertThat(instanceMetadata.getErrors(), is(not(nullValue())));
     }

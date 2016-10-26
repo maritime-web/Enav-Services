@@ -16,57 +16,78 @@ package dk.dma.enav.services.registry.mc;
 
 import dk.dma.enav.services.registry.api.TechnicalDesignId;
 import dk.dma.enav.services.registry.mc.model.Xml;
+import org.efficiensea2.maritimecloud.serviceregistry.v1.CoverageArea;
+import org.efficiensea2.maritimecloud.serviceregistry.v1.ObjectFactory;
+import org.efficiensea2.maritimecloud.serviceregistry.v1.ServiceDesignReference;
+import org.efficiensea2.maritimecloud.serviceregistry.v1.ServiceInstance;
 import org.xml.sax.InputSource;
 
 import javax.inject.Inject;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.joining;
 
 /**
  *
  */
 public class InstanceXmlParser {
     private final Base64Decoder decoder;
+    private JAXBContext jaxbContext;
 
     @Inject
     public InstanceXmlParser(Base64Decoder decoder) {
         this.decoder = decoder;
     }
 
-    InstanceDetails parseInstanceXml(Xml xml) {
-        InstanceDetails res = new InstanceDetails();
-        try {
-            byte[] decodedInstance = decoder.decode(xml);
-            XPath xPath = XPathFactory.newInstance().newXPath();
-            xPath.setNamespaceContext(ServiceRegisterNamespaceContext.getInstance());
-            String url = xPath.evaluate("//s:serviceInstance/URL", createInputSource(decodedInstance));
-            String coverage = xPath.evaluate("//s:serviceInstance/coversAreas/coversArea/geometryAsWKT", createInputSource(decodedInstance));
-            String designId = xPath.evaluate("//s:serviceInstance/implementsServiceDesign/id", createInputSource(decodedInstance));
-            String designVersion = xPath.evaluate("//s:serviceInstance/implementsServiceDesign/version", createInputSource(decodedInstance));
-            TechnicalDesignId technicalDesignId = createTechnicalDesignId(designId, designVersion);
-            res
-                    .withUrl(url)
-                    .withCoverage(coverage)
-                    .withDesignId(technicalDesignId);
-        } catch (XPathExpressionException e) {
-            throw new RuntimeException(e);
-        }
-        return res;
-    }
-
-    private TechnicalDesignId createTechnicalDesignId(String designId, String designVersion) {
-        try {
-            return new TechnicalDesignId(designId, designVersion);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
+    ServiceInstance parseInstanceXml(Xml xml) {
+        byte[] decodedInstance = decoder.decode(xml);
+        return unmarshal(decodedInstance, ServiceInstance.class);
     }
 
     private InputSource createInputSource(byte[] xmlBytes) {
         return new InputSource(new InputStreamReader(new ByteArrayInputStream(xmlBytes), StandardCharsets.UTF_8));
+    }
+
+    private <E> E unmarshal(byte[] xmlBytes, Class<E> expectedType) {
+        try {
+            Unmarshaller unmarshaller = getUnmarshaller();
+            Object unmarshalledResponse = unmarshaller.unmarshal(createInputSource(xmlBytes));
+
+            if (expectedType.isInstance(unmarshalledResponse)) {
+                //noinspection unchecked
+                return (E) unmarshalledResponse;
+            } else if (unmarshalledResponse instanceof JAXBElement && ((JAXBElement) unmarshalledResponse).getDeclaredType().equals(expectedType)) {
+                //noinspection unchecked
+                return (E) ((JAXBElement) unmarshalledResponse).getValue();
+            } else {
+                throw new RuntimeException("unexpected unmarshal class: " + unmarshalledResponse.getClass().getName() + " expected: " + expectedType.getName());
+            }
+        } catch (JAXBException e) {
+            throw new RuntimeException("Unable to unmarshal:\n" + new String(xmlBytes), e);
+        }
+    }
+
+    private Unmarshaller getUnmarshaller() throws JAXBException {
+        return getContext().createUnmarshaller();
+    }
+
+    private JAXBContext getContext() {
+        if (jaxbContext == null) {
+            String contextPath = "org.efficiensea2.maritimecloud.serviceregistry.v1";
+            try {
+                jaxbContext = JAXBContext.newInstance(contextPath, ObjectFactory.class.getClassLoader());
+            } catch (JAXBException e) {
+                throw new RuntimeException("Unable to create JAXBContext for context path \"" + contextPath + "\"", e);
+            }
+        }
+
+        return jaxbContext;
     }
 }

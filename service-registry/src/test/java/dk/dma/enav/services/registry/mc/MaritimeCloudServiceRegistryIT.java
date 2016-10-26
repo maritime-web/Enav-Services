@@ -20,7 +20,7 @@ import dk.dma.enav.services.registry.api.TechnicalDesignId;
 import dk.dma.enav.services.registry.mc.api.ServiceinstanceresourceApi;
 import dk.dma.enav.services.registry.mc.model.Instance;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
@@ -35,13 +35,19 @@ import static org.hamcrest.Matchers.is;
  *
  */
 public class MaritimeCloudServiceRegistryIT {
+    private static InstanceRepository repository;
     private MaritimeCloudServiceRegistry cut;
+
+    @BeforeClass
+    public static void setUpClass() {
+        ApiFactory apiFactory = new ApiFactory("http://195.34.146.186:8080/", 2000);
+        InstanceMapper mapper = new InstanceMapper(new InstanceXmlParser(new Base64Decoder()));
+        repository = new InstanceRepository(apiFactory, mapper, 5);
+    }
 
     @Before
     public void setUp() throws Exception {
-        ApiFactory apiFactory = new ApiFactory("http://195.34.146.186:8080/", 2000);
-        InstanceMapper mapper = new InstanceMapper(new InstanceXmlParser(new Base64Decoder()));
-        cut = new MaritimeCloudServiceRegistry(new InstanceRepository(apiFactory, mapper, 5));
+        cut = new MaritimeCloudServiceRegistry(repository);
     }
 
     @Test
