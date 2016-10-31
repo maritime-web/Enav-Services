@@ -2301,10 +2301,7 @@ definitions:
       comment:
         type: string
       filecontent:
-        type: array
-        items:
-          type: string
-          format: byte
+        type: string
       filecontentContentType:
         type: string
       id:

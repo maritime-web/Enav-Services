@@ -16,7 +16,9 @@
 package dk.dma.enav.services.registry.mc.api;
 
 import dk.dma.enav.services.registry.mc.ApiException;
+import dk.dma.enav.services.registry.mc.ApiResponse;
 import dk.dma.enav.services.registry.mc.model.Instance;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -32,96 +34,23 @@ public class ServiceinstanceresourceApiIT {
 
     private final ServiceinstanceresourceApi api = new ServiceinstanceresourceApi();
 
-    /**
-     * getAllInstances
-     *
-     * 
-     *
-     * @throws ApiException
-     *          if the Api call fails
-     */
     @Test
     public void getAllInstancesUsingGETTest() throws ApiException {
         Integer page = null;
         Integer size = null;
         List<String> sort = null;
         List<Instance> response = api.getAllInstancesUsingGET(page, size, sort);
-
+        System.out.println(response);
         assertThat(response.size(), is(greaterThan(0)));
     }
     
-    /**
-     * getInstance
-     *
-     * 
-     *
-     * @throws ApiException
-     *          if the Api call fails
-     */
     @Test
-    public void getInstanceUsingGETTest() throws ApiException {
-        String id = null;
-        String version = null;
-        // Instance response = api.getInstanceUsingGET(id, version);
-
-        // TODO: test validations
+    @Ignore("There's an implementation error")
+    public void getInstanceByIdAndVersion() throws ApiException {
+        String id = "urn:mrn:mcl:service:instance:dma:tiles-service";
+        String version = "latest";
+        ApiResponse<Instance> response = api.getInstanceUsingGETWithHttpInfo(id, version);
+        System.out.println(response.getData());
     }
-    
-    /**
-     * searchInstancesByKeywords
-     *
-     * 
-     *
-     * @throws ApiException
-     *          if the Api call fails
-     */
-    @Test
-    public void searchInstancesByKeywordsUsingGETTest() throws ApiException {
-        String query = null;
-        Integer page = null;
-        Integer size = null;
-        List<String> sort = null;
-        // List<Instance> response = api.searchInstancesByKeywordsUsingGET(query, page, size, sort);
 
-        // TODO: test validations
-    }
-    
-    /**
-     * searchInstancesByLocation
-     *
-     * 
-     *
-     * @throws ApiException
-     *          if the Api call fails
-     */
-    @Test
-    public void searchInstancesByLocationUsingGETTest() throws ApiException {
-        String latitude = null;
-        String longitude = null;
-        Integer page = null;
-        Integer size = null;
-        List<String> sort = null;
-        // List<Instance> response = api.searchInstancesByLocationUsingGET(latitude, longitude, page, size, sort);
-
-        // TODO: test validations
-    }
-    
-    /**
-     * searchInstances
-     *
-     * 
-     *
-     * @throws ApiException
-     *          if the Api call fails
-     */
-    @Test
-    public void searchInstancesUsingGETTest() throws ApiException {
-        String query = null;
-        Integer page = null;
-        Integer size = null;
-        List<String> sort = null;
-        // List<Instance> response = api.searchInstancesUsingGET(query, page, size, sort);
-
-        // TODO: test validations
-    }
 }

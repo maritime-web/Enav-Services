@@ -62,14 +62,14 @@ public class MaritimeCloudServiceRegistryIT {
 
     @Test
     public void shouldGetTheNwNmService() throws Exception {
-        List<InstanceMetadata> res = cut.getServiceInstances(new TechnicalDesignId("urn:mrnx:mcl:service:dma:nw-nm:rest", "0.1"), "POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))");
+        List<InstanceMetadata> res = cut.getServiceInstances(new TechnicalDesignId("urn:mrn:mcl:service:design:dma:nw-nm:rest", "0.3"), "POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))");
 
         assertThat(res.size(), is(greaterThan(0)));
     }
 
     @Test
     public void shouldGetTheNwNmServiceWhenWKTLocationFilterIsNull() throws Exception {
-        List<InstanceMetadata> res = cut.getServiceInstances(new TechnicalDesignId("urn:mrnx:mcl:service:dma:nw-nm:rest", "0.1"), null);
+        List<InstanceMetadata> res = cut.getServiceInstances(new TechnicalDesignId("urn:mrn:mcl:service:design:dma:nw-nm:rest", "0.3"), null);
 
         assertThat(res.size(), is(greaterThan(0)));
     }
