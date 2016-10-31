@@ -29,7 +29,7 @@ public class Base64Decoder {
         assertNotNull(xmlRef.getContent(), "xml reference must refer to xml content");
         assertValidcontentType(xmlRef.getContentContentType());
 
-        return decode(xmlRef.getContent());
+        return xmlRef.getContent().getBytes(StandardCharsets.UTF_8);
     }
 
     public byte[] decode(Xsd xsdRef) {
@@ -37,7 +37,8 @@ public class Base64Decoder {
         assertNotNull(xsdRef.getContent(), "xsd reference must refer to xsd content");
         assertValidcontentType(xsdRef.getContentContentType());
 
-        return decode(xsdRef.getContent());
+//        return decode(xsdRef.getContent());
+        return new byte[]{};
     }
 
     private byte[] decode(String base64String) {

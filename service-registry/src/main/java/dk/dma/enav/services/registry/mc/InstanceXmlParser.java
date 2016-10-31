@@ -14,11 +14,8 @@
  */
 package dk.dma.enav.services.registry.mc;
 
-import dk.dma.enav.services.registry.api.TechnicalDesignId;
 import dk.dma.enav.services.registry.mc.model.Xml;
-import org.efficiensea2.maritimecloud.serviceregistry.v1.CoverageArea;
 import org.efficiensea2.maritimecloud.serviceregistry.v1.ObjectFactory;
-import org.efficiensea2.maritimecloud.serviceregistry.v1.ServiceDesignReference;
 import org.efficiensea2.maritimecloud.serviceregistry.v1.ServiceInstance;
 import org.xml.sax.InputSource;
 
@@ -30,9 +27,6 @@ import javax.xml.bind.Unmarshaller;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.joining;
 
 /**
  *

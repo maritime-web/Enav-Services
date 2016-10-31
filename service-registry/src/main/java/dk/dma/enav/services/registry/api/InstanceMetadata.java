@@ -249,27 +249,39 @@ public class InstanceMetadata {
         }
         InstanceMetadata that = (InstanceMetadata) o;
         return Objects.equals(instanceId, that.instanceId) &&
+                Objects.equals(version, that.version) &&
                 Objects.equals(name, that.name) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(status, that.status) &&
+                Objects.equals(availability, that.availability) &&
                 Objects.equals(technicalDesignId, that.technicalDesignId) &&
                 Objects.equals(boundary, that.boundary) &&
                 Objects.equals(url, that.url) &&
+                Objects.equals(producedBy, that.producedBy) &&
+                Objects.equals(providedBy, that.providedBy) &&
                 Objects.equals(errors, that.errors) &&
                 Objects.equals(warnings, that.warnings);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(instanceId, name, technicalDesignId, boundary, url, errors, warnings);
+        return Objects.hash(instanceId, version, name, description, status, availability, technicalDesignId, boundary, url, producedBy, providedBy, errors, warnings);
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("instanceId", instanceId)
+                .add("version", version)
                 .add("name", name)
+                .add("description", description)
+                .add("status", status)
+                .add("availability", availability)
                 .add("technicalDesignId", technicalDesignId)
                 .add("boundary", boundary)
                 .add("url", url)
+                .add("producedBy", producedBy)
+                .add("providedBy", providedBy)
                 .add("errors", errors)
                 .add("warnings", warnings)
                 .toString();

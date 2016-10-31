@@ -14,8 +14,6 @@
  */
 package dk.dma.enav.services.registry.mc;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.WKTReader;
 import dk.dma.enav.services.registry.mc.model.Xml;
 import org.efficiensea2.maritimecloud.serviceregistry.v1.CoverageArea;
 import org.efficiensea2.maritimecloud.serviceregistry.v1.ServiceInstance;
@@ -35,9 +33,9 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Base64;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -60,7 +58,7 @@ public class InstanceXmlParserTest {
         try {
             schema.newValidator().validate(new StreamSource(new FileReader(new File(instanceUrl.toURI()))), new StreamResult(baos));
         } catch (SAXException e) {
-            fail("Schema validation failed with message '"+e.getMessage()+"'");
+            fail("Schema validation failed with message '" + e.getMessage() + "'");
         }
     }
 
@@ -92,7 +90,7 @@ public class InstanceXmlParserTest {
         byte[] bytes = Files.readAllBytes(Paths.get(instanceUrl.toURI()));
         Xml xml = new Xml();
         xml.setContentContentType("application/xml");
-        xml.setContent(Base64.getEncoder().encodeToString(bytes));
+        xml.setContent(new String(bytes, StandardCharsets.UTF_8));
 
         return xml;
     }

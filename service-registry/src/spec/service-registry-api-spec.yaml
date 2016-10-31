@@ -1,10 +1,17 @@
 swagger: '2.0'
 info:
-  description: mcsr API documentation
-  version: 0.0.1
-  title: mcsr API
-  contact: {}
-  license: {name: ''}
+  description: >-
+    Maritime Cloud Service Registry, developed under the Horizon 2020 Project
+    EfficienSea2, cofunded by the European Union.
+  version: '1.0'
+  title: Maritime Cloud Service Registry API
+  contact:
+    name: Frequentis AG
+    url: 'http://www.frequentis.com'
+    email: josef.jahn@frequentis.com
+  license:
+    name: AGPLv3
+    url: 'https:/www.gnu.org/licenses/agpl-3.0.en.html'
 host: '195.34.146.186:8080'
 basePath: /
 schemes:
@@ -384,6 +391,110 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
+  /api/_searchGeometryGeoJSON/serviceInstance:
+    get:
+      tags:
+        - service-instance-resource
+      summary: searchInstancesByGeometryGeojson
+      description: Returns all service instances matching the specified GeoJson shape.
+      operationId: searchInstancesByGeometryGeojsonUsingGET
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: page
+          in: query
+          description: Page number of the requested page
+          required: false
+          type: integer
+          format: int32
+        - name: size
+          in: query
+          description: Size of a page
+          required: false
+          type: integer
+          format: int32
+        - name: geometry
+          in: query
+          description: geometry
+          required: true
+          type: string
+        - name: sort
+          in: query
+          description: >-
+            Sorting criteria in the format: property(,asc|desc). Default sort
+            order is ascending. Multiple sort criteria are supported.
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Instance'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /api/_searchGeometryWKT/serviceInstance:
+    get:
+      tags:
+        - service-instance-resource
+      summary: searchInstancesByGeometryWKT
+      description: Returns all service instances matching the specified WKT shape.
+      operationId: searchInstancesByGeometryWKTUsingGET
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: page
+          in: query
+          description: Page number of the requested page
+          required: false
+          type: integer
+          format: int32
+        - name: size
+          in: query
+          description: Size of a page
+          required: false
+          type: integer
+          format: int32
+        - name: geometry
+          in: query
+          description: geometry
+          required: true
+          type: string
+        - name: sort
+          in: query
+          description: >-
+            Sorting criteria in the format: property(,asc|desc). Default sort
+            order is ascending. Multiple sort criteria are supported.
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Instance'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
   /api/_searchKeywords/serviceInstance:
     get:
       tags:
@@ -440,6 +551,9 @@ paths:
       tags:
         - service-instance-resource
       summary: searchInstancesByLocation
+      description: >-
+        Returns all service instances matching the specified Lat/Lon
+        coordinates.
       operationId: searchInstancesByLocationUsingGET
       consumes:
         - application/json
@@ -466,6 +580,58 @@ paths:
         - name: longitude
           in: query
           description: longitude
+          required: true
+          type: string
+        - name: sort
+          in: query
+          description: >-
+            Sorting criteria in the format: property(,asc|desc). Default sort
+            order is ascending. Multiple sort criteria are supported.
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Instance'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /api/_searchUnlocode/serviceInstance:
+    get:
+      tags:
+        - service-instance-resource
+      summary: searchInstancesByUnlocode
+      description: Returns all service instances matching the specified UnLoCode.
+      operationId: searchInstancesByUnlocodeUsingGET
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: page
+          in: query
+          description: Page number of the requested page
+          required: false
+          type: integer
+          format: int32
+        - name: size
+          in: query
+          description: Size of a page
+          required: false
+          type: integer
+          format: int32
+        - name: query
+          in: query
+          description: query
           required: true
           type: string
         - name: sort
@@ -733,6 +899,11 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/Instance'
+        - name: Authorization
+          in: header
+          description: Authorization
+          required: true
+          type: string
       responses:
         '200':
           description: OK
@@ -762,6 +933,11 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/Instance'
+        - name: Authorization
+          in: header
+          description: Authorization
+          required: true
+          type: string
       responses:
         '200':
           description: OK
@@ -775,11 +951,65 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
+  '/api/serviceInstance/{id}':
+    get:
+      tags:
+        - service-instance-resource
+      summary: getAllInstancesById
+      operationId: getAllInstancesByIdUsingGET
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: page
+          in: query
+          description: Page number of the requested page
+          required: false
+          type: integer
+          format: int32
+        - name: size
+          in: query
+          description: Size of a page
+          required: false
+          type: integer
+          format: int32
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+        - name: sort
+          in: query
+          description: >-
+            Sorting criteria in the format: property(,asc|desc). Default sort
+            order is ascending. Multiple sort criteria are supported.
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Instance'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
   '/api/serviceInstance/{id}/{version}':
     get:
       tags:
         - service-instance-resource
       summary: getInstance
+      description: >-
+        Returns the service instance with the specified id and version. Use
+        version 'latest' to get the newest one.
       operationId: getInstanceUsingGET
       consumes:
         - application/json
@@ -827,6 +1057,11 @@ paths:
           description: version
           required: true
           type: string
+        - name: Authorization
+          in: header
+          description: Authorization
+          required: true
+          type: string
       responses:
         '200':
           description: OK
@@ -860,6 +1095,11 @@ paths:
         - name: status
           in: query
           description: status
+          required: true
+          type: string
+        - name: Authorization
+          in: header
+          description: Authorization
           required: true
           type: string
       responses:
@@ -935,6 +1175,11 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/Specification'
+        - name: Authorization
+          in: header
+          description: Authorization
+          required: true
+          type: string
       responses:
         '200':
           description: OK
@@ -964,6 +1209,11 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/Specification'
+        - name: Authorization
+          in: header
+          description: Authorization
+          required: true
+          type: string
       responses:
         '200':
           description: OK
@@ -977,11 +1227,65 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
+  '/api/serviceSpecification/{id}':
+    get:
+      tags:
+        - service-specification-resource
+      summary: getAllSpecificationsById
+      operationId: getAllSpecificationsByIdUsingGET
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: page
+          in: query
+          description: Page number of the requested page
+          required: false
+          type: integer
+          format: int32
+        - name: size
+          in: query
+          description: Size of a page
+          required: false
+          type: integer
+          format: int32
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+        - name: sort
+          in: query
+          description: >-
+            Sorting criteria in the format: property(,asc|desc). Default sort
+            order is ascending. Multiple sort criteria are supported.
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Specification'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
   '/api/serviceSpecification/{id}/{version}':
     get:
       tags:
         - service-specification-resource
       summary: getSpecification
+      description: >-
+        Returns the service specification with the specified id and version. Use
+        version 'latest' to get the newest one.
       operationId: getSpecificationUsingGET
       consumes:
         - application/json
@@ -1029,6 +1333,11 @@ paths:
           description: version
           required: true
           type: string
+        - name: Authorization
+          in: header
+          description: Authorization
+          required: true
+          type: string
       responses:
         '200':
           description: OK
@@ -1062,6 +1371,11 @@ paths:
         - name: status
           in: query
           description: status
+          required: true
+          type: string
+        - name: Authorization
+          in: header
+          description: Authorization
           required: true
           type: string
       responses:
@@ -1294,6 +1608,11 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/Design'
+        - name: Authorization
+          in: header
+          description: Authorization
+          required: true
+          type: string
       responses:
         '200':
           description: OK
@@ -1323,6 +1642,11 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/Design'
+        - name: Authorization
+          in: header
+          description: Authorization
+          required: true
+          type: string
       responses:
         '200':
           description: OK
@@ -1336,11 +1660,65 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
+  '/api/technicalDesign/{id}':
+    get:
+      tags:
+        - technical-design-resource
+      summary: getAllDesignsById
+      operationId: getAllDesignsByIdUsingGET
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: page
+          in: query
+          description: Page number of the requested page
+          required: false
+          type: integer
+          format: int32
+        - name: size
+          in: query
+          description: Size of a page
+          required: false
+          type: integer
+          format: int32
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+        - name: sort
+          in: query
+          description: >-
+            Sorting criteria in the format: property(,asc|desc). Default sort
+            order is ascending. Multiple sort criteria are supported.
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Design'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
   '/api/technicalDesign/{id}/{version}':
     get:
       tags:
         - technical-design-resource
       summary: getDesign
+      description: >-
+        Returns the technical design with the specified id and version. Use
+        version 'latest' to get the newest one.
       operationId: getDesignUsingGET
       consumes:
         - application/json
@@ -1388,6 +1766,11 @@ paths:
           description: version
           required: true
           type: string
+        - name: Authorization
+          in: header
+          description: Authorization
+          required: true
+          type: string
       responses:
         '200':
           description: OK
@@ -1421,6 +1804,11 @@ paths:
         - name: status
           in: query
           description: status
+          required: true
+          type: string
+        - name: Authorization
+          in: header
+          description: Authorization
           required: true
           type: string
       responses:
@@ -1773,6 +2161,8 @@ definitions:
         type: string
       organisationId:
         type: string
+      organizationId:
+        type: string
       specifications:
         type: array
         items:
@@ -1834,6 +2224,10 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Doc'
+      endpointType:
+        type: string
+      endpointUri:
+        type: string
       geometry:
         $ref: '#/definitions/JsonNode'
       geometryContentType:
@@ -1853,7 +2247,11 @@ definitions:
         type: string
       name:
         type: string
+      organizationId:
+        type: string
       status:
+        type: string
+      unlocode:
         type: string
       version:
         type: string
@@ -1885,7 +2283,10 @@ definitions:
       comment:
         type: string
       content:
-        type: string
+        type: array
+        items:
+          type: string
+          format: byte
       contentContentType:
         type: string
       id:
@@ -1900,7 +2301,10 @@ definitions:
       comment:
         type: string
       filecontent:
-        type: string
+        type: array
+        items:
+          type: string
+          format: byte
       filecontentContentType:
         type: string
       id:
@@ -1934,6 +2338,8 @@ definitions:
       name:
         type: string
       organisationId:
+        type: string
+      organizationId:
         type: string
       specAsDoc:
         $ref: '#/definitions/Doc'
@@ -1986,6 +2392,7 @@ definitions:
           - BINARY
           - BOOLEAN
           - MISSING
+          - 'NULL'
           - NUMBER
           - OBJECT
           - POJO

@@ -28,7 +28,7 @@ import static org.hamcrest.Matchers.is;
 /**
  * API tests for ServiceinstanceresourceApi
  */
-public class ServiceinstanceresourceApiTest {
+public class ServiceinstanceresourceApiIT {
 
     private final ServiceinstanceresourceApi api = new ServiceinstanceresourceApi();
 
