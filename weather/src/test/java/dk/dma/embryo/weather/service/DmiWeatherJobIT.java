@@ -21,6 +21,7 @@ import dk.dma.embryo.common.log.EmbryoLogService;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -35,6 +36,7 @@ import java.nio.file.Paths;
 /**
  * @author Jesper Tejlgaard
  */
+@Ignore // TODO until further notice from DMI.
 @RunWith(CdiRunner.class)
 @AdditionalClasses({PropertyFileService.class, LogConfiguration.class})
 public class DmiWeatherJobIT {
