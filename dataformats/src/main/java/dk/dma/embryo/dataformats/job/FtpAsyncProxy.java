@@ -275,7 +275,7 @@ public class FtpAsyncProxy {
                     shapeFileMeasurementDao.remove(measurement);
                     counts.shapeDeleteCount++;
                 } catch (Exception e) {
-                    String msg = "Error deleting shape entry " + measurement.getFileName() + " from ArcticWeb server";
+                    String msg = "Error deleting shape entry " + measurement.getFileName() + " from PolarWeb server";
                     logger.error(msg, e);
                     jobContext.getEmbryoLogService().error(msg, e);
                     counts.errorCount++;
@@ -306,7 +306,7 @@ public class FtpAsyncProxy {
                     fileService.deleteFile(file);
                     counts.fileDeleteCount++;
                 } catch (Exception e) {
-                    String msg = "Error deleting chart file " + file + " from ArcticWeb server";
+                    String msg = "Error deleting chart file " + file + " from PolarWeb server";
                     logger.error(msg, e);
                     jobContext.getEmbryoLogService().error(msg, e);
                     counts.errorCount++;
