@@ -21,6 +21,8 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
@@ -100,32 +102,48 @@ public class AisTrackRequestParamBuilder {
         return sourceFilter;
     }
 
-    public String getBaseArea() {
-        return baseArea;
+    public List<String> getBaseArea() {
+//Hack to ensure ais data from both polar regions
+        StringJoiner joiner = new StringJoiner("|");
+        joiner.add("-85");//lower left lat
+        joiner.add("-180");//lower left lon
+        joiner.add("-55");//upper right lat
+        joiner.add("180");//upper right lon
+        return Arrays.asList(baseArea, joiner.toString());
     }
 
     public List<String> getUserSelectedAreas() {
-        if (areaFilter == null) {
-            return null;
+        List<String> areas = new ArrayList<>();
+        if (areaFilter != null) {
+            areas = areaFilter.getAreasAsStream().map(
+                    area -> {
+                        StringJoiner joiner = new StringJoiner("|");
+                        joiner.add(Double.toString(area.getBottom()));
+                        joiner.add(Double.toString(area.getLeft()));
+                        joiner.add(Double.toString(area.getTop()));
+                        joiner.add(Double.toString(area.getRight()));
+                        return joiner.toString();
+                    }).collect(Collectors.toList());
         }
 
-        List<String> areas = areaFilter.getAreasAsStream().map(
-                area -> {
-                    StringJoiner joiner = new StringJoiner("|");
-                    joiner.add(Double.toString(area.getBottom()));
-                    joiner.add(Double.toString(area.getLeft()));
-                    joiner.add(Double.toString(area.getTop()));
-                    joiner.add(Double.toString(area.getRight()));
-                    return joiner.toString();
-                }).collect(Collectors.toList());
+        if (areas.size() == 0) {
+//Hack to ensure ais data from both polar regions
+            StringJoiner joiner = new StringJoiner("|");
+            joiner.add("-85");//lower left lat
+            joiner.add("-180");//lower left lon
+            joiner.add("-55");//upper right lat
+            joiner.add("180");//upper right lon
+            areas.add(joiner.toString());
 
-        if (areas.size() == 0 && defaultArea != null && defaultArea.length() > 0) {
-            try {
-                areas.add(URLEncoder.encode(defaultArea, "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                throw new EmbryonicException(e);
+            if (defaultArea != null && defaultArea.length() > 0) {
+                try {
+                    areas.add(URLEncoder.encode(defaultArea, "UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    throw new EmbryonicException(e);
+                }
             }
         }
+
         return areas;
     }
 
