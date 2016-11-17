@@ -36,7 +36,6 @@ import java.nio.file.Paths;
 /**
  * @author Jesper Tejlgaard
  */
-@Ignore // TODO until further notice from DMI.
 @RunWith(CdiRunner.class)
 @AdditionalClasses({PropertyFileService.class, LogConfiguration.class})
 public class DmiWeatherJobIT {
