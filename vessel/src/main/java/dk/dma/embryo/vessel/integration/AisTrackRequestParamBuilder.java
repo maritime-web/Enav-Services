@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 /**
  * Created by Jesper Tejlgaard on 6/5/15.
+ *
  */
 public class AisTrackRequestParamBuilder {
 
@@ -103,13 +104,11 @@ public class AisTrackRequestParamBuilder {
     }
 
     public List<String> getBaseArea() {
-//Hack to ensure ais data from both polar regions
-        StringJoiner joiner = new StringJoiner("|");
-        joiner.add("-85");//lower left lat
-        joiner.add("-180");//lower left lon
-        joiner.add("-55");//upper right lat
-        joiner.add("180");//upper right lon
-        return Arrays.asList(baseArea, joiner.toString());
+        if (baseArea != null) {
+            return Arrays.asList(baseArea.split(";"));
+        } else {
+            return null;
+        }
     }
 
     public List<String> getUserSelectedAreas() {
@@ -127,25 +126,28 @@ public class AisTrackRequestParamBuilder {
         }
 
         if (areas.size() == 0) {
-//Hack to ensure ais data from both polar regions
-            StringJoiner joiner = new StringJoiner("|");
-            joiner.add("-85");//lower left lat
-            joiner.add("-180");//lower left lon
-            joiner.add("-55");//upper right lat
-            joiner.add("180");//upper right lon
-            areas.add(joiner.toString());
-
             if (defaultArea != null && defaultArea.length() > 0) {
-                try {
-                    areas.add(URLEncoder.encode(defaultArea, "UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    throw new EmbryonicException(e);
-                }
+                areas.addAll(
+                        Arrays.stream(defaultArea.split(";"))
+                                .map(this::urlEncode)
+                                .collect(Collectors.toList())
+                );
             }
         }
 
         return areas;
     }
 
+    private String urlEncode(String string) {
+        if (string.contains("(")) {
+            try {
+                return URLEncoder.encode(string, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                throw new EmbryonicException(e);
+            }
+        } else {
+            return string;
+        }
+    }
 
 }

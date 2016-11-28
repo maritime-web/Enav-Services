@@ -29,7 +29,6 @@ import static org.mockito.Mockito.when;
 
 public class AisTrackRequestParamBuilderTest {
 
-    @Ignore
     @Test
     public void testUserSelectedAreas() {
         List<Area> testAreas = new ArrayList<>();
@@ -42,11 +41,11 @@ public class AisTrackRequestParamBuilderTest {
         AisTrackRequestParamBuilder builder = new AisTrackRequestParamBuilder();
         builder.addUserSelectedAreas(areaFilter);
 
-        ReflectionAssert.assertReflectionEquals(Arrays.asList(new String[]{"30.0|10.0|40.0|20.0", "9.0|4.0|10.0|5.0"}), builder.getUserSelectedAreas());
+        ReflectionAssert.assertReflectionEquals(Arrays.asList("30.0|10.0|40.0|20.0", "9.0|4.0|10.0|5.0"), builder.getUserSelectedAreas());
     }
 
-    @Ignore @Test
-    public void testDefaultArea() {
+    @Test
+    public void testOneDefaultArea() {
         List<Area> testAreas = new ArrayList<>();
         AreaFilter areaFilter = Mockito.mock(AreaFilter.class);
         when(areaFilter.getAreasAsStream()).thenReturn(testAreas.stream());
@@ -54,7 +53,19 @@ public class AisTrackRequestParamBuilderTest {
         AisTrackRequestParamBuilder builder = new AisTrackRequestParamBuilder();
         builder.addUserSelectedAreas(areaFilter).setDefaultArea("circle(70,-46,1800000)");
 
-        ReflectionAssert.assertReflectionEquals(Arrays.asList(new String[]{"circle%2870%2C-46%2C1800000%29"}), builder.getUserSelectedAreas());
+        ReflectionAssert.assertReflectionEquals(Arrays.asList("circle%2870%2C-46%2C1800000%29"), builder.getUserSelectedAreas());
+    }
+
+    @Test
+    public void testTwoDefaultAreas() {
+        List<Area> testAreas = new ArrayList<>();
+        AreaFilter areaFilter = Mockito.mock(AreaFilter.class);
+        when(areaFilter.getAreasAsStream()).thenReturn(testAreas.stream());
+
+        AisTrackRequestParamBuilder builder = new AisTrackRequestParamBuilder();
+        builder.addUserSelectedAreas(areaFilter).setDefaultArea("circle(70,-46,1800000);85.0|-180.0|-55.0|180.0");
+
+        ReflectionAssert.assertReflectionEquals(Arrays.asList("circle%2870%2C-46%2C1800000%29", "85.0|-180.0|-55.0|180.0"), builder.getUserSelectedAreas());
     }
 
 }
