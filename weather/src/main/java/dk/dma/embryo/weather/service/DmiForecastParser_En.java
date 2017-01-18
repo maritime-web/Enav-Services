@@ -126,6 +126,7 @@ public class DmiForecastParser_En {
 
     private String prettifyDateText(String text) {
         text = text.replace(" the", "");
+//        text = text.replace(" d.", "");
         text = text.replace("utc.", "");
         text = text.replace("UTC.", "");
         text = text.replace(":", "");

@@ -17,6 +17,7 @@ package dk.dma.embryo.user.json;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.json.AbstractRestService;
 import dk.dma.embryo.user.model.SecuredUser;
+import dk.dma.embryo.user.model.User;
 import dk.dma.embryo.user.service.UserService;
 import org.jboss.resteasy.annotations.GZIP;
 import org.slf4j.Logger;
@@ -107,72 +108,4 @@ public class UserRestService extends AbstractRestService {
         return super.getResponse(request, rolesCount, NO_CACHE);
     }
 
-
-    public static class User {
-        
-        private String login;
-        private String password;
-        private String role;
-        private Long shipMmsi;
-        private String email;
-        private String aisFilterName;
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            
-            result = prime * result + ((email == null) ? 0 : email.hashCode());
-            result = prime * result + ((login == null) ? 0 : login.hashCode());
-            result = prime * result + ((password == null) ? 0 : password.hashCode());
-            result = prime * result + ((role == null) ? 0 : role.hashCode());
-            result = prime * result + ((shipMmsi == null) ? 0 : shipMmsi.hashCode());
-            result = prime * result + ((aisFilterName == null) ? 0 : aisFilterName.hashCode());
-            
-            return result;
-        }
-
-        public String getLogin() {
-            return login;
-        }
-        public void setLogin(String login) {
-            this.login = login;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-        public void setPassword(String password) {
-            this.password = password;
-        }
-
-        public String getRole() {
-            return role;
-        }
-        public void setRole(String role) {
-            this.role = role;
-        }
-
-        public Long getShipMmsi() {
-            return shipMmsi;
-        }
-        public void setShipMmsi(Long shipMmsi) {
-            this.shipMmsi = shipMmsi;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public String getAisFilterName() {
-            return aisFilterName;
-        }
-
-        public void setAisFilterName(String aisFilterName) {
-            this.aisFilterName = aisFilterName;
-        }
-    }
 }

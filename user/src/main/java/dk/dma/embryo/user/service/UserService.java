@@ -16,6 +16,7 @@ package dk.dma.embryo.user.service;
 
 import dk.dma.embryo.user.model.AreasOfInterest;
 import dk.dma.embryo.user.model.SecuredUser;
+import dk.dma.embryo.user.model.User;
 
 import javax.ejb.FinderException;
 import java.util.List;
@@ -30,6 +31,8 @@ public interface UserService {
 
     void edit(String login, Long mmsi, String email, String role, String aisFilterName);
 
+    void mergeWith(User user);
+
     void delete(String login);
 
     void createPasswordUuid(SecuredUser user);
@@ -37,6 +40,8 @@ public interface UserService {
     void changePassword(String uuid, String password) throws FinderException;
 
     void updateAreasOfInterest(List<AreasOfInterest> areasOfInterests, String userName) throws FinderException;
+
+    void createFrom(User user);
 
     List<Object[]> rolesCount();
 }

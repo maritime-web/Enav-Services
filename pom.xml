@@ -5,7 +5,7 @@
     <groupId>dk.dma.enav.services</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.0-MC_Service_registry-SNAPSHOT</version>
     <name>e-Navigation Services parent</name>
     <description>Parent project for all the e-nav services</description>
 
@@ -28,7 +28,7 @@
 
 
     <properties>
-        <enav-services.version>1.0.3</enav-services.version>
+        <enav-services.version>1.0-MC_Service_registry-SNAPSHOT</enav-services.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <shiro.version>1.2.2</shiro.version>
         <version.org.jboss.spec.javaee7>1.0.3.Final</version.org.jboss.spec.javaee7>
@@ -116,6 +116,12 @@
             <dependency>
                 <groupId>dk.dma.enav.services</groupId>
                 <artifactId>map-tiles</artifactId>
+                <version>${enav-services.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dk.dma.enav.services</groupId>
+                <artifactId>service-registry</artifactId>
                 <version>${enav-services.version}</version>
             </dependency>
 
@@ -233,6 +239,17 @@
                 <version>2.4</version>
             </dependency>
 
+            <!-- Test dependencies -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>java-hamcrest</artifactId>
+                <version>2.0.0.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -421,6 +438,12 @@
                     </executions>
                 </plugin>
 
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.19.1</version>
+                </plugin>
+
             </plugins>
         </pluginManagement>
 
@@ -487,7 +510,9 @@
                             <systemPropertyVariables>
                                 <!--
                                 For running the integration tests locally
+
                                 add this to your settings.xml
+
                                     <profiles>
                                         <profile>
                                             <id>localIntegrationTest</id>
@@ -501,11 +526,14 @@
                                     <activeProfiles>
                                         <activeProfile>localIntegrationTest</activeProfile>
                                     </activeProfiles>
+
                                 replace the file:///... with the path to your integration test properties
+
                                 IntelliJ setup:
                                 add the test property file location to the JUnit default confiuration
                                     1. goto Run->Edit Configurations...->Defaults->JUnit
                                     2. add the property location under VM options e.g.
+
                                 "-Denav-services-integration-test.configuration=file:///C:/test-configuration.properties"
                                 -->
                                 <enav-services-integration-test.configuration>${enav-services-integration-test.location}</enav-services-integration-test.configuration>
@@ -568,6 +596,7 @@
         <module>sar</module>
         <module>reporting</module>
         <module>weather</module>
+        <module>service-registry</module>
         <module>vrmt</module>
     </modules>
 

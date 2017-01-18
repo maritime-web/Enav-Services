@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -61,13 +62,11 @@ public class SubjectImpl implements Subject {
         return realmDao.findByUsername(userName);
     }
     
-    @Override
     public SecuredUser findUserWithUuid(String uuid) {
         SecuredUser user = realmDao.findByUuid(uuid);
         return user;
     }
 
-    @Override
     public SecuredUser login(String userName, String password) {
         return login(userName, password, Boolean.FALSE);
     }
@@ -76,7 +75,6 @@ public class SubjectImpl implements Subject {
     /**
      * Expected used while transitioning from role base security to feature base security
      * 
-     * @param permission
      * @return
      */
     public <R extends Role> boolean hasRole(Class<R> roleType) {
@@ -98,17 +96,14 @@ public class SubjectImpl implements Subject {
         return realmDao.getByPrimaryKeyReturnAll(key);
     }
 
-    @Override
     public void logout() {
         SecurityUtils.getSubject().logout();
     }
 
-    @Override
     public boolean isLoggedIn() {
         return SecurityUtils.getSubject().isAuthenticated();
     }
     
-    @Override
     public boolean hasOneOfRoles(List<Class<? extends Role>> roleTypes){
         for(Class<? extends Role> roleType : roleTypes){
             if(hasRole(roleType)){
@@ -119,7 +114,6 @@ public class SubjectImpl implements Subject {
         return false;
     }
 
-    @Override
     public boolean authorizedToModifyVessel(Long mmsi) {
         logger.debug("authorizedToModifyVessel({})", mmsi);
         if(!hasRole(SailorRole.class)){
@@ -137,7 +131,6 @@ public class SubjectImpl implements Subject {
         return mmsi.equals(sailor.getVessel().getMmsi());
     }
     
-    @Override
     public SecuredUser getUserForEmail(String email) {
         return realmDao.findByEmail(email);
     }

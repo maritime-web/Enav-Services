@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ServiceInstanceSchema:serviceInstance
+        xmlns:ServiceInstanceSchema="http://efficiensea2.org/maritime-cloud/service-registry/v1/ServiceInstanceSchema.xsd"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://efficiensea2.org/maritime-cloud/service-registry/v1/ServiceInstanceSchema.xsd ServiceInstanceSchema.xsd
+">
+    <name>Ship-Port Synchronization Valencia</name>
+    <id>urn:mrnx:stm:service:instance:SPSS:Valencia</id>
+    <version>0.1</version>
+    <status>provisional</status>
+    <description>Schedule syncronization between Ship and Port</description>
+    <keywords>SPSS, Ship Port Synchronization Service, Valencia</keywords>
+    <URL>https://sjofartsverket.se/stm/spss/valencia</URL>
+    <requiresAuthorization>false</requiresAuthorization>
+
+    <implementsServiceDesign>
+        <id>urn:mrnx:stm:service:design:SPSS:Viktoria</id>
+        <version>0.1</version>
+    </implementsServiceDesign>
+
+    <offersServiceLevel>
+        <availability>0</availability>
+        <name>Service level</name>
+        <description></description>
+    </offersServiceLevel>
+    <coversAreas>
+        <coversArea>
+            <name>Port of Valencia</name>
+            <description>Port of Valencia</description>
+            <geometryAsWKT>POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))</geometryAsWKT>
+        </coversArea>
+    </coversAreas>
+
+    <producedBy>
+        <id>urn:mrn:mcl:org:Viktoria</id>
+        <name>Viktoria</name>
+        <description></description>
+        <contactInfo></contactInfo>
+        <isCommercial>false</isCommercial>
+    </producedBy>
+    <providedBy>
+        <id>urn:mrn:mcl:org:PortValencia</id>
+        <name>Port of Valencia</name>
+        <description></description>
+        <contactInfo></contactInfo>
+        <isCommercial>false</isCommercial>
+    </providedBy>
+</ServiceInstanceSchema:serviceInstance>

@@ -21,7 +21,7 @@ public class ShoreRole extends Role {
     private static final long serialVersionUID = 1L;
 
     public ShoreRole() {
-        super("Shore");
+        super(KnownRoles.Shore.toString());
     }
 
     public ShoreRole(String logicalName) {
