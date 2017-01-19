@@ -66,6 +66,8 @@ public class InstanceMapper {
             result.withBoundary(toGeometryCollection(details));
         } catch (IllegalArgumentException e) {
             result.addError(new Error(e));
+        } catch (NullPointerException e) {
+            LOGGER.error("Error parsing geometry for service instance for url " + details.getURL() + ". Check data in Remote Service Register. NullPointerException = " + e.getMessage() );
         }
 
         List<Error> validationErrors = result.validate();
