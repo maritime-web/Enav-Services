@@ -66,6 +66,8 @@ public class InstanceMapper {
             result.withBoundary(toGeometryCollection(details));
         } catch (IllegalArgumentException e) {
             result.addError(new Error(e));
+        }catch (NullPointerException e) {
+            System.err.println("NullPointerException = " + e.getMessage() + " for url " + details.getURL());
         }
 
         List<Error> validationErrors = result.validate();
