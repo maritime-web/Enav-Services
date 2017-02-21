@@ -169,7 +169,7 @@
         <all>
             <element name="name" type="string" minOccurs="1" maxOccurs="1"/>
             <element name="description" type="string" minOccurs="1" maxOccurs="1"/>
-            <element name="geometryAsWKT" type="string" default="POLYGON(-180 -90, 180 -90, 180 90, -180 90, -180 -90" minOccurs="0" maxOccurs="1"/>
+            <element name="geometryAsWKT" type="string" default="POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))" minOccurs="0" maxOccurs="1"/>
         </all>
     </complexType>
 </schema>
