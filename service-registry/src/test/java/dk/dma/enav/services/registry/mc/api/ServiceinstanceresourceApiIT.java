@@ -21,6 +21,7 @@ import dk.dma.enav.services.registry.mc.model.Instance;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.Iterator;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,17 +41,24 @@ public class ServiceinstanceresourceApiIT {
         Integer size = null;
         List<String> sort = null;
         List<Instance> response = api.getAllInstancesUsingGET(page, size, sort);
+        System.out.println("Services = " + response.size());
+        for (Iterator<Instance> i = response.iterator( ); i.hasNext(); ) {
+            Instance instance = i.next();
+            System.out.println("Id = " + instance.getInstanceId() + " ver. "  + instance.getVersion());
+            
+        }
+        Iterator<Instance> iterator = response.iterator();
         System.out.println(response);
         assertThat(response.size(), is(greaterThan(0)));
     }
     
     @Test
-    @Ignore("There's an implementation error")
     public void getInstanceByIdAndVersion() throws ApiException {
-        String id = "urn:mrn:mcl:service:instance:dma:tiles-service";
+        String id = "urn:mrn:mcl:service:instance:dma:tiles-service:terra:baltic";
         String version = "latest";
         ApiResponse<Instance> response = api.getInstanceUsingGETWithHttpInfo(id, version);
         System.out.println(response.getData());
+        //assertThat(response.getData().getStatus()!= null);
     }
 
 }
