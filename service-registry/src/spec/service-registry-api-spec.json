@@ -3592,15 +3592,11 @@
             "BINARY",
             "BOOLEAN",
             "MISSING",
-            "NULL",
             "NUMBER",
             "OBJECT",
             "POJO",
             "STRING"
           ]
-        },
-        "null": {
-          "type": "boolean"
         },
         "number": {
           "type": "boolean"
