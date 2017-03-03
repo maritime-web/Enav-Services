@@ -14,13 +14,14 @@
  */
 package dk.dma.enav.services.registry.api;
 
-import com.google.common.base.MoreObjects;
-
-import java.util.Objects;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  *
  */
+@Data
+@Accessors(chain = true)
 public class VendorInfo {
     private String id;
     private String name;
@@ -30,77 +31,5 @@ public class VendorInfo {
 
     public VendorInfo(String id) {
         this.id = id;
-    }
-
-    public VendorInfo withName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public VendorInfo withDescription(String description) {
-        this.description = description;
-        return this;
-    }
-
-    public VendorInfo withContactInfo(String contactInfo) {
-        this.contactInfo = contactInfo;
-        return this;
-    }
-
-    public VendorInfo withCommercial(Boolean commercial) {
-        this.commercial = commercial;
-        return this;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getContactInfo() {
-        return contactInfo;
-    }
-
-    public Boolean isCommercial() {
-        return commercial;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        VendorInfo that = (VendorInfo) o;
-        return commercial == that.commercial &&
-                Objects.equals(id, that.id) &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(description, that.description) &&
-                Objects.equals(contactInfo, that.contactInfo);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, description, contactInfo, commercial);
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("name", name)
-                .add("description", description)
-                .add("contactInfo", contactInfo)
-                .add("commercial", commercial)
-                .toString();
     }
 }

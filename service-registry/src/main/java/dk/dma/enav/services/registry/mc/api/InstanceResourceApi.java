@@ -14,11 +14,11 @@
  */
 package dk.dma.enav.services.registry.mc.api;
 
-import dk.dma.enav.services.registry.mc.ApiClient;
-import dk.dma.enav.services.registry.mc.model.Instance;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import dk.dma.enav.services.registry.mc.ApiClient;
+import dk.dma.enav.services.registry.mc.model.Instance;
 
 /**
  * Decorating @link{dk.dma.enav.services.registry.mc.api.ServiceinstanceresourceApi}
@@ -34,6 +34,12 @@ public class InstanceResourceApi {
     public List<Instance> getAll() {
         List<Instance> result = new ArrayList<>();
         new InstanceIterator(apiClient, PAGE_SIZE).forEachRemaining(result::addAll);
+        return result;
+    }
+
+    public List<Instance> searchByGeometry(String query, String wktLocationFilter) {
+        List<Instance> result = new ArrayList<>();
+        new InstanceIterator(apiClient, PAGE_SIZE, InstanceIterator.createSearchDataLoader(query, wktLocationFilter)).forEachRemaining(result::addAll);
         return result;
     }
 

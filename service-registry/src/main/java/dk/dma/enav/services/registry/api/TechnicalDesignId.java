@@ -14,57 +14,15 @@
  */
 package dk.dma.enav.services.registry.api;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Strings;
-
-import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 /**
  *
  */
+@Data
+@AllArgsConstructor
 public class TechnicalDesignId {
     private final String id;
     private final String version;
-
-    public TechnicalDesignId(String id, String version) {
-        if (Strings.isNullOrEmpty(id)) {
-            throw new IllegalArgumentException("Id must not be null");
-        }
-        this.id = id;
-        this.version = version;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        TechnicalDesignId that = (TechnicalDesignId) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(version, that.version);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, version);
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("version", version)
-                .toString();
-    }
 }

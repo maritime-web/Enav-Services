@@ -14,11 +14,6 @@
  */
 package dk.dma.enav.services.registry.mc.api;
 
-import dk.dma.enav.services.registry.mc.ApiClient;
-import dk.dma.enav.services.registry.mc.ApiException;
-import dk.dma.enav.services.registry.mc.ApiResponse;
-import dk.dma.enav.services.registry.mc.model.Instance;
-
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -26,17 +21,48 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.collect.Lists;
+import dk.dma.enav.services.registry.mc.ApiClient;
+import dk.dma.enav.services.registry.mc.ApiException;
+import dk.dma.enav.services.registry.mc.ApiResponse;
+import dk.dma.enav.services.registry.mc.model.Instance;
+
 /**
- *
+ * An iterator for looping through instances returned by a service.
+ * Pagination information is encoded in the link header, and must be read from there
  */
 class InstanceIterator implements Iterator<List<Instance>> {
+
+    public final static DataLoader ALL_DATA_LOADER =  new DataLoader() {
+        @Override
+        public ApiResponse<List<Instance>> fetchData(ServiceinstanceresourceApi api, int pageNumber, int pageSize) throws ApiException {
+            return api.getAllInstancesUsingGETWithHttpInfo(pageNumber, pageSize, null, null, Lists.newArrayList());
+        }
+    };
+
+    public static DataLoader createSearchDataLoader(String query, String wktLocation) {
+        return new DataLoader() {
+            @Override
+            public ApiResponse<List<Instance>> fetchData(ServiceinstanceresourceApi api, int pageNumber, int pageSize) throws ApiException {
+                return api.searchInstancesByGeometryWKTUsingGETWithHttpInfo(wktLocation, query, pageNumber, pageSize, null, null, Lists.newArrayList());
+            }
+        };
+    };
+
     private static final Pattern LINK_PATTERN = Pattern.compile(".*page=(?<page>\\d+).*size=(?<size>\\d+)");
-    private ServiceinstanceresourceApi api;
+    private final ServiceinstanceresourceApi api;
+    private final DataLoader dataLoader;
     private Optional<Link> next;
 
-    InstanceIterator(ApiClient apiClient, int pageSize) {
+    public InstanceIterator(ApiClient apiClient, int pageSize) {
+        this(apiClient, pageSize, ALL_DATA_LOADER);
+    }
+
+    public InstanceIterator(ApiClient apiClient, int pageSize, DataLoader dataLoader) {
         api = new ServiceinstanceresourceApi(apiClient);
         next = Optional.of(new Link(0, pageSize));
+        this.dataLoader = dataLoader;
+
     }
 
     @Override
@@ -54,7 +80,7 @@ class InstanceIterator implements Iterator<List<Instance>> {
 
     private ApiResponse<List<Instance>> call(int pageNumber, int pageSize) {
         try {
-            return api.getAllInstancesUsingGETWithHttpInfo(pageNumber, pageSize, null);
+            return dataLoader.fetchData(api, pageNumber, pageSize);
         } catch (ApiException e) {
             throw new RuntimeException(e);
         }
@@ -94,5 +120,8 @@ class InstanceIterator implements Iterator<List<Instance>> {
             this.page = page;
             this.size = size;
         }
+    }
+    public interface DataLoader {
+        ApiResponse<List<Instance>> fetchData(ServiceinstanceresourceApi api, int pageNumber, int pageSize) throws ApiException;
     }
 }

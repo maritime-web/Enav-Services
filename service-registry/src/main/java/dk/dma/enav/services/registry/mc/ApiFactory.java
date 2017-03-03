@@ -14,12 +14,12 @@
  */
 package dk.dma.enav.services.registry.mc;
 
+import javax.inject.Inject;
+
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.enav.services.registry.mc.api.InstanceResourceApi;
 import dk.dma.enav.services.registry.mc.api.ServiceinstanceresourceApi;
 import dk.dma.enav.services.registry.mc.api.TechnicaldesignresourceApi;
-
-import javax.inject.Inject;
 
 /**
  * Created by Steen on 17-10-2016.
@@ -46,7 +46,7 @@ public class ApiFactory {
 
     TechnicaldesignresourceApi createTechnicaldesignresourceApi() {return new TechnicaldesignresourceApi(createApiClient());}
 
-    private ApiClient createApiClient() {
+    public ApiClient createApiClient() {
         ApiClient apiClient = new ApiClient();
         apiClient.setBasePath(url);
         apiClient.setConnectTimeout(connectionTimeout);

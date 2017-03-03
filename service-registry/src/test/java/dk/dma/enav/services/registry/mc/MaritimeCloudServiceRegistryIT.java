@@ -14,13 +14,13 @@
  */
 package dk.dma.enav.services.registry.mc;
 
+import com.google.common.collect.Lists;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
 import dk.dma.enav.services.registry.api.NoServicesFoundException;
 import dk.dma.enav.services.registry.api.TechnicalDesignId;
 import dk.dma.enav.services.registry.mc.api.ServiceinstanceresourceApi;
 import dk.dma.enav.services.registry.mc.model.Instance;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -36,25 +36,22 @@ import static org.hamcrest.Matchers.is;
  *
  */
 public class MaritimeCloudServiceRegistryIT {
-    private static InstanceRepository repository;
+    private InstanceRepository repository;
     private MaritimeCloudServiceRegistry cut;
-
-    @BeforeClass
-    public static void setUpClass() {
-        ApiFactory apiFactory = new ApiFactory("http://sr.maritimecloud.net:8080", 2000);
-        InstanceMapper mapper = new InstanceMapper(new InstanceXmlParser(new Base64Decoder()));
-        repository = new InstanceRepository(apiFactory, mapper, 5);
-    }
+    private ApiFactory apiFactory;
 
     @Before
     public void setUp() throws Exception {
+        apiFactory = new ApiFactory("http://sr-test.maritimecloud.net:8080", 2000);
+        InstanceMapper mapper = new InstanceMapper(new InstanceXmlParser());
+        repository = new InstanceRepository(apiFactory, mapper, 5);
         cut = new MaritimeCloudServiceRegistry(repository);
     }
 
     @Test
     public void shouldBeAbleToMapAllInstancesToInstanceMetaData() throws Exception {
-        ServiceinstanceresourceApi api = new ServiceinstanceresourceApi();
-        List<String> ids = api.getAllInstancesUsingGET(null, null, null).stream().map(Instance::getInstanceId).collect(Collectors.toList());
+        ServiceinstanceresourceApi api = apiFactory.createServiceinstanceresourceApi();
+        List<String> ids = api.getAllInstancesUsingGET(null, null, null, null, Lists.newArrayList()).stream().map(Instance::getInstanceId).collect(Collectors.toList());
 
         List<InstanceMetadata> serviceInstances = cut.getServiceInstances(ids);
 
@@ -96,4 +93,13 @@ public class MaritimeCloudServiceRegistryIT {
     public void shouldThrowNoServicesFoundExceptionWhenSearchingForUnkownId() throws Exception {
         cut.getServiceInstances(new TechnicalDesignId("urn:mrnx:mcl:service:dma:non:existing:service", "1.0"), null);
     }
+
+    @Test(expected = NoServicesFoundException.class)
+    public void emptyResultforWKTLocationSearch() throws Exception {
+        cut.findServiceByWKTLocation("serviceType:VTS", "POLYGON((65 81,-118 81,-108 -66,81 -61,65 81))");
+    }
+
+
+
+
 }

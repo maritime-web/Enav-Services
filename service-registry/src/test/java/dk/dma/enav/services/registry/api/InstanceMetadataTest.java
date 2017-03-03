@@ -85,15 +85,15 @@ public class InstanceMetadataTest {
         String designId = "designtest";
         String version = "1";
         InstanceMetadata inst = new InstanceMetadata("aa", "0.1")
-                .withUrl(url)
-                .withBoundary(boundary)
-                .withInstanceName(name)
-                .withAvailability(0.1f)
-                .withDescription("tada")
-                .withStatus("Unknown")
-                .withProducedBy(new VendorInfo("mrn:ssss:errr"))
-                .withProvidedBy(new VendorInfo("mrn:ssss:xxx").withCommercial(true).withName("MA"))
-                .withTechnicalDesignId(new TechnicalDesignId(designId, version))
+                .setUrl(url)
+                .setBoundary(boundary)
+                .setName(name)
+                .setAvailability(0.1f)
+                .setDescription("tada")
+                .setStatus("Unknown")
+                .setProducedBy(new VendorInfo("mrn:ssss:errr"))
+                .setProvidedBy(new VendorInfo("mrn:ssss:xxx").setCommercial(true).setName("MA"))
+                .setTechnicalDesignId(new TechnicalDesignId(designId, version))
                 .addError(new Error(ErrorId.MISSING_URL, ErrorType.INVALID_DATA, ""));
         String json = mapper.writeValueAsString(inst);
         //noinspection unchecked

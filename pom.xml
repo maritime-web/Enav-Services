@@ -281,6 +281,14 @@
             <version>4.2.1</version>
         </dependency>
 
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.14</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.unitils</groupId>
@@ -516,7 +524,7 @@
                                     <profiles>
                                         <profile>
                                             <id>localIntegrationTest</id>
-                                            <properties>
+                                            <properties>˝
                                                 <enav-services-integration-test.location>
                                                     file:///C:/dev/projekter/enav-configuration/conf/junit-integration-test/enav-services-integration-test-configuration.properties
                                                 </enav-services-integration-test.location>

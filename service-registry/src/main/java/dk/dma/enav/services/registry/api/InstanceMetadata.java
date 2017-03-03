@@ -14,20 +14,22 @@
  */
 package dk.dma.enav.services.registry.api;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Strings;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.WKTReader;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
+
+import com.google.common.base.Strings;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.WKTReader;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  *
  */
+@Data
+@Accessors(chain = true)
 public class InstanceMetadata {
     private String instanceId;
     private String version;
@@ -105,31 +107,6 @@ public class InstanceMetadata {
         return new Error(id, ErrorType.MISSING_DATA , "Missing required attribute '"+attributeName+"'");
     }
 
-    public InstanceMetadata withInstanceName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public InstanceMetadata withDescription(String description) {
-        this.description = description;
-        return this;
-    }
-
-    public InstanceMetadata withAvailability(Float availability) {
-        this.availability = availability;
-        return this;
-    }
-
-    public InstanceMetadata withStatus(String status) {
-        this.status = status;
-        return this;
-    }
-
-    public InstanceMetadata withTechnicalDesignId(TechnicalDesignId technicalDesignId) {
-        this.technicalDesignId = technicalDesignId;
-        return this;
-    }
-
     /**
      * Sets the geographical area from which the service instance is accessible.
      * @param boundary as WKT
@@ -144,21 +121,6 @@ public class InstanceMetadata {
             throw new IllegalArgumentException("Boundary could not be parsed as WKT '"+boundary+"'", e);
         }
         this.boundary = boundary;
-        return this;
-    }
-
-    public InstanceMetadata withUrl(String url) {
-        this.url = url;
-        return this;
-    }
-
-    public InstanceMetadata withProducedBy(VendorInfo producedBy) {
-        this.producedBy = producedBy;
-        return this;
-    }
-
-    public InstanceMetadata withProvidedBy(VendorInfo providedBy) {
-        this.providedBy = providedBy;
         return this;
     }
 
@@ -187,103 +149,11 @@ public class InstanceMetadata {
         return this;
     }
 
-    public String getInstanceId() {
-        return instanceId;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public Float getAvailability() {
-        return availability;
-    }
-
-    public TechnicalDesignId getTechnicalDesignId() {
-        return technicalDesignId;
-    }
-
-    public String getBoundary() {
-        return boundary;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public VendorInfo getProducedBy() {
-        return producedBy;
-    }
-
-    public VendorInfo getProvidedBy() {
-        return providedBy;
-    }
-
     public List<Error> getErrors() {
         return new ArrayList<>(errors);
     }
 
     public List<Error> getWarnings() {
         return new ArrayList<>(warnings);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        InstanceMetadata that = (InstanceMetadata) o;
-        return Objects.equals(instanceId, that.instanceId) &&
-                Objects.equals(version, that.version) &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(description, that.description) &&
-                Objects.equals(status, that.status) &&
-                Objects.equals(availability, that.availability) &&
-                Objects.equals(technicalDesignId, that.technicalDesignId) &&
-                Objects.equals(boundary, that.boundary) &&
-                Objects.equals(url, that.url) &&
-                Objects.equals(producedBy, that.producedBy) &&
-                Objects.equals(providedBy, that.providedBy) &&
-                Objects.equals(errors, that.errors) &&
-                Objects.equals(warnings, that.warnings);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(instanceId, version, name, description, status, availability, technicalDesignId, boundary, url, producedBy, providedBy, errors, warnings);
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("instanceId", instanceId)
-                .add("version", version)
-                .add("name", name)
-                .add("description", description)
-                .add("status", status)
-                .add("availability", availability)
-                .add("technicalDesignId", technicalDesignId)
-                .add("boundary", boundary)
-                .add("url", url)
-                .add("producedBy", producedBy)
-                .add("providedBy", providedBy)
-                .add("errors", errors)
-                .add("warnings", warnings)
-                .toString();
     }
 }

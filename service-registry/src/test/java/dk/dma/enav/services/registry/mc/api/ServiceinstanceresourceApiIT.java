@@ -15,10 +15,11 @@
 
 package dk.dma.enav.services.registry.mc.api;
 
+import dk.dma.enav.services.registry.mc.ApiClient;
 import dk.dma.enav.services.registry.mc.ApiException;
+import dk.dma.enav.services.registry.mc.ApiFactory;
 import dk.dma.enav.services.registry.mc.ApiResponse;
 import dk.dma.enav.services.registry.mc.model.Instance;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Iterator;
@@ -33,14 +34,17 @@ import static org.hamcrest.Matchers.is;
  */
 public class ServiceinstanceresourceApiIT {
 
-    private final ServiceinstanceresourceApi api = new ServiceinstanceresourceApi();
+    private final ApiClient apiClient = new ApiFactory("http://sr-test.maritimecloud.net:8080", 2000).createApiClient();
+    private final ServiceinstanceresourceApi api = new ServiceinstanceresourceApi(apiClient);
 
     @Test
     public void getAllInstancesUsingGETTest() throws ApiException {
         Integer page = null;
         Integer size = null;
+        String includeDoc = null;
+        String authentication = null;
         List<String> sort = null;
-        List<Instance> response = api.getAllInstancesUsingGET(page, size, sort);
+        List<Instance> response = api.getAllInstancesUsingGET(page, size, includeDoc, authentication, sort);
         System.out.println("Services = " + response.size());
         for (Iterator<Instance> i = response.iterator( ); i.hasNext(); ) {
             Instance instance = i.next();
@@ -54,9 +58,10 @@ public class ServiceinstanceresourceApiIT {
     
     @Test
     public void getInstanceByIdAndVersion() throws ApiException {
-        String id = "urn:mrn:mcl:service:instance:dma:tiles-service:terra:baltic";
-        String version = "latest";
-        ApiResponse<Instance> response = api.getInstanceUsingGETWithHttpInfo(id, version);
+
+        String id = "urn:mrn:mcl:service:design:dma:nw-nm-rest";
+        String version = "0.3";
+        ApiResponse<Instance> response = api.getInstanceUsingGETWithHttpInfo(id, null, null, null);
         System.out.println(response.getData());
         //assertThat(response.getData().getStatus()!= null);
     }

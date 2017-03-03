@@ -14,30 +14,24 @@
  */
 package dk.dma.enav.services.registry;
 
-import dk.dma.embryo.common.json.AbstractRestService;
-import dk.dma.enav.services.registry.api.EnavServiceRegister;
-import dk.dma.enav.services.registry.api.NoServicesFoundException;
-import dk.dma.enav.services.registry.api.InstanceMetadata;
-import dk.dma.enav.services.registry.api.TechnicalDesignId;
-
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 import java.util.List;
 
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
+
+import dk.dma.enav.services.registry.api.EnavServiceRegister;
+import dk.dma.enav.services.registry.api.InstanceMetadata;
+import dk.dma.enav.services.registry.api.NoServicesFoundException;
+import dk.dma.enav.services.registry.api.TechnicalDesignId;
+
 import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 
 /**
  *
  */
 @Path("/service")
-public class ServiceLookupRestService extends AbstractRestService {
+public class ServiceLookupRestService {
     @Inject
     private EnavServiceRegister enavServiceRegister;
 

@@ -5,7 +5,15 @@ target/
 /.classpath
 /.project
 /.metadata
-.idea
+.idea/uiDesigner.xml
+.idea/misc.xml
+.DS_Store
+.idea/libraries
+.idea/copyright
+.idea/shelf
+.idea/workspace.xml
+.idea/artifacts/*
+.idea/uiDesigner.xml
 *.iml
 arcticweb.properties
 wildfly-8.*
