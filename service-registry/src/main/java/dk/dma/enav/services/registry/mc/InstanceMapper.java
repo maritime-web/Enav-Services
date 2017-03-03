@@ -23,7 +23,12 @@ import dk.dma.enav.services.registry.api.Error;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
 import dk.dma.enav.services.registry.api.TechnicalDesignId;
 import dk.dma.enav.services.registry.mc.model.Instance;
-import org.efficiensea2.maritimecloud.serviceregistry.v1.*;
+import org.efficiensea2.maritimecloud.serviceregistry.v1.CoverageArea;
+import org.efficiensea2.maritimecloud.serviceregistry.v1.ServiceDesignReference;
+import org.efficiensea2.maritimecloud.serviceregistry.v1.ServiceInstance;
+import org.efficiensea2.maritimecloud.serviceregistry.v1.ServiceLevel;
+import org.efficiensea2.maritimecloud.serviceregistry.v1.ServiceStatus;
+import org.efficiensea2.maritimecloud.serviceregistry.v1.VendorInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

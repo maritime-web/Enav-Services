@@ -33,7 +33,7 @@ import dk.dma.enav.services.registry.mc.model.Instance;
  */
 class InstanceIterator implements Iterator<List<Instance>> {
 
-    public final static DataLoader ALL_DATA_LOADER =  new DataLoader() {
+    public static final DataLoader ALL_DATA_LOADER =  new DataLoader() {
         @Override
         public ApiResponse<List<Instance>> fetchData(ServiceinstanceresourceApi api, int pageNumber, int pageSize) throws ApiException {
             return api.getAllInstancesUsingGETWithHttpInfo(pageNumber, pageSize, null, null, Lists.newArrayList());
