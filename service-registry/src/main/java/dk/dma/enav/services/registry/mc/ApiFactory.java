@@ -49,6 +49,7 @@ public class ApiFactory {
     public ApiClient createApiClient() {
         ApiClient apiClient = new ApiClient();
         apiClient.setBasePath(url);
+        apiClient.setVerifyingSsl(false);   // temp workaround because the JVM does not include the LetsEncrypt root certificate
         apiClient.setConnectTimeout(connectionTimeout);
         return apiClient;
     }
