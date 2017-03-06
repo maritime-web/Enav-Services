@@ -17,5 +17,4 @@ target/
 *.iml
 arcticweb.properties
 wildfly-8.*
-
 embryo-web/.buildpath

@@ -16,24 +16,42 @@ package dk.dma.enav.services.registry.mc;
 
 import javax.inject.Inject;
 
+import com.google.common.io.ByteStreams;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.enav.services.registry.mc.api.InstanceResourceApi;
 import dk.dma.enav.services.registry.mc.api.ServiceinstanceresourceApi;
 import dk.dma.enav.services.registry.mc.api.TechnicaldesignresourceApi;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
+ *
  * Created by Steen on 17-10-2016.
  *
  */
 public class ApiFactory {
+    private static final String CERTIFICATE_PATH = "/DST Root CA X3.cer";
     private final String url;
     private final int connectionTimeout;
+    private final byte[] certificateBytes;
 
     @Inject
+
     public ApiFactory(@Property("enav-service.service-registry.mc.endpoint.url") String url,
                       @Property("enav-service.service-registry.mc.connect.timeout") int connectionTimeout) {
         this.url = url;
         this.connectionTimeout = connectionTimeout;
+        InputStream certificateStream = getClass().getResourceAsStream(CERTIFICATE_PATH);
+        if (certificateStream == null) {
+            throw new IllegalStateException("Missing certificate in classpath '" + CERTIFICATE_PATH + "'");
+        }
+        try {
+            certificateBytes = ByteStreams.toByteArray(certificateStream);
+        } catch (IOException e) {
+            throw new IllegalStateException("Unable to read certificate from classpath '" + CERTIFICATE_PATH + "'", e);
+        }
     }
 
     InstanceResourceApi createInstanceResourceApi() {
@@ -46,10 +64,11 @@ public class ApiFactory {
 
     TechnicaldesignresourceApi createTechnicaldesignresourceApi() {return new TechnicaldesignresourceApi(createApiClient());}
 
+    // todo should this really be created multiple times ?
     public ApiClient createApiClient() {
         ApiClient apiClient = new ApiClient();
         apiClient.setBasePath(url);
-        apiClient.setVerifyingSsl(false);   // temp workaround because the JVM does not include the LetsEncrypt root certificate
+        apiClient.setSslCaCert(new ByteArrayInputStream(certificateBytes));
         apiClient.setConnectTimeout(connectionTimeout);
         return apiClient;
     }

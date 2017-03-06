@@ -1,4 +1,4 @@
-/* Copyright (c) 2011 Danish Maritime Authority.
+/* Copyright (c) ${YEAR} Danish Maritime Authority.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
