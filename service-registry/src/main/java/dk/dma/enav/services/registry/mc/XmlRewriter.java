@@ -44,13 +44,13 @@ import java.util.List;
 @ThreadSafe
 public class XmlRewriter {
 
-    public volatile boolean documentChangeLogged = false;
+    public volatile boolean documentChangeLogged;
     /**
      * producedBy and providedBy are of type VendorInfo which is defined in ServiceBaseTypesSchema.xsd, the elements of this
      * type is not namespaced since the elementFormDefault attribute is not set for this xsd.
      * ServiceSpecificationSchema.xsd has elementFormDefault="qualified" so element from type define there must belong to the namespace
      */
-    private static final List<String> rewriteParentNodeOnly = Lists.newArrayList("producedBy", "providedBy");
+    private static final List<String> REWRITE_PARENT_NODE_ONLY = Lists.newArrayList("producedBy", "providedBy");
 
     public String correctNamespaceIssues(String xml) {
 
@@ -74,7 +74,7 @@ public class XmlRewriter {
 
             for (Element element : list) {
                 element.setQName(new QName(element.getName(), namespace));
-                if (!rewriteParentNodeOnly.contains(element.getName())) {
+                if (!REWRITE_PARENT_NODE_ONLY.contains(element.getName())) {
                     // we should rewrite the children because the type comes from ServiceInstanceSchema.xsd and the element must be namespaced
                     addNamespace(element, namespace);
                 }
@@ -90,8 +90,7 @@ public class XmlRewriter {
         return xml;
     }
     private  void addNamespace(Element element, Namespace namespace) {
-        @SuppressWarnings("unchecked")
-        List<Element> children = element.selectNodes("./*");
+        @SuppressWarnings("unchecked") List<Element> children = element.selectNodes("./*");
         for (Element child : children) {
             child.setQName(new QName(child.getName(), namespace));
             addNamespace(child, namespace);
