@@ -21,6 +21,7 @@ import dk.dma.embryo.user.model.Role;
 import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.model.ShoreRole;
+import dk.dma.embryo.user.model.User;
 import dk.dma.embryo.user.persistence.RealmDao;
 import dk.dma.embryo.user.security.SecurityUtil;
 import dk.dma.embryo.user.security.SecurityUtil.HashedPassword;
@@ -49,9 +50,7 @@ public class UserServiceImpl implements UserService {
     private Role createRole(String role, Long mmsi) {
         switch (role) {
         case "Sailor":
-            Vessel vessel = new Vessel();
-            vessel.setMmsi(mmsi);
-            vesselDao.saveEntity(vessel);
+            Vessel vessel = getVessel(mmsi);
 
             SailorRole sailor = new SailorRole();
             sailor.setVessel(vessel);
@@ -73,11 +72,28 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    private Vessel getVessel(Long mmsi) {
+        Vessel vessel = vesselDao.getVessel(mmsi);
+        if (vessel == null) {
+            vessel = new Vessel();
+            vessel.setMmsi(mmsi);
+            vesselDao.saveEntity(vessel);
+        }
+        return vessel;
+    }
+
     @Override
     public void create(String login, String password, Long mmsi, String email, String role, String aisFilterName) {
         SecuredUser su = SecurityUtil.createUser(login, password, email, aisFilterName);
         su.setRole(createRole(role, mmsi));
         realmDao.saveEntity(su);
+    }
+
+    @Override
+    public void createFrom(User user) {
+        SecuredUser newUser = new SecuredUser(user);
+        newUser.setRole(createRole(user.getRole(), user.getShipMmsi()));
+        realmDao.saveEntity(newUser);
     }
 
     public void edit(String login, Long mmsi, String email, String role, String aisFilterName) {
@@ -104,6 +120,11 @@ public class UserServiceImpl implements UserService {
         }
 
         realmDao.saveEntity(user);
+    }
+
+    @Override
+    public void mergeWith(User user) {
+        edit(user.getLogin(), user.getShipMmsi(), user.getEmail(), user.getRole(), user.getAisFilterName());
     }
 
     @Override
@@ -159,4 +180,5 @@ public class UserServiceImpl implements UserService {
     public List<Object[]> rolesCount(){
         return this.realmDao.rolesCount();
     }
+
 }

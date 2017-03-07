@@ -6,14 +6,18 @@
   <packaging>jar</packaging>
   <name>e-Navigation User</name>
 
-  <parent>
-      <groupId>dk.dma.enav.services</groupId>
-    <artifactId>parent</artifactId>
-    <version>1.0.4-SNAPSHOT</version>
-      <relativePath>../pom.xml</relativePath>
-  </parent>
+    <parent>
+        <groupId>dk.dma.enav.services</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0-MC_Service_registry-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-  <dependencies>
+    <properties>
+        <keycloak.version>1.9.1.Final</keycloak.version>
+    </properties>
+
+    <dependencies>
 
       <!-- Added here again because weld jar contains older version of slf4j. This must be first in the classpath for Eclipse to work -->
     <dependency>
@@ -90,8 +94,22 @@
       <artifactId>shiro-web</artifactId>
       <version>${shiro.version}</version>
     </dependency>
-    
-    <!-- Import the Servlet API. -->
+
+      <!-- Keycloak dependencies -->
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-servlet-filter-adapter</artifactId>
+        <version>${keycloak.version}</version>
+      </dependency>
+
+      <!-- Utility libs -->
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>19.0</version>
+      </dependency>
+
+      <!-- Import the Servlet API. -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>

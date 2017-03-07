@@ -32,8 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static dk.dma.embryo.user.json.UserRestService.User;
-
 @Entity
 @NamedQueries({
     @NamedQuery(name = "SecuredUser:findByUserName", query = "SELECT u FROM SecuredUser u WHERE u.userName=:userName"),
@@ -41,6 +39,7 @@ import static dk.dma.embryo.user.json.UserRestService.User;
     @NamedQuery(name = "SecuredUser:getByPrimaryKeyReturnAll", query = "SELECT u FROM SecuredUser u LEFT JOIN FETCH u.role WHERE u.id=:id"),
     @NamedQuery(name = "SecuredUser:list", query = "SELECT u FROM SecuredUser u LEFT JOIN FETCH u.role AS r LEFT JOIN FETCH r.vessel"),
     @NamedQuery(name="SecuredUser:findByEmail", query = "SELECT u FROM SecuredUser u WHERE u.email=:email"),
+    @NamedQuery(name="SecuredUser:findByMaritimeCloudId", query = "SELECT u FROM SecuredUser u WHERE u.maritimeCloudId=:maritimeCloudId"),
     @NamedQuery(name="SecuredUser:findByUuid", query = "SELECT u FROM SecuredUser u WHERE u.forgotUuid=:uuid")})
 public class SecuredUser extends BaseEntity<Long> {
 
@@ -49,6 +48,8 @@ public class SecuredUser extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
+
+    private String maritimeCloudId;
 
     private String hashedPassword;
 
@@ -93,6 +94,14 @@ public class SecuredUser extends BaseEntity<Long> {
         this(userName, hashedPassword, salt);
         setEmail(email);
         setAisFilterName(aisFilterName);
+    }
+
+    public SecuredUser(User user) {
+        this.maritimeCloudId = user.getMaritimeCloudId();
+        setUserName(user.getLogin());
+        setEmail(user.getEmail());
+        setAisFilterName(user.getAisFilterName());
+        created = DateTime.now(DateTimeZone.UTC);
     }
 
     // //////////////////////////////////////////////////////////////////////

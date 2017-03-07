@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ServiceInstanceSchema:serviceInstance
+        xmlns:ServiceInstanceSchema="http://efficiensea2.org/maritime-cloud/service-registry/v1/ServiceInstanceSchema.xsd"
+        xmlns:ServiceSpecificationSchema="http://efficiensea2.org/maritime-cloud/service-registry/v1/ServiceSpecificationSchema.xsd"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://efficiensea2.org/maritime-cloud/service-registry/v1/ServiceInstanceSchema.xsd ServiceInstanceSchema.xsd ">
+    <name>DMA NW-NM T P Maritime Cloud REST Service</name>
+    <id>urn:mrn:mcl:service:instance:dma:nw-nm</id>
+    <version>0.3</version>
+    <status>provisional</status>
+    <description> A DMA instance of the NW-NM REST Service. </description>
+    <MMSI>UNKOWN</MMSI>
+    <IMO>UNKOWN</IMO>
+    <serviceType>UNKOWN</serviceType>
+    <keywords> NW, NM, Navigational Warnings, Notices to Mariners, MSI, Maritime Cloud Service. REST. Danish Maritime Authority, DMA </keywords>
+    <URL>http://niord.e-navigation.net/rest</URL>
+    <requiresAuthorization>false</requiresAuthorization>
+    <implementsServiceDesign>
+        <id>urn:mrn:mcl:service:design:dma:nw-nm-rest</id>
+        <version>0.3</version>
+    </implementsServiceDesign>
+    <offersServiceLevel>
+        <availability>0</availability>
+        <name>DMA NW-NM Service Level</name>
+        <description> No pay => no availability is guaranteed. </description>
+    </offersServiceLevel>
+    <coversAreas>
+        <coversArea>
+            <name>Danish Maritime Waters</name>
+            <description> Loosely defined region in the western part of the North Atlantic Ocean. </description>
+            <geometryAsWKT></geometryAsWKT>
+        </coversArea>
+    </coversAreas>
+    <producedBy>
+        <id>urn:mrn:mcl:user:dma:mcb</id>
+        <name>Mads Bentzen Billes</name>
+        <description> Responsible for producing the DMA NW-NM REST service </description>
+        <contactInfo>mcb@dma.dk</contactInfo>
+        <isCommercial>false</isCommercial>
+    </producedBy>
+    <providedBy>
+        <id>urn:mrn:mcl:user:dma:mcb</id>
+        <name>Mads Bentzen Billes</name>
+        <description>Responsible for providing the DMA NW-NM REST service</description>
+        <contactInfo>mcb@dma.dk</contactInfo>
+        <isCommercial>false</isCommercial>
+    </providedBy>
+</ServiceInstanceSchema:serviceInstance>

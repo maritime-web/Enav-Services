@@ -22,6 +22,6 @@ public class ReportingAuthorityRole extends Role {
     private static final long serialVersionUID = 1L;
 
     public ReportingAuthorityRole() {
-        super("Reporting");
+        super(KnownRoles.Reporting.toString());
     }
 }

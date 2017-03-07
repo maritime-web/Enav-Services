@@ -15,19 +15,24 @@
 package dk.dma.embryo.user.model;
 
 import dk.dma.embryo.vessel.model.Vessel;
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.unitils.reflectionassert.ReflectionAssert;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static dk.dma.embryo.user.json.UserRestService.User;
-
 /**
  * Created by Jesper Tejlgaard on 6/11/15.
+ *
  */
 public class SecuredUserTest {
 
+    @Test
+    public void testName() throws Exception {
+        System.out.println(DateTime.now().getMillis());
+
+    }
 
     @Test
     public void testToJsonModel() {

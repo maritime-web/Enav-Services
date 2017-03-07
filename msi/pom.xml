@@ -9,7 +9,7 @@
   <parent>
       <groupId>dk.dma.enav.services</groupId>
     <artifactId>parent</artifactId>
-      <version>1.0.4-SNAPSHOT</version>
+      <version>1.0-MC_Service_registry-SNAPSHOT</version>
       <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -24,9 +24,19 @@
       <artifactId>common</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>dk.dma.enav.services</groupId>
+      <artifactId>service-registry</artifactId>
+    </dependency>
 
-    <!-- Added here again because weld jar contains older version of slf4j. This must be first in the classpath for Eclipse 
-      to work -->
+      <dependency>
+          <groupId>org.niord</groupId>
+          <artifactId>niord-model</artifactId>
+          <version>1.0-SNAPSHOT</version>
+      </dependency>
+
+      <!-- Added here again because weld jar contains older version of slf4j. This must be first in the classpath for Eclipse
+        to work -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -37,6 +47,11 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jackson2-provider</artifactId>
     </dependency>
 
     <!-- APACHE COMMONS -->
@@ -82,6 +97,13 @@
       <!-- Used for Type annotation -->
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
+    </dependency>
+
+    <!-- Map with individual expiry per entry -->
+    <dependency>
+        <groupId>net.jodah</groupId>
+        <artifactId>expiringmap</artifactId>
+        <version>0.5.7</version>
     </dependency>
 
 
@@ -140,7 +162,6 @@
             <configuration>
               <verbose>true</verbose>
               <target>2.0</target>
-              <sei />
               <keep>true</keep>
               <sourceDestDir>${project.build.directory}/generated</sourceDestDir>
               <wsdlDirectory>${basedir}/src/main/resources/wsdl</wsdlDirectory>
@@ -152,7 +173,6 @@
           </execution>
         </executions>
       </plugin>
-
 
     </plugins>
   </build>
