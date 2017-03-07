@@ -59,22 +59,20 @@ public class MaritimeCloudServiceRegistryIT {
     }
 
     @Test
-    @Ignore("Is present but no response")
     public void shouldGetTheNwNmService() throws Exception {
-        List<InstanceMetadata> res = cut.getServiceInstances(new TechnicalDesignId("urn:mrn:mcl:service:design:dma:nw-nm:rest", "0.3"), "POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))");
+        List<InstanceMetadata> res = cut.getServiceInstances(new TechnicalDesignId("urn:mrn:mcl:service:design:dma:nw-nm-rest", "0.3"), "POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))");
         assertThat(res.size(), is(greaterThan(0)));
     }
     @Test
-    @Ignore("Is present but no response")
+    @Ignore("Service does not exist on sr-test")
     public void shouldGetSatelitteService() throws Exception {
         List<InstanceMetadata> res = cut.getServiceInstances(new TechnicalDesignId("urn:mrn:mcl:service:technical:dma:tiles-service", "0.2"), "POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))");
         assertThat(res.size(), is(greaterThan(0)));
     }
 
     @Test
-    @Ignore("Is present but no response")
     public void shouldGetTheNwNmServiceWhenWKTLocationFilterIsNull() throws Exception {
-        List<InstanceMetadata> res = cut.getServiceInstances(new TechnicalDesignId("urn:mrn:mcl:service:design:dma:nw-nm:rest", "0.3"), null);
+        List<InstanceMetadata> res = cut.getServiceInstances(new TechnicalDesignId("urn:mrn:mcl:service:design:dma:nw-nm-rest", "0.3"), null);
 
         assertThat(res.size(), is(greaterThan(0)));
     }
@@ -98,8 +96,5 @@ public class MaritimeCloudServiceRegistryIT {
     public void emptyResultforWKTLocationSearch() throws Exception {
         cut.findServiceByWKTLocation("serviceType:VTS", "POLYGON((65 81,-118 81,-108 -66,81 -61,65 81))");
     }
-
-
-
 
 }

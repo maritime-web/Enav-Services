@@ -32,8 +32,9 @@ import org.xml.sax.InputSource;
  */
 public class InstanceXmlParser {
     private JAXBContext jaxbContext;
+    private XmlRewriter xmlRewriter = new XmlRewriter();
 
-    ServiceInstance parseInstanceXml(Xml xml) {
+    public ServiceInstance parseInstanceXml(Xml xml) {
         return unmarshal(xml, ServiceInstance.class);
     }
 
@@ -43,6 +44,7 @@ public class InstanceXmlParser {
 
     private String getContext(Xml xml) {
         String content = xml.getContent();
+        content = xmlRewriter.correctNamespaceIssues(content);
         if (Strings.isNullOrEmpty(content)) {
             throw new IllegalArgumentException("No XML context: " + xml);
         }

@@ -23,6 +23,7 @@ import dk.dma.enav.services.registry.api.Error;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
 import dk.dma.enav.services.registry.api.TechnicalDesignId;
 import dk.dma.enav.services.registry.mc.model.Instance;
+import lombok.extern.slf4j.Slf4j;
 import org.efficiensea2.maritimecloud.serviceregistry.v1.CoverageArea;
 import org.efficiensea2.maritimecloud.serviceregistry.v1.ServiceDesignReference;
 import org.efficiensea2.maritimecloud.serviceregistry.v1.ServiceInstance;
@@ -37,8 +38,8 @@ import static java.util.stream.Collectors.joining;
 /**
  *
  */
+@Slf4j
 public class InstanceMapper {
-    private static final Logger LOGGER = LoggerFactory.getLogger(InstanceMapper.class);
 
     private final InstanceXmlParser instanceXmlParser;
 
@@ -68,7 +69,7 @@ public class InstanceMapper {
         } catch (IllegalArgumentException e) {
             result.addError(new Error(e));
         } catch (NullPointerException e) {
-            LOGGER.error("Error parsing geometry for service instance for url " + details.getURL() + ". Check data in Remote Service Register. NullPointerException = " + e.getMessage() );
+            log.error("Error parsing geometry for service instance for url " + details.getURL() + ". Check data in Remote Service Register. NullPointerException = " + e.getMessage());
         }
 
         List<Error> validationErrors = result.validate();
@@ -82,7 +83,7 @@ public class InstanceMapper {
         try {
             return instanceXmlParser.parseInstanceXml(instance.getInstanceAsXml());
         } catch (Exception e) {
-            LOGGER.warn("Error parsing xml from instance:\n" + instance.toString(), e);
+            log.warn("Error parsing xml from instance:\n" + instance.toString(), e);
             ServiceInstance serviceInstance = new ServiceInstance();
             serviceInstance.setOffersServiceLevel(new ServiceLevel());
             serviceInstance.setCoversAreas(new ServiceInstance.CoversAreas());
