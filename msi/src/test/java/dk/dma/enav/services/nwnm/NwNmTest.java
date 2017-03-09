@@ -34,7 +34,7 @@ public class NwNmTest {
 
         try {
             InstanceMetadata instance = new InstanceMetadata("test-nwnm", "1.0")
-                    .withUrl(url);
+                    .setUrl(url);
 
             MessageLoaderTask task =
                     new MessageLoaderTaskBuilder()

@@ -16,7 +16,7 @@ package dk.dma.enav.services.registry.api;
 
 /**
  * Created by Steen on 04-05-2016.
- *
+ * todo (kg) do we want to return 204, when the upstream service register returns 200, when searches are empty.
  */
 public class NoServicesFoundException extends RuntimeException {
     public NoServicesFoundException() {

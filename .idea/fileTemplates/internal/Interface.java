@@ -1,4 +1,4 @@
-/* Copyright (c) 2011 Danish Maritime Authority.
+/* Copyright (c) ${YEAR} Danish Maritime Authority.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,25 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-package dk.dma.enav.services.registry.api;
-
-import lombok.Data;
-import lombok.experimental.Accessors;
-
-/**
- *
- */
-@Data
-@Accessors(chain = true)
-public class VendorInfo {
-    private String id;
-    private String name;
-    private String description;
-    private String contactInfo;
-    private Boolean commercial;
-
-    public VendorInfo(String id) {
-        this.id = id;
-    }
+ */#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
+#parse("File Header.java")
+public interface ${NAME} {
 }

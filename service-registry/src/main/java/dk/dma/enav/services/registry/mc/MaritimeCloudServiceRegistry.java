@@ -14,14 +14,15 @@
  */
 package dk.dma.enav.services.registry.mc;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
 import dk.dma.enav.services.registry.api.EnavServiceRegister;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
 import dk.dma.enav.services.registry.api.NoServicesFoundException;
 import dk.dma.enav.services.registry.api.TechnicalDesignId;
-
-import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -57,4 +58,16 @@ public class MaritimeCloudServiceRegistry implements EnavServiceRegister {
                 .filter(instance -> instanceIds.contains(instance.getInstanceId()))
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Seaches the service registry for a service or a wktLocation (boundry)
+     * @param query Id of the service type
+     * @param wktLocationFilter a wkt location that the service intersects with
+     * @return a list of service that matched the given query
+     */
+    public List<InstanceMetadata> findServiceByWKTLocation(String query, String wktLocationFilter) {
+        return instanceRepository.findServiceByWKTLocation(query, wktLocationFilter);
+    }
+
+
 }

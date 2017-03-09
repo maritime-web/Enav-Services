@@ -14,13 +14,6 @@
  */
 package dk.dma.enav.services.registry.mc;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.enav.services.registry.api.InstanceMetadata;
-import dk.dma.enav.services.registry.mc.model.Instance;
-
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,14 +21,24 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+
+import com.google.common.base.Preconditions;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.enav.services.registry.api.InstanceMetadata;
+import dk.dma.enav.services.registry.api.NoServicesFoundException;
+import dk.dma.enav.services.registry.api.TechnicalDesignId;
+import dk.dma.enav.services.registry.mc.model.Instance;
+
 /**
  *
  */
 public class InstanceRepository {
     private final ApiFactory apiFactory;
     private final InstanceMapper mapper;
-    private final long expireTime;
-    private Cache<InstanceMetadata, InstanceMetadata> instanceCache;
+    private Cache<TechnicalDesignId, InstanceMetadata> instanceCache;
 
     @Inject
     public InstanceRepository(ApiFactory apiFactory,
@@ -44,10 +47,10 @@ public class InstanceRepository {
     ) {
         this.apiFactory = apiFactory;
         this.mapper = mapper;
-        this.expireTime = expireTime;
+        instanceCache = CacheBuilder.newBuilder().expireAfterWrite(expireTime, TimeUnit.SECONDS).build();
     }
 
-    List<InstanceMetadata> getAllInstances() {
+    public List<InstanceMetadata> getAllInstances() {
         List<InstanceMetadata> res = getAllInstancesFromCache();
         if (res.isEmpty()) {
             res = getAllInstancesFromMcServiceRegistry();
@@ -56,26 +59,44 @@ public class InstanceRepository {
         return res;
     }
 
-    private List<InstanceMetadata> getAllInstancesFromCache() {
-        return new ArrayList<>(getCache().asMap().values());
+    /**
+     * searches the service registry for a service or a wktLocation (boundry)
+     * @param query Id of the service type
+     * @param wktLocationFilter a wkt location that the service intersects with
+     * @return a list of service that matched the given query
+     */
+    public List<InstanceMetadata> findServiceByWKTLocation(String query, String wktLocationFilter) {
+        Preconditions.checkNotNull(query, "Query must be provided.");
+        Preconditions.checkNotNull(wktLocationFilter, "WKT location must be provided.");
+
+        // since you can query by organizationId, designId etc, we can't use the cache unless we want to run through all values
+        List<Instance> instances = apiFactory.createInstanceResourceApi().searchByGeometry(query, wktLocationFilter);
+        if (instances.isEmpty()) {
+            throw new NoServicesFoundException();
+        }
+
+        ArrayList<InstanceMetadata> instanceMetadatas = mapToInstanceMetadata(instances);
+        updateCache(instanceMetadatas);
+        return instanceMetadatas;
     }
 
-    private Cache<InstanceMetadata, InstanceMetadata> getCache() {
-        if (instanceCache == null) {
-            instanceCache = CacheBuilder.newBuilder().expireAfterWrite(expireTime, TimeUnit.SECONDS).build();
-        }
-        return instanceCache;
+    private List<InstanceMetadata> getAllInstancesFromCache() {
+        return new ArrayList<>(instanceCache.asMap().values());
     }
 
     private List<InstanceMetadata> getAllInstancesFromMcServiceRegistry() {
         List<Instance> instances = apiFactory.createInstanceResourceApi().getAll();
-        return instances.stream().map(mapper::toMetaData).collect(Collectors.toList());
+        return mapToInstanceMetadata(instances);
+    }
+
+    private ArrayList<InstanceMetadata> mapToInstanceMetadata(List<Instance> instances) {
+        return instances.stream().map(mapper::toMetaData).collect(Collectors.toCollection(ArrayList::new));
     }
 
     private void updateCache(List<InstanceMetadata> instances) {
-        Map<InstanceMetadata, InstanceMetadata> data = new HashMap<>();
-        instances.forEach(instance -> data.put(instance, instance));
-        getCache().putAll(data);
+        Map<TechnicalDesignId, InstanceMetadata> data = new HashMap<>();
+        instances.forEach(instance -> data.put(instance.getTechnicalDesignId(), instance));
+        instanceCache.putAll(data);
     }
 
 }

@@ -14,45 +14,47 @@
  */
 package dk.dma.enav.services.registry.mc;
 
+import java.io.StringReader;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
+import com.google.common.base.Strings;
 import dk.dma.enav.services.registry.mc.model.Xml;
 import org.efficiensea2.maritimecloud.serviceregistry.v1.ObjectFactory;
 import org.efficiensea2.maritimecloud.serviceregistry.v1.ServiceInstance;
 import org.xml.sax.InputSource;
 
-import javax.inject.Inject;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.ByteArrayInputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-
 /**
  *
  */
 public class InstanceXmlParser {
-    private final Base64Decoder decoder;
     private JAXBContext jaxbContext;
+    private XmlRewriter xmlRewriter = new XmlRewriter();
 
-    @Inject
-    public InstanceXmlParser(Base64Decoder decoder) {
-        this.decoder = decoder;
+    public ServiceInstance parseInstanceXml(Xml xml) {
+        return unmarshal(xml, ServiceInstance.class);
     }
 
-    ServiceInstance parseInstanceXml(Xml xml) {
-        byte[] decodedInstance = decoder.decode(xml);
-        return unmarshal(decodedInstance, ServiceInstance.class);
+    private InputSource createInputSource(Xml xml) {
+        return new InputSource(new StringReader(getContext(xml)));
     }
 
-    private InputSource createInputSource(byte[] xmlBytes) {
-        return new InputSource(new InputStreamReader(new ByteArrayInputStream(xmlBytes), StandardCharsets.UTF_8));
+    private String getContext(Xml xml) {
+        String content = xml.getContent();
+        content = xmlRewriter.correctNamespaceIssues(content);
+        if (Strings.isNullOrEmpty(content)) {
+            throw new IllegalArgumentException("No XML context: " + xml);
+        }
+        return content;
     }
 
-    private <E> E unmarshal(byte[] xmlBytes, Class<E> expectedType) {
+    private <E> E unmarshal(Xml xml, Class<E> expectedType) {
         try {
             Unmarshaller unmarshaller = getUnmarshaller();
-            Object unmarshalledResponse = unmarshaller.unmarshal(createInputSource(xmlBytes));
+            Object unmarshalledResponse = unmarshaller.unmarshal(createInputSource(xml));
 
             if (expectedType.isInstance(unmarshalledResponse)) {
                 //noinspection unchecked
@@ -64,7 +66,7 @@ public class InstanceXmlParser {
                 throw new RuntimeException("unexpected unmarshal class: " + unmarshalledResponse.getClass().getName() + " expected: " + expectedType.getName());
             }
         } catch (JAXBException e) {
-            throw new RuntimeException("Unable to unmarshal:\n" + new String(xmlBytes), e);
+            throw new RuntimeException("Unable to unmarshal:\n" + xml, e);
         }
     }
 

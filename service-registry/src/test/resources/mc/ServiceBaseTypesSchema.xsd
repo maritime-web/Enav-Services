@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema"
         xmlns:ServiceSpecificationSchema="http://efficiensea2.org/maritime-cloud/service-registry/v1/ServiceSpecificationSchema.xsd"
-        targetNamespace="http://efficiensea2.org/maritime-cloud/service-registry/v1/ServiceSpecificationSchema.xsd"
-        version="1.0" xml:lang="EN">
+        targetNamespace="http://efficiensea2.org/maritime-cloud/service-registry/v1/ServiceSpecificationSchema.xsd" version="1.0" xml:lang="EN">
     <annotation>
         <documentation>
             Authors:
@@ -27,9 +26,9 @@
 
                 Elements of an authorInfo are:
 
-                - id Unique identifier of the author.
+                - id          Unique identifier of the author.
 
-                - name Human readable name of the author.
+                - name        Human readable name of the author.
 
                 - description Human readable description of the author.
 
@@ -49,15 +48,15 @@
             <documentation>
                 Describes the vendor producing and/or providing the service instance..
 
-                - id Unique identification of the vendor.
+                - id            Unique identification of the vendor.
 
-                - name Human readable vendor name. The name shall be no longer than one line.
+                - name          Human readable vendor name. The name shall be no longer than one line.
 
-                - description Human readable description of the vendor.
+                - description   Human readable description of the vendor.
 
-                - contactInfo Human readable contact information of the vendor.
+                - contactInfo   Human readable contact information of the vendor.
 
-                - isCommercial Optional indication on the commercial status of the vendor.
+                - isCommercial  Optional indication on the commercial status of the vendor.
             </documentation>
         </annotation>
         <sequence>
@@ -94,12 +93,10 @@
             <documentation>
                 Service status may be one of the values listed below. Service specifications,
                 service designs and service instances each have their own status value.
-                provisional the service specification/design is not officially released, the service instance is
-                available, but not in official operation
-                released the service specification/design/instance is officially released / in operation
-                deprecated the service specification/design/instance is still available, but end of life is already
-                envisaged.
-                deleted the service specification/design/instance is not available any more.
+                provisional		the service specification/design is not officially released, the service instance is available, but not in official operation
+                released		the service specification/design/instance is officially released / in operation
+                deprecated	the service specification/design/instance is still available, but end of life is already envisaged.
+                deleted			the service specification/design/instance is not available any more.
             </documentation>
         </annotation>
         <restriction base="string">

@@ -15,12 +15,15 @@
 
 package dk.dma.enav.services.registry.mc.api;
 
+import dk.dma.enav.services.registry.mc.ApiClient;
 import dk.dma.enav.services.registry.mc.ApiException;
+import dk.dma.enav.services.registry.mc.ApiFactory;
 import dk.dma.enav.services.registry.mc.ApiResponse;
 import dk.dma.enav.services.registry.mc.model.Instance;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.Iterator;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,25 +35,37 @@ import static org.hamcrest.Matchers.is;
  */
 public class ServiceinstanceresourceApiIT {
 
-    private final ServiceinstanceresourceApi api = new ServiceinstanceresourceApi();
+    private final ApiClient apiClient = new ApiFactory("http://sr-test.maritimecloud.net:8080", 2000).createApiClient();
+    private final ServiceinstanceresourceApi api = new ServiceinstanceresourceApi(apiClient);
 
     @Test
     public void getAllInstancesUsingGETTest() throws ApiException {
         Integer page = null;
         Integer size = null;
+        String includeDoc = null;
+        String authentication = null;
         List<String> sort = null;
-        List<Instance> response = api.getAllInstancesUsingGET(page, size, sort);
+        List<Instance> response = api.getAllInstancesUsingGET(page, size, includeDoc, authentication, sort);
+        System.out.println("Services = " + response.size());
+        for (Iterator<Instance> i = response.iterator( ); i.hasNext(); ) {
+            Instance instance = i.next();
+            System.out.println("Id = " + instance.getInstanceId() + " ver. "  + instance.getVersion());
+            
+        }
+        Iterator<Instance> iterator = response.iterator();
         System.out.println(response);
         assertThat(response.size(), is(greaterThan(0)));
     }
     
     @Test
-    @Ignore("There's an implementation error")
+    // The service's Id are not visible on test-management.maritimecloud.net, so you have to call the getAllServices API to get the id
+    @Ignore("sr-test has a service with 8, but for some reason it is not returned.")
     public void getInstanceByIdAndVersion() throws ApiException {
-        String id = "urn:mrn:mcl:service:instance:dma:tiles-service";
-        String version = "latest";
-        ApiResponse<Instance> response = api.getInstanceUsingGETWithHttpInfo(id, version);
+        int id = 8;
+        String version = "0.1";
+        ApiResponse<Instance> response = api.getInstanceUsingGETWithHttpInfo(String.valueOf(id), version, null, null);
         System.out.println(response.getData());
+        //assertThat(response.getData().getStatus()!= null);
     }
 
 }
