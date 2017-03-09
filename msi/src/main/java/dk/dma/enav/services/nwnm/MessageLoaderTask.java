@@ -18,15 +18,17 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.Geometry;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.niord.model.DataFilter;
 import org.niord.model.message.MessageVo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import javax.persistence.Access;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -47,14 +49,13 @@ import java.util.stream.Collectors;
  * If fetching messages yields an error, an empty result set will be cached for 1 minute,
  * rather than throwing an exception.
  */
+@Slf4j
 final class MessageLoaderTask implements Callable<List<MessageVo>> {
 
     public static final String NW_NM_API = "public/v1/messages";
     public static final DataFilter MESSAGE_DETAILS_FILTER =
             DataFilter.get().fields("Message.details", "Message.geometry", "Area.parent", "Category.parent");
 
-
-    final Logger logger = LoggerFactory.getLogger(MessageLoaderTask.class);
     final ExpiringMap<String, NwNmServiceInstanceData> instanceMessageCache;
     final InstanceMetadata serviceInstance;
     final String mainType;
@@ -93,7 +94,7 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
                 cachedInstanceData(data);
 
             } catch (Exception e) {
-                logger.error("Failed loading NW-NM messages for instance "
+                log.error("Failed loading NW-NM messages for instance "
                         + serviceInstance.getInstanceId() + " : " + e.getMessage());
 
                 // If loading data causes an error, cache an empty result set for a short period of time
@@ -115,7 +116,7 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
                 .map(m -> m.copy(filter))
                 .collect(Collectors.toList());
 
-        logger.info(String.format("Search for language=%s, mainType=%s, wkt=%s -> returning %d messages",
+        log.info(String.format("Search for language=%s, mainType=%s, wkt=%s -> returning %d messages",
                 lang, mainType, wkt, result.size()));
 
         return result;
@@ -229,7 +230,7 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
             ObjectMapper mapper = new ObjectMapper();
             List<MessageVo> messages = mapper.readValue(json, new TypeReference<List<MessageVo>>(){});
 
-            logger.info(String.format(
+            log.info(String.format(
                     "Loaded %d NW-NM messages in %s ms",
                     messages.size(),
                     System.currentTimeMillis() - t0));
@@ -270,6 +271,8 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
 
 
     /** Buiilder class for the MessageLoaderTask class **/
+    @Setter
+    @Accessors(chain = true, fluent = true)
     public static class MessageLoaderTaskBuilder {
 
         private ExpiringMap<String, NwNmServiceInstanceData> instanceMessageCache;
@@ -277,31 +280,6 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
         private String mainType;
         private String lang;
         private String wkt;
-
-        public MessageLoaderTaskBuilder instanceMessageCache(ExpiringMap<String, NwNmServiceInstanceData> instanceMessageCache) {
-            this.instanceMessageCache = instanceMessageCache;
-            return this;
-        }
-
-        public MessageLoaderTaskBuilder serviceInstance(InstanceMetadata serviceInstance) {
-            this.serviceInstance = serviceInstance;
-            return this;
-        }
-
-        public MessageLoaderTaskBuilder mainType(String mainType) {
-            this.mainType = mainType;
-            return this;
-        }
-
-        public MessageLoaderTaskBuilder lang(String lang) {
-            this.lang = lang;
-            return this;
-        }
-
-        public MessageLoaderTaskBuilder wkt(String wkt) {
-            this.wkt = wkt;
-            return this;
-        }
 
         /**
          * Constructs a new MessageLoaderTask instance

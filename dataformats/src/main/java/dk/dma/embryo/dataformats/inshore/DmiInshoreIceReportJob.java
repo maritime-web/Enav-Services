@@ -19,15 +19,16 @@ import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.common.mail.MailSender;
+import dk.dma.embryo.common.util.FileUtils;
 import dk.dma.embryo.common.util.NamedtimeStamps;
 import dk.dma.embryo.dataformats.job.EmbryoFTPFileFilters;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -61,10 +62,8 @@ import static dk.dma.embryo.dataformats.inshore.DmiInshoreIceReportPredicates.re
  */
 @Singleton
 @Startup
+@Slf4j
 public class DmiInshoreIceReportJob {
-
-    @Inject
-    private Logger logger;
 
     @Resource
     private TimerService timerService;
@@ -130,16 +129,16 @@ public class DmiInshoreIceReportJob {
     @PostConstruct
     public void init() {
         if (!dmiServer.trim().equals("") && (cron != null)) {
-            logger.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
+            log.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
             timerService.createCalendarTimer(cron, new TimerConfig(null, false));
         } else {
-            logger.info("DMI FTP site is not configured - cron job not scheduled.");
+            log.info("DMI FTP site is not configured - cron job not scheduled.");
         }
     }
 
     @PreDestroy
     public void shutdown() throws InterruptedException {
-        logger.info("Shutdown called.");
+        log.info("Shutdown called.");
     }
 
     @Timeout
@@ -147,16 +146,18 @@ public class DmiInshoreIceReportJob {
         notifications.clearOldThanMinutes(silencePeriod);
 
         try {
-            logger.info("Making directories if necessary ...");
+            log.info("Making directories if necessary ...");
 
-            if (!new File(localDmiDir).exists()) {
-                logger.info("Making local directory for DMI files: " + localDmiDir);
-                new File(localDmiDir).mkdirs();
+            File localDirFile = new File(localDmiDir);
+            if (!localDirFile.exists()) {
+                log.info("Making local directory for DMI files: " + localDmiDir);
+                FileUtils.createDirectories(localDirFile);
             }
 
-            if (!new File(tmpDir).exists()) {
-                logger.info("Making local directory for temporary files: " + tmpDir);
-                new File(tmpDir).mkdirs();
+            File tempDirFile = new File(tmpDir);
+            if (!tempDirFile.exists()) {
+                log.info("Making local directory for temporary files: " + tmpDir);
+                FileUtils.createDirectories(tempDirFile);
             }
 
 
@@ -164,7 +165,7 @@ public class DmiInshoreIceReportJob {
 
             FTPClient ftp = connect();
 
-            logger.info("Transfer files ...");
+            log.info("Transfer files ...");
             final List<String> transfered = new ArrayList<>();
             final List<String> error = new ArrayList<>();
 
@@ -175,12 +176,12 @@ public class DmiInshoreIceReportJob {
 
                 List<FTPFile> files = Arrays.asList(ftp.listFiles(null, EmbryoFTPFileFilters.FILES));
 
-                logger.debug("files: {}" , files);
+                log.debug("files: {}", files);
 
                 Collection<FTPFile> rejected = Collections2.filter(files, rejectedReports());
                 Collection<FTPFile> accepted = Collections2.filter(files, acceptedReports(mapsYoungerThan));
 
-                logger.debug("rejected: {}", rejected);
+                log.debug("rejected: {}", rejected);
 
                 for (FTPFile file : accepted) {
                     try {
@@ -212,14 +213,14 @@ public class DmiInshoreIceReportJob {
             String msg = "Scanned DMI (" + dmiServer + ") for files. Transfered: " + toString(transfered)
                     + ", Errors: " + toString(error);
             if (error.size() == 0) {
-                logger.info(msg);
+                log.info(msg);
                 embryoLogService.info(msg);
             } else {
-                logger.error(msg);
+                log.error(msg);
                 embryoLogService.error(msg);
             }
         } catch (Throwable t) {
-            logger.error("Unhandled error scanning/transfering files from DMI (" + dmiServer + "): " + t, t);
+            log.error("Unhandled error scanning/transfering files from DMI (" + dmiServer + "): " + t, t);
             embryoLogService.error("Unhandled error scanning/transfering files from DMI (" + dmiServer + "): " + t, t);
         }
     }
@@ -239,7 +240,7 @@ public class DmiInshoreIceReportJob {
 
     FTPClient connect() throws IOException {
         FTPClient ftp = new FTPClient();
-        logger.info("Connecting to " + dmiServer + " using " + dmiLogin + " ...");
+        log.info("Connecting to " + dmiServer + " using " + dmiLogin + " ...");
 
         ftp.setDefaultTimeout(30000);
         ftp.connect(dmiServer);
@@ -253,21 +254,18 @@ public class DmiInshoreIceReportJob {
             InterruptedException {
 
         String fn = tmpDir + "/inshore" + Math.random();
-        FileOutputStream fos = new FileOutputStream(fn);
 
-        try {
-            logger.info("Transfering " + file.getName() + " to " + fn);
+        try (FileOutputStream fos = new FileOutputStream(fn)) {
+            log.info("Transfering " + file.getName() + " to " + fn);
             if (!ftp.retrieveFile(file.getName(), fos)) {
                 return false;
             }
-        } finally {
-            fos.close();
         }
 
         Thread.sleep(10);
 
         Path dest = Paths.get(localDmiDir).resolve(file.getName());
-        logger.info("Moving " + fn + " to " + dest.getFileName());
+        log.info("Moving " + fn + " to " + dest.getFileName());
         Files.move(Paths.get(fn), dest, StandardCopyOption.REPLACE_EXISTING);
 
         return true;

@@ -14,10 +14,16 @@
  */
 package dk.dma.embryo.dataformats.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.dma.embryo.common.configuration.PropertiesReader;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.dataformats.service.ShapeFileService.BaseFragment;
+import dk.dma.embryo.dataformats.service.ShapeFileService.Fragment;
+import dk.dma.embryo.dataformats.service.ShapeFileService.PointFragment;
+import dk.dma.embryo.dataformats.service.ShapeFileService.Shape;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,36 +33,24 @@ import java.util.List;
 import java.util.Properties;
 import java.util.zip.GZIPOutputStream;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import dk.dma.embryo.common.configuration.PropertiesReader;
-import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.dataformats.service.ShapeFileService.BaseFragment;
-import dk.dma.embryo.dataformats.service.ShapeFileService.Fragment;
-import dk.dma.embryo.dataformats.service.ShapeFileService.PointFragment;
-import dk.dma.embryo.dataformats.service.ShapeFileService.Shape;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class ShapeFileServiceTest {
 
-    private PropertyFileService propertyFileService;
     private ShapeFileServiceImpl service;
-    private Properties properties;
 
     @Before
     public void setup() throws IOException, URISyntaxException {
-        properties = new PropertiesReader().read();
+        Properties properties = new PropertiesReader().read();
         properties.setProperty("embryo.iceChart.dmi.localDirectory", getClass().getResource("/ice").getPath());
         properties.setProperty("embryo.iceChart.dmi.json.SouthWest_RIC", "exponent=2;resolution=3");
 
-        propertyFileService = new PropertyFileService(properties);
+        PropertyFileService propertyFileService = new PropertyFileService(properties);
 
         service = new ShapeFileServiceImpl(propertyFileService);
-        service.logger = LoggerFactory.getLogger(ShapeFileServiceImpl.class);
         service.init();
     }
 

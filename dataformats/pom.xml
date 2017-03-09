@@ -22,18 +22,6 @@
     </repositories>
 
     <dependencies>
-        <dependency>
-            <groupId>dk.dma.enav.services</groupId>
-            <artifactId>test-utilities</artifactId>
-        </dependency>
-
-        <!-- Added here again because weld jar contains older version of slf4j.
-            This must be first in the classpath for Eclipse to work -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${dependencies.slf4j.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>dk.dma.enav.services</groupId>
@@ -107,12 +95,6 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>fluent-hc</artifactId>
-            <version>4.2.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
             <version>4.2.1</version>
         </dependency>
 

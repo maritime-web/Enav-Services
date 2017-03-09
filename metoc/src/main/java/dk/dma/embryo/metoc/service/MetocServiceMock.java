@@ -14,15 +14,6 @@
  */
 package dk.dma.embryo.metoc.service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.security.auth.Subject;
-
-import org.slf4j.Logger;
-
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.metoc.json.client.DmiSejlRuteService;
 import dk.dma.embryo.metoc.json.client.DmiSejlRuteService.Forecast;
@@ -36,14 +27,18 @@ import dk.dma.enav.model.geometry.Position;
 import dk.dma.enav.model.voyage.RouteLeg;
 import dk.dma.enav.model.voyage.RouteLeg.Heading;
 import dk.dma.enav.model.voyage.Waypoint;
+import lombok.extern.slf4j.Slf4j;
 
+import javax.inject.Inject;
+import javax.security.auth.Subject;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+@Slf4j
 public class MetocServiceMock /*implements MetocService */{
 
     @Inject
     private VesselDao vesselDao;
-
-    @Inject
-    private Logger logger;
 
     @Inject
     @Property("embryo.metoc.minDistance")
@@ -167,7 +162,7 @@ public class MetocServiceMock /*implements MetocService */{
         double latResult = (lat2 * 360) / (2 * Math.PI);
         double lonResult = (lon2 * 360) / (2 * Math.PI);
         
-        logger.debug("lat2={}, lon2={} - ({},{})", lat2, lon2, latResult, lonResult);
+        log.debug("lat2={}, lon2={} - ({},{})", lat2, lon2, latResult, lonResult);
         
         RouteLeg routeLeg = new RouteLeg(wp.getRouteLeg().getSpeed(), wp.getRouteLeg().getHeading(), wp.getRouteLeg()
                 .getXtdPort(), wp.getRouteLeg().getXtdStarboard());
@@ -181,10 +176,10 @@ public class MetocServiceMock /*implements MetocService */{
     /**
      * Calculate bearing between two points given heading
      * 
-     * @param pos1
-     * @param pos2
-     * @param heading
-     * @return
+     * @param pos1 the first position
+     * @param pos2 the second position
+     * @param heading the heading
+     * @return the bearing
      */
     private static double bearing(Position pos1, Position pos2, Heading heading) {
         if (heading == Heading.RL) {

@@ -16,10 +16,9 @@ package dk.dma.embryo.user.shiro;
 
 import dk.dma.embryo.common.servlet.MultiReadHttpServletRequest;
 import dk.dma.embryo.user.shiro.Error.AuthCode;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.web.filter.AccessControlFilter;
 import org.apache.shiro.web.util.WebUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -32,9 +31,8 @@ import java.io.IOException;
 /**
  * @author Jesper Tejlgaard
  */
+@Slf4j
 public abstract class EmbryoVesselDataFilter extends AccessControlFilter {
-
-    Logger logger = LoggerFactory.getLogger(EmbryoVesselDataFilter.class);
 
     @Override
     public void doFilterInternal(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -46,7 +44,7 @@ public abstract class EmbryoVesselDataFilter extends AccessControlFilter {
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response, Object mappedValue)
             throws IOException {
-        logger.debug("Access denied: {}, {}", WebUtils.toHttp(request).getRequestURI(), ((String[]) mappedValue)[0]);
+        log.debug("Access denied: {}, {}", WebUtils.toHttp(request).getRequestURI(), ((String[]) mappedValue)[0]);
 
         HttpServletResponse httpResp = WebUtils.toHttp(response);
         httpResp.setContentType("application/json");
@@ -55,7 +53,7 @@ public abstract class EmbryoVesselDataFilter extends AccessControlFilter {
                 "User not authorized to modify data for vessel in question"));
         return false;
     }
-    
+
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {

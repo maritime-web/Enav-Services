@@ -14,6 +14,8 @@
  */
 package dk.dma.embryo.user.model;
 
+import lombok.ToString;
+
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -22,6 +24,7 @@ import javax.persistence.OneToOne;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@ToString
 public abstract class Role extends AbstractAuthorizationEntity<Integer> {
 
     private static final long serialVersionUID = -8480232439011093135L;
@@ -39,12 +42,4 @@ public abstract class Role extends AbstractAuthorizationEntity<Integer> {
     @OneToOne(mappedBy="role")
     SecuredUser user; 
 
-    // //////////////////////////////////////////////////////////////////////
-    // Object methods
-    // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return "Role [" + super.toString() + "]";
-    }
-    
 }

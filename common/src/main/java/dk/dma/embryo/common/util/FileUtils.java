@@ -12,37 +12,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.embryo.vessel.model;
+package dk.dma.embryo.common.util;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import java.io.Serializable;
+import java.io.File;
 
 /**
- * @author Jesper Tejlgaard
+ * Simple wrapper which checks the boolean response for some of the file operations (delete, mkdirs)
+ * @author Klaus Groenbaek
+ *         Created 08/03/17.
  */
-@Embeddable
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-public class AisData implements Serializable{
-    
-    private static final long serialVersionUID = -1013693596958206861L;
+@Slf4j
+public final class FileUtils {
 
-    @Column(length = 128)
-    private String name;
-    
-    @Column(length = 32)
-    private String callsign;
+    public static void createDirectories(File file) {
+        if (!file.mkdirs()) {
+            log.warn("Unable to create directory {}", file);
+        }
+    }
 
-    @Column()
-    private Long imoNo;
+    public static void createDirectoriesIfNeeded(File file) {
+        if (!file.exists()) {
+            createDirectories(file);
+        }
+    }
+
+    private FileUtils() {
+    }
 
 
 }

@@ -14,23 +14,31 @@
  */
 package dk.dma.embryo.dataformats.netcdf;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * Restricts the range of the dimensions used in parsing.
  * 
  * @author avlund
  *
  */
+@NoArgsConstructor
+@Getter
+@ToString
 public class NetCDFRestriction {
     private boolean subarea;
     private double minLat;
     private double maxLat;
     private double minLon;
     private double maxLon;
+    @Setter
     private int timeStart;
+    @Setter
     private int timeInterval = 1;
 
-    public NetCDFRestriction() {
-    }
 
     public NetCDFRestriction(double minLat, double maxLat, double minLon, double maxLon) {
         this.minLat = minLat;
@@ -40,17 +48,9 @@ public class NetCDFRestriction {
         subarea = true;
     }
 
-    public double getMinLat() {
-        return minLat;
-    }
-
     public void setMinLat(double minLat) {
         this.minLat = minLat;
         subarea = true;
-    }
-
-    public double getMaxLat() {
-        return maxLat;
     }
 
     public void setMaxLat(double maxLat) {
@@ -58,46 +58,13 @@ public class NetCDFRestriction {
         subarea = true;
     }
 
-    public double getMinLon() {
-        return minLon;
-    }
-
     public void setMinLon(double minLon) {
         this.minLon = minLon;
         subarea = true;
     }
 
-    public double getMaxLon() {
-        return maxLon;
-    }
-
     public void setMaxLon(double maxLon) {
         this.maxLon = maxLon;
         subarea = true;
-    }
-
-    public int getTimeStart() {
-        return timeStart;
-    }
-
-    public void setTimeStart(int timeStart) {
-        this.timeStart = timeStart;
-    }
-
-    public int getTimeInterval() {
-        return timeInterval;
-    }
-
-    public void setTimeInterval(int timeInterval) {
-        this.timeInterval = timeInterval;
-    }
-
-    public boolean isSubarea() {
-        return subarea;
-    }
-
-    @Override
-    public String toString() {
-        return "Restriction: min lat: " + minLat + ", max lat: " + maxLat + ", min lon: " + minLon + ", max lon: " + maxLon + ", sub area: " + subarea;
     }
 }

@@ -19,26 +19,17 @@ import java.util.List;
 public interface Dao {
 
     /**
-     * Get entity by primary key
-     * 
-     * @param clazz
-     * @param id
-     * @return
-     */
-    <E extends IEntity<?>> E getByPrimaryKey(Class<E> clazz, Object id);
-
-    /**
      * Remove entity
-     * 
-     * @param bean
+     *
+     * @param bean a managed entity
      */
     void remove(IEntity<?> bean);
 
     /**
      * Save (insert or update) the entity bean
      * 
-     * @param entity
-     * @return entity
+     * @param bean a new or existing entity
+     * @return entity the entity after it has been persisted or merged
      */
     <E extends IEntity<?>> E saveEntity(E bean);
     <E extends IEntity<?>> E saveEntityWithFlush(E bean);
@@ -46,14 +37,12 @@ public interface Dao {
     
     /**
      * General purpose method to retrieve all instance of a entityType
-     * @param entityType
-     * @return
+     * @param entityType the class
+     * @return a list of entities of the given type
      */
     <E extends IEntity<?>> List<E> getAll(Class<E> entityType);
 
 
     <E extends IEntity<?>> Long count(Class<E> entityType);
-    
-    void flush();
 
 }

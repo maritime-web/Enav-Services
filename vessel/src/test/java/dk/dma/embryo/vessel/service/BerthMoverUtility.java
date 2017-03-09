@@ -31,6 +31,9 @@ import org.junit.Test;
 import dk.dma.embryo.vessel.model.Berth;
 import dk.dma.embryo.vessel.model.BerthGst;
 
+/**
+ * todo This does not run, because the class name does not end with Test, ias this intentional
+ */
 public class BerthMoverUtility {
 
     private static EntityManagerFactory factory;

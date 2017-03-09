@@ -19,8 +19,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CollectionUtils {
+    /**
+     * Use with care, there can be multiple keys mapped to the same value, it is random which key will survive (unless Map implements NavigableMap)
+     */
     public static <K,V> HashMap<V,K> reverse(Map<K,V> map) {
-        HashMap<V,K> rev = new HashMap<V, K>();
+        HashMap<V,K> rev = new HashMap<>();
         for(Map.Entry<K,V> entry : map.entrySet()) {
             rev.put(entry.getValue(), entry.getKey());
         }

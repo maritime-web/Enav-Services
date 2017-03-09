@@ -14,6 +14,18 @@
  */
 package dk.dma.embryo.enav.io;
 
+import dk.dma.enav.model.geometry.Position;
+import dk.dma.enav.model.voyage.Route;
+import dk.dma.enav.model.voyage.RouteLeg;
+import dk.dma.enav.model.voyage.RouteLeg.Heading;
+import dk.dma.enav.model.voyage.Waypoint;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,20 +36,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import dk.dma.enav.model.geometry.Position;
-import dk.dma.enav.model.voyage.Route;
-import dk.dma.enav.model.voyage.RouteLeg;
-import dk.dma.enav.model.voyage.RouteLeg.Heading;
-import dk.dma.enav.model.voyage.Waypoint;
-
 /**
  * Parser for reading routes in RT3 format. RT3 format is among others used by Transas ECDIS.
  * 
@@ -45,13 +43,9 @@ import dk.dma.enav.model.voyage.Waypoint;
  */
 public class Rt3RouteParser extends RouteParser {
 
-    // private static final Logger LOGGER = LoggerFactory.getLogger(RouteLoader.class);
-
     private boolean closeReader;
     private BufferedReader reader;
     private String scheduleName;
-
-    RouteDefaults defaults = new RouteDefaults();
 
     public Rt3RouteParser(Reader reader) {
         if (reader instanceof BufferedReader) {

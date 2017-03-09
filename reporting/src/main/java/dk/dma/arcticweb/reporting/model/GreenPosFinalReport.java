@@ -17,6 +17,7 @@ package dk.dma.arcticweb.reporting.model;
 import dk.dma.arcticweb.reporting.json.model.GreenPos;
 import dk.dma.arcticweb.reporting.json.model.GreenPosShort;
 import dk.dma.embryo.vessel.model.Position;
+import lombok.ToString;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import javax.persistence.DiscriminatorValue;
@@ -27,6 +28,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue("FR")
+@ToString
 public class GreenPosFinalReport extends GreenPosDMIReport {
 
     private static final long serialVersionUID = -7205030526506222850L;
@@ -37,10 +39,8 @@ public class GreenPosFinalReport extends GreenPosDMIReport {
     public static GreenPosFinalReport fromJsonModel(GreenPos from) {
         Position pos = new Position(from.getLat(), from.getLon());
 
-        GreenPosFinalReport report = new GreenPosFinalReport(from.getVesselName(), from.getMmsi(),
+        return new GreenPosFinalReport(from.getVesselName(), from.getMmsi(),
                 from.getCallSign(), pos, from.getNumber(), from.getWeather(), from.getIce(), from.getMalFunctions());
-
-        return report;
     }
 
     @Override
@@ -92,11 +92,4 @@ public class GreenPosFinalReport extends GreenPosDMIReport {
         super(Name, Mmsi, CallSign, position, number, weather, iceInformation, vesselMalFunctions);
     }
 
-    // //////////////////////////////////////////////////////////////////////
-    // Object methods
-    // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
-    }
 }

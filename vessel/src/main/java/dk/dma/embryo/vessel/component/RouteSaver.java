@@ -36,10 +36,6 @@ public class RouteSaver {
     /**
      * Used by other service classes, e.g. TestServiceBean. Does not require login.
      * 
-     * @param route
-     * @param voyageId
-     * @param active
-     * @return
      */
     public String saveRoute(Route route, String voyageId, Boolean active) {
         if (route.getId() == null) {

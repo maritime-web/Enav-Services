@@ -19,12 +19,11 @@ import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
@@ -39,8 +38,8 @@ import java.io.IOException;
 @SuppressWarnings("unused")
 @Singleton
 @Startup
+@Slf4j
 public class VrmtDatabaseInitializer {
-    private final Logger logger = LoggerFactory.getLogger(VrmtDatabaseInitializer.class);
 
     private UserService userService;
     private String host;
@@ -67,7 +66,7 @@ public class VrmtDatabaseInitializer {
 
     @PostConstruct
     public void initialize() {
-        logger.info("Initializing VRMT databases");
+        log.info("Initializing VRMT databases");
         userService.list().stream().filter(this::onlySailors).forEach(this::createDb);
     }
 

@@ -150,22 +150,15 @@ public class SubjectTest extends AbstractShiroTest {
 
         @Override
         protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals){
-            Long userName = (Long) principals.fromRealm(getName()).iterator().next();
-            if ("nopermission".equals(userName)) {
-                SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-                info.addRole("role");
-                return info;
-            } else {
-                SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-                try {
-                    info.addRole(SailorRole.class.newInstance().getLogicalName());
-                    info.addRole(ReportingAuthorityRole.class.newInstance().getLogicalName());
-                } catch (InstantiationException | IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-                return info;
 
+            SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+            try {
+                info.addRole(SailorRole.class.newInstance().getLogicalName());
+                info.addRole(ReportingAuthorityRole.class.newInstance().getLogicalName());
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
             }
+            return info;
         }
     }
 }

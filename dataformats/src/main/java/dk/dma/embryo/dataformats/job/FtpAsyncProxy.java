@@ -22,14 +22,13 @@ import dk.dma.embryo.common.util.NamedtimeStamps;
 import dk.dma.embryo.dataformats.job.AbstractJob.Dirtype;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 import dk.dma.embryo.dataformats.persistence.ShapeFileMeasurementDao;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPFileFilters;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ejb.AsyncResult;
 import javax.ejb.Asynchronous;
@@ -52,9 +51,8 @@ import static dk.dma.embryo.dataformats.job.DmiIceChartPredicates.acceptedIceCha
 import static dk.dma.embryo.dataformats.job.DmiIceChartPredicates.validFormat;
 
 @Stateless
+@Slf4j
 public class FtpAsyncProxy {
-
-    private final Logger logger = LoggerFactory.getLogger(FtpAsyncProxy.class);
 
     @Inject
     protected ShapeFileMeasurementDao shapeFileMeasurementDao;
@@ -72,7 +70,7 @@ public class FtpAsyncProxy {
     public Future<Counts> transferFiles(JobContext jobContext) throws IOException, InterruptedException {
         
         Counts counts = new Counts();
-        final List<String> subdirectoriesAtServer = new ArrayList<String>();
+        final List<String> subdirectoriesAtServer = new ArrayList<>();
         
         FTPClient ftpClient = jobContext.getFtpClient();
         String ftpBaseDirectory = jobContext.getFtpBaseDirectory();
@@ -84,7 +82,7 @@ public class FtpAsyncProxy {
 
             List<FTPFile> typeDirs = Arrays.asList(ftpClient.listFiles(null, FTPFileFilters.DIRECTORIES));
             for (FTPFile typedir : typeDirs) {
-                logger.info("Reading from dir " + typedir.getName());
+                log.info("Reading from dir " + typedir.getName());
                 Counts c = readFromTypedir(jobContext, typedir, subdirectoriesAtServer);
                 counts.addCounts(c);
             }
@@ -95,20 +93,20 @@ public class FtpAsyncProxy {
         String msg = "Scanned (" + ftpClient.getRemoteAddress() + ") for files. Transfered: " + counts.transferCount + ", Shapes deleted: "
                 + counts.shapeDeleteCount + ". Files deleted: " + counts.fileDeleteCount + ", Errors: " + counts.errorCount;
         if (counts.errorCount == 0) {
-            logger.info(msg);
+            log.info(msg);
             jobContext.getEmbryoLogService().info(msg);
         } else {
-            logger.error(msg);
+            log.error(msg);
             jobContext.getEmbryoLogService().error(msg);
         }
 
-        logger.info("Deleting Shape entries no longer existing on FTP.");
+        log.info("Deleting Shape entries no longer existing on FTP.");
         deleteShapeEntriesNoLongerOnFTP(jobContext, counts, subdirectoriesAtServer);
 
-        logger.info("Deleting local temp files. ");
+        log.info("Deleting local temp files. ");
         deleteLocalTempFiles(jobContext, counts, subdirectoriesAtServer);
 
-        return new AsyncResult<Counts>(counts);
+        return new AsyncResult<>(counts);
     }
 
     private Counts readFromTypedir(JobContext jobContext, FTPFile typedir, List<String> subdirectoriesAtServer) throws IOException, InterruptedException {
@@ -126,27 +124,27 @@ public class FtpAsyncProxy {
         LocalDate mapsYoungerThan = LocalDate.now().minusDays(jobContext.getAgeInDays()).minusDays(15);
 
         // Important only to transfer 1 file only when the files are large as is the case for 'prognoses'.
-        final boolean TRANSFER_ONE_FILE_ONLY = (localDir != null && localDir.contains("prognoses")) ? true : false;
+        final boolean TRANSFER_ONE_FILE_ONLY = localDir != null && localDir.contains("prognoses");
         
         
         Thread.sleep(10);
 
-        logger.debug("localDir: {} - TRANSFER_ONE_FILE_ONLY = {}", localDir, TRANSFER_ONE_FILE_ONLY);
-        logger.info("Reading files in: {}/{}", ftpClient.printWorkingDirectory(), typedir.getName());
+        log.debug("localDir: {} - TRANSFER_ONE_FILE_ONLY = {}", localDir, TRANSFER_ONE_FILE_ONLY);
+        log.info("Reading files in: {}/{}", ftpClient.printWorkingDirectory(), typedir.getName());
         
         // Directories and single files should be handled differently.
         if (dirType != null) {
             if (dirType.equals(Dirtype.DIR.type)) {
                 if (chartType != null && !chartType.isEmpty()) {
-                    logger.info("Working with chart type: " + chartType);
+                    log.info("Working with chart type: " + chartType);
                     List<FTPFile> allDirs = Arrays.asList(ftpClient.listFiles(typedir.getName(), FTPFileFilters.DIRECTORIES));
-                    logger.debug("{}/{} contains files: {}", ftpClient.printWorkingDirectory(), typedir.getName(), allDirs);
+                    log.debug("{}/{} contains files: {}", ftpClient.printWorkingDirectory(), typedir.getName(), allDirs);
 
                     Collection<FTPFile> rejected = Collections2.filter(allDirs, not(validFormat(regions.keySet())));
                     Collection<FTPFile> accepted = Collections2.filter(allDirs, acceptedIceCharts(regions.keySet(), mapsYoungerThan, localDir, iceChartExts));
 
-                    logger.debug("rejected: {}", allDirs);
-                    logger.debug("accepted: {}", allDirs);
+                    log.debug("rejected: {}", allDirs);
+                    log.debug("accepted: {}", allDirs);
 
                     subdirectoriesAtServer.addAll(Collections2.transform(allDirs, new NameFunction()));
 
@@ -157,7 +155,7 @@ public class FtpAsyncProxy {
                     for (FTPFile subdirectory : accepted) {
                         Thread.sleep(10);
 
-                        logger.info("Reading files from subdirectories: " + subdirectory.getName());
+                        log.info("Reading files from subdirectories: " + subdirectory.getName());
 
                         ftpClient.changeWorkingDirectory(typedir.getName() + "/" + subdirectory.getName());
 
@@ -192,7 +190,7 @@ public class FtpAsyncProxy {
                         ftpClient.changeToParentDirectory();
                     }
                 } else {
-                    logger.debug("No chart type for dir " + typedir.getName() + ", ignoring.");
+                    log.debug("No chart type for dir " + typedir.getName() + ", ignoring.");
                 }
             } else {
                 
@@ -219,7 +217,7 @@ public class FtpAsyncProxy {
                 ftpClient.changeToParentDirectory();
             }
         } else {
-            logger.debug(typedir.getName() + " not found in config file, ignoring directory.");
+            log.debug(typedir.getName() + " not found in config file, ignoring directory.");
         }
 
         return counts;
@@ -229,37 +227,37 @@ public class FtpAsyncProxy {
         String localName = localDir + "/" + name;
 
         if (new File(localName).exists()) {
-            logger.debug("Not transfering " + name + " since the file already exists in " + localName);
+            log.debug("Not transfering " + name + " since the file already exists in " + localName);
             return false;
         }
 
         File tmpFile = new File(jobContext.getTmpDir(), ftpBaseFileName + Math.random());
 
         try (FileOutputStream fos = new FileOutputStream(tmpFile)) {
-            logger.info("Transfering " + name + " to " + tmpFile.getAbsolutePath());
+            log.info("Transfering " + name + " to " + tmpFile.getAbsolutePath());
             if (!ftp.retrieveFile(name, fos)) {
                 Thread.sleep(10);
                 if (tmpFile.exists()) {
-                    logger.info("Deleting temporary file " + tmpFile.getAbsolutePath());
-                    tmpFile.delete();
+                    log.info("Deleting temporary file " + tmpFile.getAbsolutePath());
+                    org.apache.commons.io.FileUtils.deleteQuietly(tmpFile);
                 }
                 throw new RuntimeException("File transfer failed (" + name + ")");
             }
         } catch (Exception e) {
-            logger.error("Exception occurred, deleting temporary file.");
-            tmpFile.delete();
+            log.error("Exception occurred, deleting temporary file.");
+            org.apache.commons.io.FileUtils.deleteQuietly(tmpFile);
             throw e;
         }
 
         Thread.sleep(10);
 
-        logger.info("Moving " + tmpFile.getAbsolutePath() + " to " + localName);
+        log.info("Moving " + tmpFile.getAbsolutePath() + " to " + localName);
         if (tmpFile.getUsableSpace() < tmpFile.length()) {
-            logger.error("Not enough space on disk. Deleting temporary file.");
-            tmpFile.delete();
+            log.error("Not enough space on disk. Deleting temporary file.");
+            org.apache.commons.io.FileUtils.deleteQuietly(tmpFile);
         } else if (!tmpFile.renameTo(new File(localName))) {
-            logger.error("Could not move file. Deleting temporary file.");
-            tmpFile.delete();
+            log.error("Could not move file. Deleting temporary file.");
+            org.apache.commons.io.FileUtils.deleteQuietly(tmpFile);
         }
 
         return true;
@@ -271,12 +269,12 @@ public class FtpAsyncProxy {
         for (ShapeFileMeasurement measurement : measurements) {
             if (!subdirectoriesAtServer.contains(measurement.getFileName())) {
                 try {
-                    logger.info("Deleting shape entry {}", measurement.getFileName());
+                    log.info("Deleting shape entry {}", measurement.getFileName());
                     shapeFileMeasurementDao.remove(measurement);
                     counts.shapeDeleteCount++;
                 } catch (Exception e) {
                     String msg = "Error deleting shape entry " + measurement.getFileName() + " from PolarWeb server";
-                    logger.error(msg, e);
+                    log.error(msg, e);
                     jobContext.getEmbryoLogService().error(msg, e);
                     counts.errorCount++;
                 }
@@ -302,12 +300,12 @@ public class FtpAsyncProxy {
 
             for (String file : filesToDelete) {
                 try {
-                    logger.info("Deleting chart files {}", file);
+                    log.info("Deleting chart files {}", file);
                     fileService.deleteFile(file);
                     counts.fileDeleteCount++;
                 } catch (Exception e) {
                     String msg = "Error deleting chart file " + file + " from PolarWeb server";
-                    logger.error(msg, e);
+                    log.error(msg, e);
                     jobContext.getEmbryoLogService().error(msg, e);
                     counts.errorCount++;
                 }

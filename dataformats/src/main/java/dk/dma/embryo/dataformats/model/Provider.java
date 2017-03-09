@@ -14,53 +14,19 @@
  */
 package dk.dma.embryo.dataformats.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 /**
  * The Class Provider.
  *
  * @author Jesper Tejlgaard
  */
+@AllArgsConstructor
+@Data
 public class Provider {
     private String key;
     private String name;
     private String shortName;
 
-    public Provider(String key, String name, String shortName) {
-        super();
-        this.key = key;
-        this.name = name;
-        this.shortName = shortName;
-    }
-
-    @Override
-    public int hashCode() {
-
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((key == null)        ? 0 : key.hashCode());
-        result = prime * result + ((name == null)       ? 0 : name.hashCode());
-        result = prime * result + ((shortName == null)  ? 0 : shortName.hashCode());
-        
-        return result;
-    }
-    
-    public String getKey() {
-        return key;
-    }
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public String getShortName() {
-        return shortName;
-    }
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
-
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
 }

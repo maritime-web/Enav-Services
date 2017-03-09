@@ -18,12 +18,14 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.ToString;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import dk.dma.embryo.common.persistence.BaseEntity;
 
 @Entity
 @Table(name = "berth_gst")
+@ToString
 public class BerthGst extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -7720878907095105915L;
@@ -92,10 +94,7 @@ public class BerthGst extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Object methods
     // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
-    }
+
 
     public String asBerthConstructor() {
         return "new Berth(" + asStringLiteral(getName()) + ", " + asStringLiteral(getAlias()) + ", "

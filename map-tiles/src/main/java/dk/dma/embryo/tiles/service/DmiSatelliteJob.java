@@ -14,11 +14,31 @@
  */
 package dk.dma.embryo.tiles.service;
 
-import static com.google.common.base.Predicates.and;
-import static com.google.common.base.Predicates.not;
-import static dk.dma.embryo.tiles.service.DmiSatellitePredicates.dateIsAfter;
-import static dk.dma.embryo.tiles.service.DmiSatellitePredicates.downloaded;
+import com.google.common.collect.Collections2;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.log.EmbryoLogService;
+import dk.dma.embryo.common.mail.MailSender;
+import dk.dma.embryo.common.util.FileUtils;
+import dk.dma.embryo.common.util.NamedtimeStamps;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
+import org.apache.commons.net.ftp.FTPFileFilters;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
+import javax.ejb.ScheduleExpression;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.ejb.Timeout;
+import javax.ejb.TimerConfig;
+import javax.ejb.TimerService;
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,42 +54,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
-import javax.ejb.ScheduleExpression;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.ejb.Timeout;
-import javax.ejb.TimerConfig;
-import javax.ejb.TimerService;
-import javax.inject.Inject;
-
-import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
-import org.apache.commons.net.ftp.FTPFileFilters;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
-
-import com.google.common.collect.Collections2;
-
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.common.log.EmbryoLogService;
-import dk.dma.embryo.common.mail.MailSender;
-import dk.dma.embryo.common.util.NamedtimeStamps;
+import static com.google.common.base.Predicates.and;
+import static com.google.common.base.Predicates.not;
+import static dk.dma.embryo.tiles.service.DmiSatellitePredicates.dateIsAfter;
+import static dk.dma.embryo.tiles.service.DmiSatellitePredicates.downloaded;
 
 /**
  * @author Jesper Tejlgaard
  */
 @Singleton
 @Startup
+@Slf4j
 public class DmiSatelliteJob {
-
-    @Inject
-    private Logger logger;
 
     @Resource
     private TimerService timerService;
@@ -137,16 +133,16 @@ public class DmiSatelliteJob {
     @PostConstruct
     public void init() {
         if (!dmiServer.trim().equals("") && (cron != null)) {
-            logger.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
+            log.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
             timerService.createCalendarTimer(cron, new TimerConfig(null, false));
         } else {
-            logger.info("DMI FTP site is not configured - cron job not scheduled.");
+            log.info("DMI FTP site is not configured - cron job not scheduled.");
         }
     }
 
     @PreDestroy
     public void shutdown() throws InterruptedException {
-        logger.info("Shutdown called.");
+        log.info("Shutdown called.");
     }
 
     @Timeout
@@ -154,11 +150,12 @@ public class DmiSatelliteJob {
         //notifications.clearOldThanMinutes(silencePeriod);
 
         try {
-            logger.info("Making directories if necessary ...");
+            log.info("Making directories if necessary ...");
 
-            if (!new File(localDmiDir).exists()) {
-                logger.info("Making local directory for DMI files: " + localDmiDir);
-                new File(localDmiDir).mkdirs();
+            File localDir = new File(localDmiDir);
+            if (!localDir.exists()) {
+                log.info("Making local directory for DMI files: " + localDmiDir);
+                FileUtils.createDirectories(localDir);
             }
 
             DateTime mapsYoungerThan = DateTime.now(DateTimeZone.UTC).minusDays(ageInDays - 1).minusDays(1);
@@ -169,7 +166,7 @@ public class DmiSatelliteJob {
 
             FTPClient ftp = connect();
 
-            logger.info("Transfer files ...");
+            log.info("Transfer files ...");
             final List<String> transfered = new ArrayList<>();
             final List<String> error = new ArrayList<>();
 
@@ -180,7 +177,7 @@ public class DmiSatelliteJob {
 
                 List<FTPFile> directories = Arrays.asList(ftp.listFiles(null, FTPFileFilters.DIRECTORIES));
 
-                logger.debug("Directories: {}", directories);
+                log.debug("Directories: {}", directories);
 
                 // TODO validate directories format, e.g. NASA-Modis
                 for (FTPFile dir : directories) {
@@ -192,7 +189,7 @@ public class DmiSatelliteJob {
                     Collection<FTPFile> notDownloaded;
                     if (deleteOlderThan != null) {
                         toDelete = Collections2.filter(files, not(dateIsAfter(deleteOlderThan)));
-                        logger.debug("To delete: {}", toDelete);
+                        log.debug("To delete: {}", toDelete);
                         // Check both against days before delete and allowed age in days
                         // Reasons is that one day someone will configure
                         // embryo.tiles.providers.dmi.ftp.baseDirectory = 5
@@ -203,7 +200,7 @@ public class DmiSatelliteJob {
                         toDelete = Collections.emptyList();
                         notDownloaded = Collections2.filter(files, and(dateIsAfter(mapsYoungerThan), not(downloaded(namePrefix, existingFiles))));
                     }
-                    logger.debug("Not downloaded files: {}", notDownloaded);
+                    log.debug("Not downloaded files: {}", notDownloaded);
 
                     if (notDownloaded.size() > 0 || toDelete.size() > 0) {
                         String directory = dir.getName();
@@ -239,14 +236,14 @@ public class DmiSatelliteJob {
             String msg = "Scanned DMI (" + dmiServer + ") for files. Transfered: " + toString(transfered)
                     + ", Errors: " + toString(error) + ", Delete failed: " + toString(result.failedDelete) + ", Deleted: " + result.deleted;
             if (error.size() == 0) {
-                logger.info(msg);
+                log.info(msg);
                 embryoLogService.info(msg);
             } else {
-                logger.error(msg);
+                log.error(msg);
                 embryoLogService.error(msg);
             }
         } catch (Exception t) {
-            logger.error("Unhandled error scanning/transfering files from DMI (" + dmiServer + "): " + t, t);
+            log.error("Unhandled error scanning/transfering files from DMI (" + dmiServer + "): " + t, t);
             embryoLogService.error("Unhandled error scanning/transfering files from DMI (" + dmiServer + "): " + t, t);
         }
     }
@@ -266,7 +263,7 @@ public class DmiSatelliteJob {
 
     FTPClient connect() throws IOException {
         FTPClient ftp = new FTPClient();
-        logger.info("Connecting to " + dmiServer + " using " + dmiLogin + " ...");
+        log.info("Connecting to " + dmiServer + " using " + dmiLogin + " ...");
 
         ftp.setDefaultTimeout(30000);
         ftp.connect(dmiServer);
@@ -280,27 +277,24 @@ public class DmiSatelliteJob {
     private boolean transferFile(FTPClient ftp, FTPFile file, String namePrefix, String localDmiDir) throws IOException,
             InterruptedException {
         File tmpFile = new File(tmpDir, "dmiSatellite" + Math.random());
-        FileOutputStream fos = new FileOutputStream(tmpFile);
 
-        try {
-            logger.info("Transfering " + file.getName() + " to " + tmpFile.getAbsolutePath());
+        try (FileOutputStream fos = new FileOutputStream(tmpFile)) {
+            log.info("Transfering " + file.getName() + " to " + tmpFile.getAbsolutePath());
             if (!ftp.retrieveFile(file.getName(), fos)) {
                 Thread.sleep(10);
                 if (tmpFile.exists()) {
-                    logger.info("Deleting temporary file " + tmpFile.getAbsolutePath());
-                    tmpFile.delete();
+                    log.info("Deleting temporary file " + tmpFile.getAbsolutePath());
+                    org.apache.commons.io.FileUtils.deleteQuietly(tmpFile);
                 }
 
                 return false;
             }
-        } finally {
-            fos.close();
         }
 
         Thread.sleep(10);
 
         Path dest = Paths.get(localDmiDir).resolve(namePrefix + file.getName());
-        logger.info("Moving " + tmpFile.getAbsolutePath() + " to " + dest.getFileName());
+        log.info("Moving " + tmpFile.getAbsolutePath() + " to " + dest.getFileName());
         Files.move(Paths.get(tmpFile.getAbsolutePath()), dest, StandardCopyOption.REPLACE_EXISTING);
 
         return true;
@@ -331,8 +325,10 @@ public class DmiSatelliteJob {
 
         File localDirectory = new File(localDmiDir);
         File[] files = localDirectory.listFiles();
-        for (File file : files) {
-            existingFiles.add(file.getName());
+        if (files != null) {
+            for (File file : files) {
+                existingFiles.add(file.getName());
+            }
         }
         return existingFiles;
     }

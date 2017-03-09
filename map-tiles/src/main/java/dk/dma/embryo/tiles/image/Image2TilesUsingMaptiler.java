@@ -16,44 +16,35 @@
 package dk.dma.embryo.tiles.image;
 
 
+import dk.dma.embryo.common.configuration.Property;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.apache.commons.io.FileUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import dk.dma.embryo.common.configuration.Property;
 
 /**
  * Created by Jesper Tejlgaard on 8/21/14.
  */
 @Named
+@Slf4j
 public class Image2TilesUsingMaptiler implements Image2Tiles {
 
-    Logger logger = LoggerFactory.getLogger(Image2TilesUsingMaptiler.class);
-
     private String mapTilerExecutable;
-
     private String logDir;
-
     private Integer daysToKeepLogs;
-
     private String defaults;
-
     private File logDirectory;
-
-    public Image2TilesUsingMaptiler() {
-    }
 
     @Inject
     public Image2TilesUsingMaptiler(
@@ -78,7 +69,7 @@ public class Image2TilesUsingMaptiler implements Image2Tiles {
         }
     }
 
-    public int cleanup() {
+    public CleanResult cleanup() {
         init();
         DateTime youngerThan = DateTime.now(DateTimeZone.UTC).minusDays(daysToKeepLogs);
         return new LogFileDeleter(youngerThan).deleteFiles(logDirectory);
@@ -99,27 +90,25 @@ public class Image2TilesUsingMaptiler implements Image2Tiles {
             }
         }
 
-        for (int i = 0; i < staticArgs.length; i++) {
-            commands.add(staticArgs[i]);
-        }
+        Collections.addAll(commands, staticArgs);
 
         commands.add(srcFile.getAbsolutePath());
 
-        String[] cmds = commands.toArray(new String[0]);
+        String[] cmds = commands.toArray(new String[commands.size()]);
 
         String name = destinationFile.getName().replaceAll(".mbtiles", "");
         ProcessBuilder builder = new ProcessBuilder(cmds);
 
-        logger.debug("ProcessBuilder commands: {}", commands);
-        logger.debug("ProcessBuilder system environment: {}", builder.environment());
+        log.debug("ProcessBuilder commands: {}", commands);
+        log.debug("ProcessBuilder system environment: {}", builder.environment());
 
         File errorLog = new File(logDirectory, name + "-error.log");
         File outputLog = new File(logDirectory, name + "-output.log");
         builder.redirectError(errorLog);
         builder.redirectOutput(outputLog);
 
-        logger.debug("Error log file: {}", errorLog.getAbsolutePath());
-        logger.debug("Output log file: {}", outputLog.getAbsolutePath());
+        log.debug("Error log file: {}", errorLog.getAbsolutePath());
+        log.debug("Output log file: {}", outputLog.getAbsolutePath());
 
         try {
             Process proc = builder.start();
@@ -142,7 +131,7 @@ public class Image2TilesUsingMaptiler implements Image2Tiles {
         BufferedReader input = new BufferedReader(new FileReader(logFile));
 
         List<String> content = new ArrayList<>();
-        String line = null;
+        String line;
         while ((line = input.readLine()) != null) {
             if (line.trim().length() > 0) {
                 content.add(line);
@@ -182,21 +171,32 @@ public class Image2TilesUsingMaptiler implements Image2Tiles {
             youngerThan = limit;
         }
 
-        public int deleteFiles(File logDirectory) {
-            int cleaned = 0;
+        public CleanResult deleteFiles(File logDirectory) {
+            CleanResult result = new CleanResult();
 
             File[] logFiles = logDirectory.listFiles();
-            for (File logFile : logFiles) {
-                DateTime ts = GeoImage.extractTs(logFile);
-                if (ts.isBefore(youngerThan)) {
-                    if (FileUtils.deleteQuietly(logFile)) {
-                        cleaned++;
+            if (logFiles != null) {
+                for (File logFile : logFiles) {
+                    DateTime ts = GeoImage.extractTs(logFile);
+                    if (ts.isBefore(youngerThan)) {
+                        if (FileUtils.deleteQuietly(logFile)) {
+                            result.deleted++;
+                        } else {
+                            result.errorCount++;
+                        }
                     }
                 }
+            } else {
+                log.warn("Listing directory '{}' failed", logDirectory);
             }
-            return cleaned;
+            return result;
 
         }
     }
 
+    @Data
+    public static class CleanResult {
+        private int deleted;
+        private int errorCount;
+    }
 }

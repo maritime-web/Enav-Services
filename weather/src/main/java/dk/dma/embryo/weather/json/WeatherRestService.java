@@ -14,30 +14,27 @@
  */
 package dk.dma.embryo.weather.json;
 
+import dk.dma.embryo.weather.model.RegionForecast;
+import dk.dma.embryo.weather.model.Warnings;
+import dk.dma.embryo.weather.model.Weather;
+import dk.dma.embryo.weather.service.WeatherServiceImpl;
+import lombok.extern.slf4j.Slf4j;
+import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
+
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-
-import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.NoCache;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.weather.model.Warnings;
-import dk.dma.embryo.weather.model.RegionForecast;
-import dk.dma.embryo.weather.model.Weather;
-import dk.dma.embryo.weather.service.WeatherServiceImpl;
 
 /**
  * 
  * @author Jesper Tejlgaard
  */
 @Path("/weather")
+@Slf4j
 public class WeatherRestService {
 
-    @Inject
-    private Logger logger;
-    
     @Inject
     private WeatherServiceImpl weatherService;
 
@@ -47,11 +44,11 @@ public class WeatherRestService {
     @GZIP
     @NoCache
     public Warnings getWarning(String provider, String region) {
-        logger.debug("getWarning({})");
+        log.debug("getWarning({})");
 
         Warnings warning = weatherService.getWarning();
         
-        logger.debug("getWarning({}, {}) : {}", provider, region, warning);
+        log.debug("getWarning({}, {}) : {}", provider, region, warning);
         return warning;
     }
 
@@ -61,11 +58,11 @@ public class WeatherRestService {
     @GZIP
     @NoCache
     public RegionForecast getForecast(String provider, String region) {
-        logger.debug("getForecast({}, {})", provider, region);
+        log.debug("getForecast({}, {})", provider, region);
 
         RegionForecast forecast = weatherService.getRegionForecast();
 
-        logger.debug("getForecast({}, {}) : {}", provider, region, forecast);
+        log.debug("getForecast({}, {}) : {}", provider, region, forecast);
         return forecast;
     }
 
@@ -75,14 +72,14 @@ public class WeatherRestService {
     @GZIP
     @NoCache
     public Weather getWeather(String provider, String region) {
-        logger.debug("getWeather({}, {})", provider, region);
+        log.debug("getWeather({}, {})", provider, region);
 
         RegionForecast forecast = weatherService.getRegionForecast();
         Warnings warning = weatherService.getWarning();
         
         Weather weather = new Weather(forecast, warning);
 
-        logger.debug("getWeather({}, {}) : {}", provider, region, weather);
+        log.debug("getWeather({}, {}) : {}", provider, region, weather);
         return weather;
     }
 }

@@ -14,18 +14,6 @@
  */
 package dk.dma.embryo.common.db;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -36,22 +24,29 @@ import liquibase.exception.UnexpectedLiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.util.LiquibaseUtil;
 import liquibase.util.NetUtil;
-
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.integrator.spi.Integrator;
 import org.hibernate.metamodel.source.MetadataImplementor;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jesper Tejlgaard
  */
+@Slf4j
 public class LiquibaseMigrator implements Integrator {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(LiquibaseMigrator.class);
-
     private LiquibaseConfig config;
 
     @Override
@@ -60,7 +55,7 @@ public class LiquibaseMigrator implements Integrator {
         try {
             config = new LiquibaseConfig();
         } catch (IOException | URISyntaxException e) {
-            LOGGER.error("DATABASE MIGRATION FAILED", e);
+            log.error("DATABASE MIGRATION FAILED", e);
             return;
         }
 
@@ -68,12 +63,12 @@ public class LiquibaseMigrator implements Integrator {
         try {
             hostName = NetUtil.getLocalHostName();
         } catch (Exception e) {
-            LOGGER.warn("Cannot find hostname: {}", e.getMessage());
-            LOGGER.debug("", e);
+            log.warn("Cannot find hostname: {}", e.getMessage());
+            log.debug("", e);
             return;
         }
         if (!config.isEnabled()) {
-            LOGGER.info("Liquibase did not run on " + hostName
+            log.info("Liquibase did not run on " + hostName
                     + " because  'embryo.liquibase.enable' property was set to false or not present");
             return;
         }
@@ -85,7 +80,7 @@ public class LiquibaseMigrator implements Integrator {
                     + " when Liquibase is enabled.");
         }
 
-        LOGGER.info("Booting Liquibase " + LiquibaseUtil.getBuildVersion());
+        log.info("Booting Liquibase " + LiquibaseUtil.getBuildVersion());
         try {
             performUpdate();
         } catch (LiquibaseException | NamingException e) {
@@ -95,7 +90,7 @@ public class LiquibaseMigrator implements Integrator {
 
     private void performUpdate() throws LiquibaseException, NamingException {
         Connection c = null;
-        Liquibase liquibase = null;
+        Liquibase liquibase;
         try {
             InitialContext initialContext = new InitialContext();
             DataSource dataSource = (DataSource) initialContext.lookup("java:jboss/datasources/embryoDS");
@@ -106,9 +101,7 @@ public class LiquibaseMigrator implements Integrator {
             liquibase.update(config.getContexts());
         } catch (SQLException e) {
             throw new DatabaseException(e);
-        } catch (LiquibaseException ex) {
-            throw ex;
-        } finally {
+        }  finally {
             if (c != null) {
                 try {
                     c.rollback();
@@ -123,7 +116,7 @@ public class LiquibaseMigrator implements Integrator {
     }
 
     private Liquibase createLiquibase(Connection c) throws LiquibaseException {
-        LOGGER.info("LIQUIBASE CHANGELOG: {}", config.getChangeLog());
+        log.info("LIQUIBASE CHANGELOG: {}", config.getChangeLog());
 
         Liquibase liquibase = new Liquibase(config.getChangeLog(), new ClassLoaderResourceAccessor(getClass()
                 .getClassLoader()), createDatabase(c));
@@ -144,9 +137,9 @@ public class LiquibaseMigrator implements Integrator {
      * Subclasses may override this method add change some database settings such as default schema before returning the
      * database object.
      * 
-     * @param c
+     * @param c the connection
      * @return a Database implementation retrieved from the {@link liquibase.database.DatabaseFactory}.
-     * @throws DatabaseException
+     * @throws DatabaseException if database type can't be determined
      */
     protected Database createDatabase(Connection c) throws DatabaseException {
         Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(c));

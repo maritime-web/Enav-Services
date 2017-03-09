@@ -14,11 +14,16 @@
  */
 package dk.dma.embryo.common.area;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Created by Jesper Tejlgaard on 6/9/15.
  */
+@Getter
+@Setter
+@ToString
 public class Area {
 
     // //////////////////////////////////////////////////////////////////////
@@ -39,29 +44,4 @@ public class Area {
         this.bottom = bottom;
     }
 
-    // //////////////////////////////////////////////////////////////////////
-    // Object methods
-    // //////////////////////////////////////////////////////////////////////
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public double getRight() {
-        return right;
-    }
-
-    public double getTop() {
-        return top;
-    }
-
-    public double getBottom() {
-        return bottom;
-    }
-
-    public double getLeft() {
-        return left;
-    }
 }

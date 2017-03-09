@@ -14,12 +14,14 @@
  */
 package dk.dma.embryo.vessel.json;
 
+import lombok.Data;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
  * 
  * @author Jesper Tejlgaard
  */
+@Data
 public class ScheduleResponse {
 
     // Properties relevant for current functionality. Extra can be added.
@@ -33,32 +35,5 @@ public class ScheduleResponse {
     // //////////////////////////////////////////////////////////////////////
     public ScheduleResponse() {
         super();
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Object methods
-    // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public Voyage[] getVoyages() {
-        return voyages;
-    }
-
-    public void setVoyages(Voyage[] voyages) {
-        this.voyages = voyages;
-    }
-    
-    public String[] getErrors() {
-        return errors;
-    }
-    
-    public void setErrors(String[] errors) {
-        this.errors = errors;
     }
 }

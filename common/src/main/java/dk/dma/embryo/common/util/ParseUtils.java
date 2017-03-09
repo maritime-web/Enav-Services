@@ -51,8 +51,11 @@ public class ParseUtils {
     }
 
     public static String parseString(String str) {
+        if (str == null) {
+            return null;
+        }
         str = str.trim();
-        if (str == null || str.length() == 0) {
+        if (str.length() == 0) {
             return null;
         }
         return str;

@@ -16,6 +16,10 @@ package dk.dma.embryo.vessel.integration;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import javax.ws.rs.GET;
@@ -129,7 +133,8 @@ public interface AisTrackClient {
      */
     @JsonIgnoreProperties(ignoreUnknown=true)
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-    public static class AisTrack {
+    @Data
+    class AisTrack {
 
         private Source source;
         private Target target;
@@ -222,26 +227,6 @@ public interface AisTrackClient {
             }
             return target.getMmsi() != null && target.getVesselPosition().getPos().getLat() != null && target.getVesselPosition().getPos().getLon() != null;
         }
-
-
-        @Override
-        public String toString() {
-            return ReflectionToStringBuilder.toString(this);
-        }
-
-        public Target getTarget() {
-            return target;
-        }
-        public void setTarget(Target target) {
-            this.target = target;
-        }
-
-        public Source getSource() {
-            return source;
-        }
-        public void setSource(Source source) {
-            this.source = source;
-        }
     }
 
     /**
@@ -256,54 +241,14 @@ public interface AisTrackClient {
     }
      */
     @JsonIgnoreProperties(ignoreUnknown=true)
-    public static class Source {
+    @Data
+    class Source {
 
         private String id;
         private Integer bs;
         private String country;
         private String type;
         private String region;
-
-        @Override
-        public String toString() {
-
-            return ReflectionToStringBuilder.toString(this);
-        }
-
-        public String getId() {
-            return id;
-        }
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getRegion() {
-            return region;
-        }
-        public void setRegion(String region) {
-            this.region = region;
-        }
-
-        public Integer getBs() {
-            return bs;
-        }
-        public void setBs(Integer bs) {
-            this.bs = bs;
-        }
-
-        public String getCountry() {
-            return country;
-        }
-        public void setCountry(String country) {
-            this.country = country;
-        }
-
-        public String getType() {
-            return type;
-        }
-        public void setType(String type) {
-            this.type = type;
-        }
     }
 
     /**
@@ -366,7 +311,7 @@ public interface AisTrackClient {
     }
      */
     @JsonIgnoreProperties(ignoreUnknown=true)
-    public static class Target {
+    class Target {
 
         private Long mmsi;
         private String country;
@@ -466,7 +411,7 @@ public interface AisTrackClient {
      */
 
     @JsonIgnoreProperties(ignoreUnknown=true)
-    public static class VesselStatic {
+    class VesselStatic {
 
         private Integer mmsi;
         private Date received;
@@ -632,7 +577,7 @@ public interface AisTrackClient {
      }
      */
     @JsonIgnoreProperties(ignoreUnknown=true)
-    public static class VesselPosition {
+    class VesselPosition {
 
         private Integer mmsi;
         private Date received;
@@ -778,7 +723,7 @@ public interface AisTrackClient {
     }
 
     @JsonIgnoreProperties(ignoreUnknown=true)
-    public static class Pos {
+    class Pos {
 
         private Double lat;
         private Double lon;
@@ -814,7 +759,7 @@ public interface AisTrackClient {
     }
      */
     @JsonIgnoreProperties(ignoreUnknown=true)
-    public static class ShipTypeCargo {
+    class ShipTypeCargo {
 
         /*
         public enum ShipType {
@@ -876,7 +821,7 @@ public interface AisTrackClient {
     // Det er tal. I enheden meter.heltal
      */
     @JsonIgnoreProperties(ignoreUnknown=true)
-    public static class Dimensions {
+    class Dimensions {
 
         private Integer dimBow;
         private Integer dimStern;

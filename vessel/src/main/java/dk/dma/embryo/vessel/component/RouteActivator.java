@@ -32,9 +32,6 @@ public class RouteActivator {
     /**
      * Used by other service classes, e.g. TestServiceBean. Does not require login.
      * 
-     * @param routeEnavId
-     * @param activate
-     * @return
      */
     public Route activateRoute(String routeEnavId, Boolean activate) {
         Route route = scheduleRepository.getRouteByEnavId(routeEnavId);

@@ -14,7 +14,11 @@
  */
 package dk.dma.embryo.dataformats.json;
 
-import java.util.List;
+import dk.dma.embryo.common.json.AbstractRestService;
+import dk.dma.embryo.dataformats.model.IceObservation;
+import dk.dma.embryo.dataformats.service.IceObservationService;
+import lombok.extern.slf4j.Slf4j;
+import org.jboss.resteasy.annotations.GZIP;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -24,28 +28,20 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-
-import org.jboss.resteasy.annotations.GZIP;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.common.json.AbstractRestService;
-import dk.dma.embryo.dataformats.model.IceObservation;
-import dk.dma.embryo.dataformats.service.IceObservationService;
+import java.util.List;
 
 @Path("/ice")
+@Slf4j
 public class IceObservationRestService extends AbstractRestService {
     @Inject
     private IceObservationService iceObservationService;
 
-    @Inject
-    private Logger logger;
-    
     @GET
     @Path("/provider/list")
     @Produces("application/json")
     @GZIP
     public Response listIceChartProviders(@Context Request request) {
-        logger.info("listIceChartProviders()");
+        log.info("listIceChartProviders()");
         return super.getResponse(request, iceObservationService.listIceChartProviders(), NO_CACHE);
     }
 
@@ -54,10 +50,10 @@ public class IceObservationRestService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response listIceObservations(@Context Request request, @PathParam("charttype") String chartType) {
-        logger.info("listIceObservations({})", chartType);
+        log.info("listIceObservations({})", chartType);
 
         List<IceObservation> result = iceObservationService.listAvailableIceObservations(chartType);
-        logger.info("listIceObservations({}) : ", chartType, result);
+        log.info("listIceObservations({}) : ", chartType, result);
         return super.getResponse(request, result, NO_CACHE);
     }
 

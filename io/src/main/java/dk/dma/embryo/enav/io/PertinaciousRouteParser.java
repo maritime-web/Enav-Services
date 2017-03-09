@@ -14,14 +14,14 @@
  */
 package dk.dma.embryo.enav.io;
 
+import dk.dma.enav.model.voyage.Route;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-
-import dk.dma.enav.model.voyage.Route;
 
 /**
  * Utility class for loading routes in different file formats.
@@ -31,8 +31,6 @@ import dk.dma.enav.model.voyage.Route;
  * @author Jesper Tejlgaard
  */
 public class PertinaciousRouteParser extends RouteParser {
-
-    // private static final Logger LOG = LoggerFactory.getLogger(RouteLoader.class);
 
     private BufferedReader reader;
     

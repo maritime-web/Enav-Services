@@ -15,38 +15,23 @@
 package dk.dma.embryo.user.shiro;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author Jesper Tejlgaard
  */
+@AllArgsConstructor
+@Getter
+@Setter
 public class Error {
     
     private AuthCode authCode;
     private String message;
-    
-    public Error(AuthCode authCode, String message) {
-        super();
-        this.authCode = authCode;
-        this.message = message;
-    }
 
-    public AuthCode getAuthCode() {
-        return authCode;
-    }
-
-    public void setAuthCode(AuthCode authCode) {
-        this.authCode = authCode;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public static enum AuthCode{
-        UNAUTHENTICATED, UNAUTHORIZED;
+    public enum AuthCode{
+        UNAUTHENTICATED, UNAUTHORIZED
     }
 
 }

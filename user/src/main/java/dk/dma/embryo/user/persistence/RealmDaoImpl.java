@@ -92,7 +92,7 @@ public class RealmDaoImpl extends DaoImpl implements RealmDao {
         Query query = em.createQuery("SELECT r.logicalName AS name, COUNT(su) AS total FROM SecuredUser su JOIN su.role r GROUP BY r.logicalName ORDER BY r.logicalName ASC");
         //Query query = em.createNativeQuery("SELECT logicalName, count(*) FROM SecuredUser INNER JOIN Role r ON Role_id = r.id GROUP BY roleName");
 
-        List<Object[]> list = (List<Object[]>) query.getResultList();
+        //noinspection unchecked
         return query.getResultList();
     }
 

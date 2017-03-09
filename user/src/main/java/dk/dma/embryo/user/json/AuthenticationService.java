@@ -14,7 +14,20 @@
  */
 package dk.dma.embryo.user.json;
 
-import java.util.Arrays;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.json.AbstractRestService;
+import dk.dma.embryo.common.log.EmbryoLogService;
+import dk.dma.embryo.user.couchdb.CouchToken;
+import dk.dma.embryo.user.model.SailorRole;
+import dk.dma.embryo.user.model.SecuredUser;
+import dk.dma.embryo.user.persistence.RealmDao;
+import dk.dma.embryo.user.security.Subject;
+import dk.dma.embryo.user.service.UserService;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
 
 import javax.ejb.FinderException;
 import javax.inject.Inject;
@@ -29,23 +42,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import dk.dma.embryo.user.couchdb.CouchToken;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.NoCache;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.json.AbstractRestService;
-import dk.dma.embryo.common.log.EmbryoLogService;
-import dk.dma.embryo.user.model.SailorRole;
-import dk.dma.embryo.user.model.SecuredUser;
-import dk.dma.embryo.user.persistence.RealmDao;
-import dk.dma.embryo.user.security.Subject;
-import dk.dma.embryo.user.service.UserService;
+import java.util.Arrays;
 
 @Path("/authentication")
+@Slf4j
 public class AuthenticationService extends AbstractRestService {
     @Inject
     private Subject subject;
@@ -55,9 +55,6 @@ public class AuthenticationService extends AbstractRestService {
 
     @Inject
     private RealmDao realmRepository;
-
-    @Inject
-    private Logger logger;
 
     @Inject
     private EmbryoLogService embryoLogService;
@@ -93,7 +90,7 @@ public class AuthenticationService extends AbstractRestService {
         details.setOsm(osm);
         details.setT(couchToken.generate(user.getUserName()));
 
-        logger.info("details() : {}", details);
+        log.info("details() : {}", details);
         
         return super.getResponse(request, details, NO_CACHE);
     }
@@ -105,10 +102,10 @@ public class AuthenticationService extends AbstractRestService {
     @NoCache
     public void logout() {
         if (subject != null && subject.getUser() != null) {
-            logger.info("User {} logged out", subject.getUser().getUserName());
+            log.info("User {} logged out", subject.getUser().getUserName());
             embryoLogService.info("User " + subject.getUser().getUserName() + " logged out");
         } else {
-            logger.error("Attempt to logout all though not logged in");
+            log.error("Attempt to logout all though not logged in");
             embryoLogService.error("Attempt to logout all though not logged in");
         }
         subject.logout();
@@ -128,17 +125,17 @@ public class AuthenticationService extends AbstractRestService {
             SecuredUser user = subject.login(userName, password);
 
             if (user != null) {
-                logger.info("User {} logged in", userName);
+                log.info("User {} logged in", userName);
                 embryoLogService.info("User " + userName + " logged in");
                 return (Details)details(request).getEntity();
             } else {
                 // We should probably never end in this block.
-                logger.info("User {} not logged in (wrong username / password)", userName);
+                log.info("User {} not logged in (wrong username / password)", userName);
                 embryoLogService.info("User " + userName + " not logged in (wrong username / password)");
                 throw new UserNotAuthenticated("not shiro");
             }
         } catch (org.apache.shiro.authc.IncorrectCredentialsException e) {
-            logger.info("User {} not logged in (wrong username / password)", userName);
+            log.info("User {} not logged in (wrong username / password)", userName);
             embryoLogService.info("User " + userName + " not logged in (wrong username / password)");
             throw new UserNotAuthenticated("login failed");
         }
@@ -201,26 +198,13 @@ public class AuthenticationService extends AbstractRestService {
             super(Response.status(Response.Status.BAD_REQUEST).entity(error).build());
         }
     }
-
+    @Data
     public static class ChangedPassword {
         private String uuid;
         private String password;
-
-        public String getUuid() {
-            return uuid;
-        }
-        public void setUuid(String uuid) {
-            this.uuid = uuid;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-        public void setPassword(String password) {
-            this.password = password;
-        }
     }
 
+    @Data
     public static class Details {
         private String shipMmsi;
         private String projection;
@@ -228,65 +212,5 @@ public class AuthenticationService extends AbstractRestService {
         private String[] permissions;
         private String osm;
         private String t;
-
-        @Override
-        public String toString() {
-            return ReflectionToStringBuilder.toString(this);
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((osm == null) ? 0 : osm.hashCode());
-            result = prime * result + Arrays.hashCode(permissions);
-            result = prime * result + ((projection == null) ? 0 : projection.hashCode());
-            result = prime * result + ((shipMmsi == null) ? 0 : shipMmsi.hashCode());
-            result = prime * result + ((userName == null) ? 0 : userName.hashCode());
-            return result;
-        }
-
-        public String getShipMmsi() {
-            return shipMmsi;
-        }
-        public void setShipMmsi(String shipMmsi) {
-            this.shipMmsi = shipMmsi;
-        }
-
-        public String getProjection() {
-            return projection;
-        }
-        public void setProjection(String projection) {
-            this.projection = projection;
-        }
-
-        public String getUserName() {
-            return userName;
-        }
-        public void setUserName(String userName) {
-            this.userName = userName;
-        }
-
-        public String[] getPermissions() {
-            return permissions;
-        }
-        public void setPermissions(String[] permissions) {
-            this.permissions = permissions;
-        }
-
-        public String getOsm() {
-            return osm;
-        }
-        public void setOsm(String osm) {
-            this.osm = osm;
-        }
-
-        public String getT() {
-            return t;
-        }
-        public void setT(String t) {
-            this.t = t;
-        }
-
     }
 }

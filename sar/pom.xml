@@ -25,12 +25,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${dependencies.slf4j.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.n1global</groupId>
             <artifactId>async-couchdb-client</artifactId>
             <version>0.62.MW.2</version>
@@ -57,11 +51,6 @@
                     <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>dk.dma.enav.services</groupId>
-            <artifactId>test-utilities</artifactId>
         </dependency>
 
         <dependency>

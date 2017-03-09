@@ -77,7 +77,6 @@ public class DbfField {
             type = c;
             length = i;
             decimalCount = j;
-            return;
         }
     }
 
@@ -104,7 +103,7 @@ public class DbfField {
             }
             if (obj instanceof Number) {
                 Number number = (Number) obj;
-                StringBuffer stringbuffer = new StringBuffer(getLength());
+                StringBuilder stringbuffer = new StringBuilder(getLength());
                 for (int i = 0; i < getLength(); i++) {
                     stringbuffer.append("#");
 
@@ -120,7 +119,7 @@ public class DbfField {
                             " cannot fit in pattern: '" + stringbuffer +
                             "'.");
                 }
-                StringBuffer stringbuffer2 = new StringBuffer(k);
+                StringBuilder stringbuffer2 = new StringBuilder(k);
                 for (int l = 0; l < k; l++) {
                     stringbuffer2.append(" ");
 
@@ -141,7 +140,7 @@ public class DbfField {
                     throw new RuntimeException("'" + obj + "' is longer than " + getLength() +
                             " characters.");
                 }
-                StringBuffer stringbuffer1 = new StringBuffer(getLength() - s.length());
+                StringBuilder stringbuffer1 = new StringBuilder(getLength() - s.length());
                 for (int j = 0; j < getLength() - s.length(); j++) {
                     stringbuffer1.append(' ');
 

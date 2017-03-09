@@ -18,8 +18,7 @@ import dk.dma.arcticweb.reporting.model.GreenposSearch;
 import dk.dma.arcticweb.reporting.service.GreenPosService;
 import dk.dma.embryo.vessel.json.Details;
 import dk.dma.embryo.vessel.json.VesselDetails;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
@@ -30,18 +29,17 @@ import java.io.Serializable;
 
 @Details
 @Interceptor
+@Slf4j
 public class GreenposVesselDetailsAmendment implements Serializable {
 
     private static final long serialVersionUID = 2883332760355286214L;
 
     @Inject
     private GreenPosService greenposService;
-
-    Logger logger = LoggerFactory.getLogger(GreenposVesselDetailsAmendment.class);
     
     @AroundInvoke
     public Object amendDetails(InvocationContext invocationContext) throws Exception {
-        logger.trace("amendDetails(x)");
+        log.trace("amendDetails(x)");
 
         Response serverResponse = (Response) invocationContext.proceed();
         VesselDetails result = (VesselDetails) serverResponse.getEntity();

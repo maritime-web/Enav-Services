@@ -37,7 +37,7 @@ public class HttpContentFilesReader {
         this("(.*)(\\.dbf|\\.prj|\\.shp|\\.shx)");
     }
 
-    public List<String> readFiles(Document doc) throws IOException {
+    public List<String> readFiles(Document doc) {
         List<String> files = new ArrayList<>();
         for (Element link : doc.select("a")) {
             if (link.hasAttr("href") && valueAccepted(link.attr("href"))) {

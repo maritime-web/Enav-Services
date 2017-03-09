@@ -45,6 +45,7 @@ public class RouteLegDecorator {
         return Converter.metersToNm(meters);
     }
 
+    // todo
     long calcTtg() {
         if (getSpeed() < 0.1) {
             return -1L;

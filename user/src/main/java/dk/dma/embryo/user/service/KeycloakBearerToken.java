@@ -16,17 +16,16 @@ package dk.dma.embryo.user.service;
 
 import dk.dma.embryo.user.model.KnownRoles;
 import dk.dma.embryo.user.model.User;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.keycloak.representations.AccessToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Created by Steen on 15-03-2016.
  *
  */
+@Slf4j
 public class KeycloakBearerToken implements AuthenticationToken {
-    public static final Logger LOGGER = LoggerFactory.getLogger(KeycloakBearerToken.class);
 
     private final AccessToken token;
 

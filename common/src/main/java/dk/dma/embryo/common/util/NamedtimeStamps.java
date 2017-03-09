@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * @author Jesper Tejlgaard
@@ -34,11 +35,10 @@ public class NamedtimeStamps {
 
         List<String> toDelete = new ArrayList<>(notifications.size());
 
-        for (Entry<String, DateTime> entry : notifications.entrySet()) {
-            if (entry.getValue().plusMinutes(minutes).isBefore(now)) {
-                toDelete.add(entry.getKey());
-            }
-        }
+        toDelete.addAll(notifications.entrySet().stream()
+                .filter(entry -> entry.getValue().plusMinutes(minutes).isBefore(now))
+                .map(Entry::getKey)
+                .collect(Collectors.toList()));
 
         for (String name : toDelete) {
             notifications.remove(name);

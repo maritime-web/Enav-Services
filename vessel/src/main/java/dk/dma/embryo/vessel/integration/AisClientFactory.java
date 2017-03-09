@@ -16,10 +16,11 @@ package dk.dma.embryo.vessel.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.dma.embryo.common.configuration.Property;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.specimpl.ResteasyUriBuilder;
-import org.slf4j.Logger;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -32,10 +33,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 @Singleton
+@Slf4j
 public class AisClientFactory {
-
-    @Inject
-    Logger logger;
 
     @Inject
     @Property("embryo.aistrack.server.url")
@@ -100,16 +99,11 @@ public class AisClientFactory {
      * <p/>
      * Borrowed from Adam Bien: http://www.adam-bien.com/roller/abien/entry/client_side_http_basic_access
      */
-
+    @AllArgsConstructor
     public static class Authenticator implements ClientRequestFilter {
 
         private final String user;
         private final String password;
-
-        public Authenticator(String user, String password) {
-            this.user = user;
-            this.password = password;
-        }
 
         public void filter(ClientRequestContext requestContext) throws IOException {
             MultivaluedMap<String, Object> headers = requestContext.getHeaders();

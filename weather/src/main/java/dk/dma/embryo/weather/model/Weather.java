@@ -15,40 +15,19 @@
 package dk.dma.embryo.weather.model;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 /**
  * @author Jesper Tejlgaard
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Weather {
 
     private RegionForecast forecast;
     private Warnings warnings;
-    
-    // //////////////////////////////////////////////////////////////////////
-    // Constructors
-    // //////////////////////////////////////////////////////////////////////
-    public Weather() {
-        super();
-    }
-    
-    public Weather(RegionForecast forecast, Warnings warning) {
-        super();
-        this.forecast = forecast;
-        this.warnings = warning;
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public RegionForecast getForecast() {
-        return forecast;
-    }
-    public void setForecast(RegionForecast forecast) {
-        this.forecast = forecast;
-    }
-    public Warnings getWarnings() {
-        return warnings;
-    }
-    public void setWarnings(Warnings warning) {
-        this.warnings = warning;
-    }
 }

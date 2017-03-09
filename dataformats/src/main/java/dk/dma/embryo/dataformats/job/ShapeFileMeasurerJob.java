@@ -14,6 +14,31 @@
  */
 package dk.dma.embryo.dataformats.job;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.log.EmbryoLogFactory;
+import dk.dma.embryo.common.log.EmbryoLogService;
+import dk.dma.embryo.common.mail.MailSender;
+import dk.dma.embryo.common.util.NamedtimeStamps;
+import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
+import dk.dma.embryo.dataformats.model.factory.ShapeFileNameParser;
+import dk.dma.embryo.dataformats.model.factory.ShapeFileNameParserFactory;
+import dk.dma.embryo.dataformats.persistence.ShapeFileMeasurementDao;
+import dk.dma.embryo.dataformats.service.ShapeFileService;
+import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.ejb.ScheduleExpression;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.ejb.Timeout;
+import javax.ejb.TimerConfig;
+import javax.ejb.TimerService;
+import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -28,41 +53,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.ejb.ScheduleExpression;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.ejb.Timeout;
-import javax.ejb.TimerConfig;
-import javax.ejb.TimerService;
-import javax.inject.Inject;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.common.log.EmbryoLogFactory;
-import dk.dma.embryo.common.log.EmbryoLogService;
-import dk.dma.embryo.common.mail.MailSender;
-import dk.dma.embryo.common.util.NamedtimeStamps;
-import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
-import dk.dma.embryo.dataformats.model.factory.ShapeFileNameParser;
-import dk.dma.embryo.dataformats.model.factory.ShapeFileNameParserFactory;
-import dk.dma.embryo.dataformats.persistence.ShapeFileMeasurementDao;
-import dk.dma.embryo.dataformats.service.ShapeFileService;
-
 @Singleton
 @Startup
+@Slf4j
 public class ShapeFileMeasurerJob {
     private static long TRANSACTION_LENGTH = 60 * 1000L * 4;
-
-    private final Logger logger = LoggerFactory.getLogger(ShapeFileMeasurerJob.class);
 
     @Inject
     private ShapeFileService service;
@@ -106,13 +101,13 @@ public class ShapeFileMeasurerJob {
     @PostConstruct
     public void init() throws IOException {
         if (cron != null) {
-            logger.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
+            log.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
             initProvider(iceChartProviders, "iceChart");
             initProvider(icebergProviders, "iceberg");
-            logger.info("Initializing {} with {}", this.getClass().getSimpleName(), directories.toString());
+            log.info("Initializing {} with {}", this.getClass().getSimpleName(), directories.toString());
             timerService.createCalendarTimer(cron, new TimerConfig(null, false));
         } else {
-            logger.info("Cron job not scheduled.");
+            log.info("Cron job not scheduled.");
         }
     }
     
@@ -123,7 +118,7 @@ public class ShapeFileMeasurerJob {
         if (value != null) {
             directories.put(chartType + "-" + providerKey, value);
         } else {
-            logger.info("Property {} not found", property);
+            log.info("Property {} not found", property);
         }
         }
     }
@@ -156,7 +151,7 @@ public class ShapeFileMeasurerJob {
     public void measureFiles() {
         long start = new Date().getTime();
 
-        logger.info("Measuring files ... (transaction length " + TRANSACTION_LENGTH + " msec.)");
+        log.info("Measuring files ... (transaction length " + TRANSACTION_LENGTH + " msec.)");
 
         notifications.clearOldThanMinutes(60 * 24);
         
@@ -172,12 +167,12 @@ public class ShapeFileMeasurerJob {
                         parserFactory);
                 measurer.measureFiles(directory.getValue(), chartType, provider, start);
                 List<ShapeFileMeasurement> measurements = measurer.getMeasurements();
-                logger.debug("{}: Done. Saving {} items ...", provider, measurements.size());
+                log.debug("{}: Done. Saving {} items ...", provider, measurements.size());
 
-                logger.debug("Calling deleteAll({})", provider);
+                log.debug("Calling deleteAll({})", provider);
                 shapeFileMeasurementDao.deleteAll(chartType, provider);
 
-                logger.info("{}: Saving {} measurements", provider, measurements.size());
+                log.info("{}: Saving {} measurements", provider, measurements.size());
 
                 for (ShapeFileMeasurement sfm : measurements) {
                     shapeFileMeasurementDao.saveEntity(sfm);
@@ -239,7 +234,7 @@ public class ShapeFileMeasurerJob {
             }
         }
 
-        public void measureFiles(String directory, String chartType, String provider, long start) throws IOException {
+        public void measureFiles(String directory, String chartType, String provider, long start) {
             for (String fn : downloadedIceObservations(directory)) {
 
                 ShapeFileNameParser parser = parserFactory.createParser(provider);
@@ -247,20 +242,20 @@ public class ShapeFileMeasurerJob {
 
                 ShapeFileMeasurement lookup = dao.lookup(sfm.getFileName(), chartType, provider);
                 if (lookup == null || lookup.getVersion() < sfm.getVersion()) {
-                    logger.debug("" + (new Date().getTime() - start) + " vs " + TRANSACTION_LENGTH);
+                    log.debug("" + (new Date().getTime() - start) + " vs " + TRANSACTION_LENGTH);
 
                     if (System.currentTimeMillis() - start < TRANSACTION_LENGTH) {
-                        logger.debug("Measuring file: " + fn);
+                        log.debug("Measuring file: " + fn);
 
                         try {
                             sfm.setFileSize(measureFile(chartType + "-" + provider + "." + fn));
                             sfm.setCreated(DateTime.now(DateTimeZone.UTC));
-                            logger.debug("File size: " + sfm.getFileSize());
+                            log.debug("File size: " + sfm.getFileSize());
                             measurements.put(sfm.getFileName(), sfm);
                             newMeasurements++;
                         } catch (Throwable t) {
                             failedMeasurementCount++;
-                            logger.error("Error measuring " + fn + ": " + t, t);
+                            log.error("Error measuring " + fn + ": " + t, t);
                             embryoLogger.error("Error measuring " + fn + ": " + t, t);
                             sendEmail(chartType, provider, fn, t);
                         }

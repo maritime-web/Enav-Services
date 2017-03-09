@@ -15,6 +15,10 @@
 package dk.dma.embryo.user.model;
 
 import dk.dma.embryo.common.persistence.BaseEntity;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -41,6 +45,9 @@ import java.util.stream.Collectors;
     @NamedQuery(name="SecuredUser:findByEmail", query = "SELECT u FROM SecuredUser u WHERE u.email=:email"),
     @NamedQuery(name="SecuredUser:findByMaritimeCloudId", query = "SELECT u FROM SecuredUser u WHERE u.maritimeCloudId=:maritimeCloudId"),
     @NamedQuery(name="SecuredUser:findByUuid", query = "SELECT u FROM SecuredUser u WHERE u.forgotUuid=:uuid")})
+@ToString
+@Setter
+@Getter
 public class SecuredUser extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -8480232439011093135L;
@@ -48,7 +55,7 @@ public class SecuredUser extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Entity fields (also see super class)
     // //////////////////////////////////////////////////////////////////////
-
+    @Setter(AccessLevel.NONE)
     private String maritimeCloudId;
 
     private String hashedPassword;
@@ -63,6 +70,7 @@ public class SecuredUser extends BaseEntity<Long> {
     private String forgotUuid;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @Setter(AccessLevel.NONE)
     private DateTime created;
 
     @OneToOne(cascade=CascadeType.REMOVE)
@@ -70,7 +78,7 @@ public class SecuredUser extends BaseEntity<Long> {
 
     @OneToMany(orphanRemoval = true ,cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
     @JoinColumn(name="SecuredUser_id", nullable = false)
-    private List<AreasOfInterest> areasOfInterest = new ArrayList<AreasOfInterest>();
+    private List<AreasOfInterest> areasOfInterest = new ArrayList<>();
 
     private String aisFilterName;
 
@@ -110,7 +118,7 @@ public class SecuredUser extends BaseEntity<Long> {
     public void addSelectionGroup(AreasOfInterest group) {
 
         if (this.areasOfInterest == null) {
-            this.areasOfInterest = new ArrayList<AreasOfInterest>();
+            this.areasOfInterest = new ArrayList<>();
         }
 
         this.areasOfInterest.add(group);
@@ -144,78 +152,5 @@ public class SecuredUser extends BaseEntity<Long> {
         }
 
         return false;
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Object methods
-    // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName() + " [userName=" + userName + ", id=" + id + ", email=" + email + " hashedpassword=*]";
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public String getUserName() {
-        return userName;
-    }
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getHashedPassword() {
-        return hashedPassword;
-    }
-    public void setHashedPassword(String hashedPassword) {
-        this.hashedPassword = hashedPassword;
-    }
-
-    public byte[] getSalt() {
-        return salt;
-    }
-    public void setSalt(byte[] salt) {
-        this.salt = salt;
-    }
-
-    public DateTime getCreated() {
-        return created;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public String getForgotUuid() {
-        return forgotUuid;
-    }
-    public void setForgotUuid(String forgotUuid) {
-        this.forgotUuid = forgotUuid;
-    }
-
-    public List<AreasOfInterest> getAreasOfInterest() {
-        return areasOfInterest;
-    }
-
-    public void setAreasOfInterest(List<AreasOfInterest> areasOfInterest) {
-        this.areasOfInterest = areasOfInterest;
-    }
-
-    public String getAisFilterName() {
-        return aisFilterName;
-    }
-
-    public void setAisFilterName(String aisFilterName) {
-        this.aisFilterName = aisFilterName;
     }
 }

@@ -16,7 +16,6 @@ package dk.dma.embryo.dataformats.job;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 
 /**
  * @author Jesper Tejlgaard
@@ -33,13 +32,13 @@ public class FileUtility {
         return new File(localDirectory).list(fileNameFilter);
     }
 
-    public boolean deleteFile(String name) throws IOException, InterruptedException {
+    public boolean deleteFile(String name) throws InterruptedException {
         String localName = localDirectory + "/" + name;
         boolean deleted = true;
 
         File file = new File(localName);
         if (file.exists()) {
-            file.delete();
+            org.apache.commons.io.FileUtils.deleteQuietly(file);
             Thread.sleep(10);
             if (file.exists()) {
                 deleted = false;

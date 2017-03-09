@@ -16,28 +16,20 @@ package dk.dma.embryo.metoc.json;
 
 import dk.dma.embryo.metoc.json.client.DmiSejlRuteService;
 import dk.dma.embryo.metoc.json.client.DmiSejlRuteService.MetocForecast;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
-
+@EqualsAndHashCode
 public class Metoc {
 
     private String created;
     private List<Forecast> forecasts;
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-
-        result = prime * result + ((created == null) ? 0 : created.hashCode());
-        result = prime * result + ((forecasts == null) ? 0 : forecasts.hashCode());
-
-        return result;
-    }
 
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
@@ -46,7 +38,7 @@ public class Metoc {
         Metoc result = new Metoc();
 
         try {
-            List<Forecast> forecasts = new ArrayList<Forecast>(metocForecast.getForecasts().length);
+            List<Forecast> forecasts = new ArrayList<>(metocForecast.getForecasts().length);
             for (DmiSejlRuteService.Forecast dmiForecast : metocForecast.getForecasts()) {
                 forecasts.add(Forecast.from(dmiForecast));
             }
@@ -63,7 +55,7 @@ public class Metoc {
         Metoc result = new Metoc();
 
         try {
-            List<Forecast> forecasts = new ArrayList<Forecast>(metocForecast.getForecasts().length);
+            List<Forecast> forecasts = new ArrayList<>(metocForecast.getForecasts().length);
             for (DmiSejlRuteService.Forecast dmiForecast : metocForecast.getForecasts()) {
                 if (predicate.test(dmiForecast)) {
                     forecasts.add(Forecast.from(dmiForecast));
@@ -98,6 +90,9 @@ public class Metoc {
     // //////////////////////////////////////////////////////////////////////
     // Inner classes
     // //////////////////////////////////////////////////////////////////////
+    @Getter
+    @Setter
+    @EqualsAndHashCode
     public static class Forecast {
         private double lat;
         private double lon;
@@ -127,107 +122,13 @@ public class Metoc {
             return forecast;
         }
 
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((curDir == null) ? 0 : curDir.hashCode());
-            result = prime * result + ((curSpeed == null) ? 0 : curSpeed.hashCode());
-            long temp;
-            temp = Double.doubleToLongBits(lat);
-            result = prime * result + (int) (temp ^ (temp >>> 32));
-            temp = Double.doubleToLongBits(lon);
-            result = prime * result + (int) (temp ^ (temp >>> 32));
-            result = prime * result + ((seaLevel == null) ? 0 : seaLevel.hashCode());
-            result = prime * result + ((time == null) ? 0 : time.hashCode());
-            result = prime * result + ((waveDir == null) ? 0 : waveDir.hashCode());
-            result = prime * result + ((waveHeight == null) ? 0 : waveHeight.hashCode());
-            result = prime * result + ((wavePeriod == null) ? 0 : wavePeriod.hashCode());
-            result = prime * result + ((windDir == null) ? 0 : windDir.hashCode());
-            result = prime * result + ((windSpeed == null) ? 0 : windSpeed.hashCode());
-            return result;
-        }
-
+        /**
+         * tries to round a double to a give number of decimals
+         * todo this does not always work, because rounding is always involved when one of the participants is a double, BigDecimal should be used instead
+         */
         private static double ceil(double number, int decimals) {
             double d = Math.pow(10.0, decimals);
             return Math.ceil(number * d) / d;
-        }
-
-        public double getLat() {
-            return lat;
-        }
-        public void setLat(double lat) {
-            this.lat = lat;
-        }
-
-        public double getLon() {
-            return lon;
-        }
-        public void setLon(double lon) {
-            this.lon = lon;
-        }
-
-        public Date getTime() {
-            return time;
-        }
-        public void setTime(Date time) {
-            this.time = time;
-        }
-
-        public Double getWindDir() {
-            return windDir;
-        }
-        public void setWindDir(Double windDir) {
-            this.windDir = windDir;
-        }
-
-        public Double getWindSpeed() {
-            return windSpeed;
-        }
-        public void setWindSpeed(Double windSpeed) {
-            this.windSpeed = windSpeed;
-        }
-
-        public Double getCurDir() {
-            return curDir;
-        }
-        public void setCurDir(Double curDir) {
-            this.curDir = curDir;
-        }
-
-        public Double getCurSpeed() {
-            return curSpeed;
-        }
-        public void setCurSpeed(Double curSpeed) {
-            this.curSpeed = curSpeed;
-        }
-
-        public Double getWaveDir() {
-            return waveDir;
-        }
-        public void setWaveDir(Double waveDir) {
-            this.waveDir = waveDir;
-        }
-
-        public Double getWaveHeight() {
-            return waveHeight;
-        }
-        public void setWaveHeight(Double waveHeight) {
-            this.waveHeight = waveHeight;
-        }
-
-        public Double getWavePeriod() {
-            return wavePeriod;
-        }
-        public void setWavePeriod(Double wavePeriod) {
-            this.wavePeriod = wavePeriod;
-        }
-
-        public Double getSeaLevel() {
-            return seaLevel;
-        }
-        public void setSeaLevel(Double seaLevel) {
-            this.seaLevel = seaLevel;
         }
     }
 }

@@ -16,34 +16,33 @@
 package dk.dma.embryo.tiles.service;
 
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.log.EmbryoLogService;
+import dk.dma.embryo.common.mail.MailSender;
+import dk.dma.embryo.tiles.image.Image2Tiles;
+import dk.dma.embryo.tiles.image.Image2TilesUsingMaptiler;
+import dk.dma.embryo.tiles.image.ImageSourceMeta;
+import dk.dma.embryo.tiles.image.ImageSourceMetaReader;
+import dk.dma.embryo.tiles.model.TileSet;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.common.log.EmbryoLogService;
-import dk.dma.embryo.common.mail.MailSender;
-import dk.dma.embryo.tiles.image.Image2Tiles;
-import dk.dma.embryo.tiles.image.ImageSourceMeta;
-import dk.dma.embryo.tiles.image.ImageSourceMetaReader;
-import dk.dma.embryo.tiles.model.TileSet;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Created by Jesper Tejlgaard on 8/26/14.
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@Slf4j
 public class TilerServiceBean implements TilerService {
 
     @Inject
@@ -57,9 +56,6 @@ public class TilerServiceBean implements TilerService {
     @Inject
     @Property(value = "embryo.tiles.mbtiles")
     private String mbtiles;
-
-    @Inject
-    private Logger logger;
 
     @Inject
     private TileSetDao dao;
@@ -81,11 +77,10 @@ public class TilerServiceBean implements TilerService {
 
     public Result cleanup() {
         Result result = new Result();
-        try {
-            result.deleted = transformer.cleanup();
-        } catch (IOException e) {
-            result.errorCount++;
-        }
+        // todo we should probably assign the error count, the method only return the deleted
+        Image2TilesUsingMaptiler.CleanResult cleanResult = transformer.cleanup();
+        result.deleted = cleanResult.getDeleted();
+        result.errorCount = cleanResult.getErrorCount();
         return result;
     }
 
@@ -94,7 +89,7 @@ public class TilerServiceBean implements TilerService {
         try {
             long start = System.currentTimeMillis();
 
-            logger.info("{}", geotifFile.getAbsolutePath());
+            log.info("{}", geotifFile.getAbsolutePath());
 
             TileSet tileSet = dao.getByNameAndProvider(name, provider);
             tileSet.setStatus(TileSet.Status.CONVERTING);
@@ -112,18 +107,18 @@ public class TilerServiceBean implements TilerService {
 
             File tmpDestination = new File(tmpDir, destName);
             if (tmpDestination.exists()) {
-                logger.debug("Deleting existing tmp destination {} ", tmpDestination.getAbsolutePath());
+                log.debug("Deleting existing tmp destination {} ", tmpDestination.getAbsolutePath());
 
                 FileUtils.deleteQuietly(tmpDestination);
                 // wait for delete to happen
                 Thread.sleep(10);
             }
 
-            logger.debug("Transforming {} to {}", geotifFile, tmpDestination);
+            log.debug("Transforming {} to {}", geotifFile, tmpDestination);
             transformer.execute(geotifFile, tmpDestination);
 
             File destination = new File(destinationDir, tmpDestination.getName());
-            logger.debug("Moving {} to {}", tmpDestination, destination);
+            log.debug("Moving {} to {}", tmpDestination, destination);
 
             Files.move(Paths.get(tmpDestination.getAbsolutePath()), Paths.get(destination.getAbsolutePath()));
 
@@ -141,7 +136,7 @@ public class TilerServiceBean implements TilerService {
 
             String time = hours + ":" + minutes + ":" + seconds;
             String msg = "Transformed " + geotifFile.getAbsolutePath() + " to tiles " + destination.getAbsolutePath() + " in " + time;
-            logger.info(msg);
+            log.info(msg);
             logService.info(msg);
         } catch (Exception e) {
             try {
@@ -149,21 +144,21 @@ public class TilerServiceBean implements TilerService {
                 tileSet.setStatus(TileSet.Status.FAILED);
                 dao.saveEntity(tileSet);
             } catch (Exception e2) {
-                logger.error("Failed updating status", e2);
+                log.error("Failed updating status", e2);
             }
 
             try {
                 sendEmail(name, provider, e);
             } catch (Exception e2) {
-                logger.error("Failed sending mail", e2);
+                log.error("Failed sending mail", e2);
             }
 
             try {
                 String msg = "Failed transforming " + geotifFile + " to tiles";
-                logger.error(msg, e);
+                log.error(msg, e);
                 logService.error(msg, e);
             } catch (Exception e2) {
-                logger.error("Failed logging", e2);
+                log.error("Failed logging", e2);
             }
         }
 
@@ -177,7 +172,7 @@ public class TilerServiceBean implements TilerService {
         if (!new File(dir).exists()) {
             File directory = new File(dir);
             if (!directory.mkdirs()) {
-                logger.error("Failed creating directory {}", dir);
+                log.error("Failed creating directory {}", dir);
             }
         }
     }

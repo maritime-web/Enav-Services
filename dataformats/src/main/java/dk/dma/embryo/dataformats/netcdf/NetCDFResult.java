@@ -14,6 +14,10 @@
  */
 package dk.dma.embryo.dataformats.netcdf;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -26,31 +30,12 @@ import java.util.Map;
  * @author avlund
  *
  */
+@AllArgsConstructor
+@Getter
+@ToString
 public class NetCDFResult {
-    private Map<String, Integer> variables;
-    private Map<String, List<? extends Serializable>> metadata;
-    private Map<Integer, NetCDFMoment> data;
+    private final Map<String, Integer> variables;
+    private final Map<String, List<? extends Serializable>> metadata;
+    private final Map<Integer, NetCDFMoment> data;
 
-    public NetCDFResult(Map<String, Integer> variables, Map<String, List<? extends Serializable>> metadata, Map<Integer, NetCDFMoment> data) {
-        this.variables = variables;
-        this.metadata = metadata;
-        this.data = data;
-    }
-
-    public Map<String, Integer> getVariables() {
-        return variables;
-    }
-
-    public Map<String, List<? extends Serializable>> getMetadata() {
-        return metadata;
-    }
-
-    public Map<Integer, NetCDFMoment> getData() {
-        return data;
-    }
-
-    @Override
-    public String toString() {
-        return "NetCDFResult: Variables: " + variables.toString() + ", Metadata: " + metadata.toString();
-    }
 }

@@ -15,22 +15,22 @@
 
 package dk.dma.embryo.tiles.service;
 
-import java.io.File;
-import java.util.Map;
-
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import dk.dma.embryo.common.configuration.Type;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.tiles.model.TileSet;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Map;
 
 /**
  * Created by Jesper Tejlgaard on 11/10/14.
  */
+@Slf4j
 public class DeleteTilesVisitor extends AbstractTileProviderVisitor {
-    private final Logger logger = LoggerFactory.getLogger(DeleteTilesVisitor.class);
+
     private final String tileDirectory;
 
     public DeleteTilesVisitor(TileSetDao tileSetDao, EmbryoLogService embryoLogService, String tileDirectory) {
@@ -49,7 +49,11 @@ public class DeleteTilesVisitor extends AbstractTileProviderVisitor {
             Map<String, TileSet> imageMap = getTileSets(type);
 
             File[] files = directory.listFiles();
-            logger.debug("Files: " + files);
+            if (files == null)  {
+                log.error("Unable to delete files in " + tileDirectory + " listFiles() returned null.");
+                return;
+            }
+            log.debug("Files: " + Arrays.toString(files));
 
             for (File file : files) {
                 String tileSetName = file.getName().replaceAll(".mbtiles", "");
@@ -58,7 +62,7 @@ public class DeleteTilesVisitor extends AbstractTileProviderVisitor {
                         result.deleted++;
                     } else {
                         String msg = "Failed deleting tiles " + file.getAbsolutePath();
-                        logger.error(msg);
+                        log.error(msg);
                         embryoLogService.error(msg);
                         result.errorCount++;
                     }
@@ -66,7 +70,7 @@ public class DeleteTilesVisitor extends AbstractTileProviderVisitor {
             }
         } catch (Exception e) {
             String msg = "Fatal error deleting tiles for provider " + currentProvider.getShortName() + " and type " + type.getName();
-            logger.error(msg, e);
+            log.error(msg, e);
             embryoLogService.error(msg, e);
             result.errorCount++;
         }

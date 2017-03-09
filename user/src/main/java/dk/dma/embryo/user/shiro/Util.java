@@ -14,25 +14,21 @@
  */
 package dk.dma.embryo.user.shiro;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 /**
  * @author Jesper Tejlgaard
  */
+@Slf4j
 public class Util {
-
-    static Logger logger = LoggerFactory.getLogger(Util.class);
     
     public static <T> T getJson(InputStream is, Class<T> clazz) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
@@ -40,7 +36,7 @@ public class Util {
     }
 
     public static <V> V getValue(Object object, String dotSeparatedPath) {
-        logger.debug("getValue({}, {})", object, dotSeparatedPath);
+        log.debug("getValue({}, {})", object, dotSeparatedPath);
         
         String[] fields = dotSeparatedPath.split("\\.");
         try {
@@ -51,8 +47,8 @@ public class Util {
                     Field field = object.getClass().getField(fieldName);
                     object = field.get(object); 
                 }
-                logger.debug("fieldname = {})", fieldName);
-                logger.debug("object = {})", object);
+                log.debug("fieldname = {})", fieldName);
+                log.debug("object = {})", object);
             }
 
             return (V)object;

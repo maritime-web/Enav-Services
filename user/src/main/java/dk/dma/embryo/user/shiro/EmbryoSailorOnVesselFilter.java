@@ -14,21 +14,18 @@
  */
 package dk.dma.embryo.user.shiro;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import dk.dma.embryo.common.configuration.Configuration;
 import dk.dma.embryo.user.security.Subject;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 /**
  * @author Jesper Tejlgaard
  */
+@Slf4j
 public class EmbryoSailorOnVesselFilter extends EmbryoVesselDataFilter {
-
-    Logger logger = LoggerFactory.getLogger(EmbryoSailorOnVesselFilter.class);
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue)

@@ -14,7 +14,12 @@
  */
 package dk.dma.embryo.common.log;
 
-import java.util.List;
+import dk.dma.embryo.common.json.AbstractRestService;
+import lombok.extern.slf4j.Slf4j;
+import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -24,22 +29,13 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-
-import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.NoCache;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.common.json.AbstractRestService;
+import java.util.List;
 
 @Path("/log")
+@Slf4j
 public class LogEntryRestService extends AbstractRestService {
     @Inject
     private LogEntryDao logEntryDao;
-    
-    @Inject
-    private Logger logger;
 
     @GET
     @Path("/search")
@@ -51,13 +47,13 @@ public class LogEntryRestService extends AbstractRestService {
         @QueryParam("count") Integer count, 
         @QueryParam("from") Long from) {
         
-        logger.info("search({}, {}, {})", service, count, from);
+        log.info("search({}, {}, {})", service, count, from);
 
         DateTime ts = new DateTime(from, DateTimeZone.UTC);
         List<dk.dma.embryo.common.log.LogEntry> result = logEntryDao.search(service, count, ts);
         List<JsonLogEntry> transformed = LogEntry.fromJsonModel(result);
         
-        logger.info("search() {}: ", transformed);
+        log.info("search() {}: ", transformed);
         
         return super.getResponse(request, transformed, NO_CACHE);
     }
@@ -73,12 +69,12 @@ public class LogEntryRestService extends AbstractRestService {
         @Context Request request,
         @QueryParam("service") String service) {
         
-        logger.info("latest({})", service);
+        log.info("latest({})", service);
         
         dk.dma.embryo.common.log.LogEntry latest = logEntryDao.latest(service); 
         JsonLogEntry result = latest == null ? null : latest.toJsonModel();
         
-        logger.info("latest({}) : {}", service, result);
+        log.info("latest({}) : {}", service, result);
         
         return Response.ok(result).build();
     }
@@ -90,7 +86,7 @@ public class LogEntryRestService extends AbstractRestService {
         @Context Request request,
         @QueryParam("from") Long from) {
         
-        logger.info("services()");
+        log.info("services()");
         
         DateTime fromTs;
         if(from == null){
@@ -101,7 +97,7 @@ public class LogEntryRestService extends AbstractRestService {
         
         List<String> services = logEntryDao.services(fromTs); 
         
-        logger.info("services():{}", services);
+        log.info("services():{}", services);
         
         return super.getResponse(request, services, NO_CACHE);
     }

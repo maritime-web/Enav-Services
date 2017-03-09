@@ -15,10 +15,13 @@
 
 package dk.dma.embryo.dataformats.persistence;
 
+import lombok.Getter;
+
 /**
  * Created by Steen on 12-01-2016.
  *
  */
+@Getter
 public class CouchDbConfig {
     private final String forecastDb;
     private final String designDocumentResourceUrl;
@@ -27,7 +30,6 @@ public class CouchDbConfig {
     private final int port;
     private final String user;
     private final String password;
-
     private final String forecastDbUrl;
 
     public CouchDbConfig(String forecastDb, String designDocumentResourceUrl, String designDocumentId, String host, int port, String user, String password) {
@@ -39,37 +41,5 @@ public class CouchDbConfig {
         this.user = user;
         this.password = password;
         this.forecastDbUrl = "http://" + host + ":" + port + forecastDb;
-    }
-
-    public String getForecastDbUrl() {
-        return this.forecastDbUrl;
-    }
-
-    public String getForecastDb() {
-        return forecastDb;
-    }
-
-    public String getDesignDocumentResourceUrl() {
-        return designDocumentResourceUrl;
-    }
-
-    public String getDesignDocumentId() {
-        return designDocumentId;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public String getPassword() {
-        return password;
     }
 }

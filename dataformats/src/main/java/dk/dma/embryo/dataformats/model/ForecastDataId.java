@@ -15,81 +15,29 @@
 
 package dk.dma.embryo.dataformats.model;
 
+import com.google.common.base.Preconditions;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
 import java.util.Objects;
 
 /**
  * Value class representing identification of a forecast data document.
  */
+@Getter
+@EqualsAndHashCode(of = "id")
+@ToString
 public class ForecastDataId {
     private String area;
-
     private ForecastProvider provider;
-
     private Type type;
-
     private String id;
 
     public ForecastDataId(String area, ForecastProvider provider, Type type) {
-        if (area == null) {
-            throw new NullPointerException();
-        }
-        if (provider == null) {
-            throw new NullPointerException();
-        }
-        if (type == null) {
-            throw new NullPointerException();
-        }
-
-        this.area = area;
-        this.provider = provider;
-        this.type = type;
+        this.area = Preconditions.checkNotNull(area, "area");
+        this.provider = Preconditions.checkNotNull(provider, "provider");
+        this.type = Preconditions.checkNotNull(type, "type");
         this.id = (area + provider + type).replaceAll("\\s", "-");
-    }
-
-    //Required by JPA
-    protected ForecastDataId() {
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public ForecastProvider getProvider() {
-        return provider;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ForecastDataId that = (ForecastDataId) o;
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "ForecastDataId{" +
-                "area='" + area + '\'' +
-                ", provider=" + provider +
-                ", type=" + type +
-                ", id='" + id + '\'' +
-                '}';
     }
 }

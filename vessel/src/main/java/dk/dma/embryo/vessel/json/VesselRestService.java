@@ -24,9 +24,9 @@ import dk.dma.embryo.vessel.model.Voyage;
 import dk.dma.embryo.vessel.service.AisDataService;
 import dk.dma.embryo.vessel.service.ScheduleService;
 import dk.dma.embryo.vessel.service.VesselService;
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.client.ClientResponseFailure;
-import org.slf4j.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -47,13 +47,11 @@ import java.util.stream.Collectors;
 
 @Path("/vessel")
 @RequestScoped
+@Slf4j
 public class VesselRestService extends AbstractRestService {
 
     @Inject
     private AisDataService aisDataService;
-
-    @Inject
-    private Logger logger;
 
     @Inject
     private VesselService vesselService;
@@ -120,10 +118,10 @@ public class VesselRestService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response list(@Context Request request, @QueryParam("area") String specificAreaFilter ) {
-        logger.info("  searching in area {} ", specificAreaFilter);
+        log.info("  searching in area {} ", specificAreaFilter);
 
         List<AisVessel> aisVessels = this.aisDataService.getAisVesselsBBOX(specificAreaFilter);
-        logger.info("area specific search resulted in {} found vessels ", aisVessels.size());
+        log.info("area specific search resulted in {} found vessels ", aisVessels.size());
         List<VesselOverview> result = AisVessel.toVesselOverviewStream(aisVessels).collect(Collectors.toList());
 
         return super.getResponse(request, result, NO_CACHE);
@@ -142,10 +140,10 @@ public class VesselRestService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response overview(@Context Request request, @QueryParam("area") String specificAreaFilter ) {
-        logger.debug("creating overview for area {} ", specificAreaFilter);
+        log.debug("creating overview for area {} ", specificAreaFilter);
 
         List<AisVessel> aisVessels = this.aisDataService.getAisVesselsBBOX(specificAreaFilter);
-        logger.debug("area specific overview consist of {} vessels ", aisVessels.size());
+        log.debug("area specific overview consist of {} vessels ", aisVessels.size());
         List<VesselSimplifiedOverview> result = AisVessel.toVesselSimplifiedOverviewStream(aisVessels).collect(Collectors.toList());
 
         return super.getResponse(request, result, 120);
@@ -157,7 +155,7 @@ public class VesselRestService extends AbstractRestService {
     @GZIP
     @Details
     public Response details(@Context Request request, @QueryParam("mmsi") long mmsi) {
-        logger.debug("details({})", mmsi);
+        log.debug("details({})", mmsi);
 
         VesselDetails details;
         try {
@@ -183,7 +181,7 @@ public class VesselRestService extends AbstractRestService {
             Vessel vessel = vesselService.getVessel(mmsi);
 
             if (vessel != null) {
-                logger.warn("Ignoring caught exception. Fallback to database only", e);
+                log.warn("Ignoring caught exception. Fallback to database only", e);
                 details = vessel.toJsonModel();
                 details.setAisVessel(AisVessel.create(vessel));
 
@@ -199,7 +197,7 @@ public class VesselRestService extends AbstractRestService {
             }
         }
 
-        logger.debug("details({}) : {}", details);
+        log.debug("details({}) : {}", details);
         return super.getResponse(request, details, MAX_AGE_10_MINUTES);
     }
 
@@ -208,7 +206,7 @@ public class VesselRestService extends AbstractRestService {
     @Consumes("application/json")
     @GZIP
     public void saveDetails(VesselDetails details) {
-        logger.debug("save({})", details);
+        log.debug("save({})", details);
         vesselService.save(dk.dma.embryo.vessel.model.Vessel.fromJsonModel(details));
     }
 
@@ -216,7 +214,7 @@ public class VesselRestService extends AbstractRestService {
     @Path("/update/ais")
     @Consumes("application/json")
     public void updateAis() {
-        logger.debug("updateAis()");
+        log.debug("updateAis()");
         aisReplicatorJob.replicate();
     }
 

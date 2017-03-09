@@ -14,21 +14,12 @@
  */
 package dk.dma.embryo.vessel.json;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
 public class TypeaheadDatum {
-    private String value;
-    private String[] tokens;
-
-    public TypeaheadDatum(String value, String... tokens) {
-        this.value = value;
-        this.tokens = tokens;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public String[] getTokens() {
-        return tokens;
-    }
-
+    private final String value;
+    private final String[] tokens;
 }

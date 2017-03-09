@@ -14,50 +14,17 @@
  */
 package dk.dma.embryo.vessel.json;
 
+import lombok.Data;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
  * 
  * @author Jesper Tejlgaard
  */
+@Data
 public class ActiveRoute {
 
     private String routeId;
-
     private Boolean active;
-
-    // //////////////////////////////////////////////////////////////////////
-    // Constructors
-    // //////////////////////////////////////////////////////////////////////
-    public ActiveRoute() {
-        super();
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Object methods
-    // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public String getRouteId() {
-        return routeId;
-    }
-
-    public void setRouteId(String routeId) {
-        this.routeId = routeId;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
 
 }

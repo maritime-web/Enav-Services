@@ -19,8 +19,9 @@ import dk.dma.embryo.user.model.AreasOfInterest;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.security.Subject;
 import dk.dma.embryo.user.service.UserService;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.annotations.GZIP;
-import org.slf4j.Logger;
 
 import javax.ejb.FinderException;
 import javax.inject.Inject;
@@ -38,10 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Path("/areasOfInterest")
+@Slf4j
 public class AreasOfInterestRestService extends AbstractRestService {
-
-    @Inject
-    private Logger logger;
 
     @Inject
     private Subject subject;
@@ -56,9 +55,9 @@ public class AreasOfInterestRestService extends AbstractRestService {
     public Response list(@Context Request request) {
         
         SecuredUser securedUser = this.subject.getUser();
-        logger.info("Calling list all Selection Groups for logged on user -> " + securedUser.getUserName());
+        log.info("Calling list all Selection Groups for logged on user -> " + securedUser.getUserName());
 
-        List<AreasOfInterestDTO> result = new ArrayList<AreasOfInterestDTO>();
+        List<AreasOfInterestDTO> result = new ArrayList<>();
 
         for (AreasOfInterest selectionGroup : securedUser.getAreasOfInterest()) {
 
@@ -82,7 +81,7 @@ public class AreasOfInterestRestService extends AbstractRestService {
 
         if (areasOfInterestDTOs != null) {
 
-            List<AreasOfInterest> areasOfInterests = new ArrayList<AreasOfInterest>();
+            List<AreasOfInterest> areasOfInterests = new ArrayList<>();
             for (AreasOfInterestDTO selectionGroupDTO : areasOfInterestDTOs) {
 
                 AreasOfInterest selectionGroup = new AreasOfInterest(
@@ -99,52 +98,12 @@ public class AreasOfInterestRestService extends AbstractRestService {
         }
     }
 
+    @Data
     public static class AreasOfInterestDTO {
 
         private Long id;
         private String name;
         private Boolean active;
         private String polygonsAsJson;
-
-        @Override
-        public int hashCode() {
-
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((id == null) ? 0 : id.hashCode());
-            result = prime * result + ((name == null) ? 0 : name.hashCode());
-            result = prime * result + ((active == null) ? 0 : active.hashCode());
-            result = prime * result + ((polygonsAsJson == null) ? 0 : polygonsAsJson.hashCode());
-            
-            return result;
-        }
-        
-        public Long getId() {
-            return id;
-        }
-        public void setId(Long id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public Boolean getActive() {
-            return active;
-        }
-        public void setActive(Boolean active) {
-            this.active = active;
-        }
-
-        public String getPolygonsAsJson() {
-            return polygonsAsJson;
-        }
-        public void setPolygonsAsJson(String polygonsAsJson) {
-            this.polygonsAsJson = polygonsAsJson;
-        }
     }
 }

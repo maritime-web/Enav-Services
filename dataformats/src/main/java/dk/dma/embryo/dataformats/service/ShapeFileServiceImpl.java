@@ -14,6 +14,20 @@
  */
 package dk.dma.embryo.dataformats.service;
 
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.dataformats.dbf.DbfParser;
+import dk.dma.embryo.dataformats.shapefile.PolygonSplitter;
+import dk.dma.embryo.dataformats.shapefile.ProjectionFileParser;
+import dk.dma.embryo.dataformats.shapefile.ShapeFileParser;
+import dk.dma.embryo.dataformats.shapefile.ShapeFileParser.Point;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,27 +36,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.dataformats.dbf.DbfParser;
-import dk.dma.embryo.dataformats.shapefile.PolygonSplitter;
-import dk.dma.embryo.dataformats.shapefile.ProjectionFileParser;
-import dk.dma.embryo.dataformats.shapefile.ShapeFileParser;
-import dk.dma.embryo.dataformats.shapefile.ShapeFileParser.Point;
-
 /**
  * @author Jesper Tejlgaard
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@Slf4j
 public class ShapeFileServiceImpl implements ShapeFileService {
 
     @Inject
@@ -59,9 +58,6 @@ public class ShapeFileServiceImpl implements ShapeFileService {
     private Map<String, String> directories = new HashMap<>();
 
     private Map<String, String> settings = new HashMap<>();
-
-    @Inject
-    Logger logger;
 
     public ShapeFileServiceImpl() {
         super();
@@ -91,7 +87,7 @@ public class ShapeFileServiceImpl implements ShapeFileService {
         populateDirectories(iceChartProviders, "iceChart");
         populateDirectories(icebergProviders, "iceberg");
 
-        logger.info(getClass().getSimpleName() + " initialized");
+        log.info(getClass().getSimpleName() + " initialized");
     }
     
     private void populateDirectories(Map<String, String> providers, String chartType) {
@@ -132,9 +128,9 @@ public class ShapeFileServiceImpl implements ShapeFileService {
         InputStream dbfIs = null;
         InputStream prjIs = null;
 
-        String projection = null;
-        ShapeFileParser.File file = null;
-        List<Map<String, Object>> data = null;
+        String projection;
+        ShapeFileParser.File file;
+        List<Map<String, Object>> data;
 
         int index = id.indexOf(".");
         String provider = id.substring(0, index);
@@ -174,7 +170,7 @@ public class ShapeFileServiceImpl implements ShapeFileService {
         exponent = getIntegerValue(exponent, provider, region, "exponent", 2);
         mapParts = getIntegerValue(mapParts, provider, region, "parts", 0);
         
-        logger.debug("resolution={}, exponent={}, parts={}", resolution, exponent, mapParts);
+        log.debug("resolution={}, exponent={}, parts={}", resolution, exponent, mapParts);
 
         List<BaseFragment> fragments = new ArrayList<>();
         boolean polylines = false;
@@ -237,6 +233,7 @@ public class ShapeFileServiceImpl implements ShapeFileService {
             double num5 = Math.floor((num4 + 180.0) / 360.0);
             double num6 = num4 - (num5 * 360.0);
             double num7 = 1.5707963267948966 - (2.0 * Math.atan(Math.exp((-1.0 * y) / 6378137.0)));
+            @SuppressWarnings("UnnecessaryLocalVariable")
             double x1 = num6;
             double y1 = num7 * 57.295779513082323;
 

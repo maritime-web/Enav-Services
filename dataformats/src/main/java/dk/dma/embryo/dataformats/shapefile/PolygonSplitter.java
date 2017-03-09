@@ -14,6 +14,12 @@
  */
 package dk.dma.embryo.dataformats.shapefile;
 
+import dk.dma.embryo.dataformats.shapefile.ShapeFileParser.Box;
+import dk.dma.embryo.dataformats.shapefile.ShapeFileParser.Point;
+import dk.dma.embryo.dataformats.shapefile.ShapeFileParser.PolyLine;
+import dk.dma.embryo.dataformats.shapefile.ShapeFileParser.Record;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,20 +28,11 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import dk.dma.embryo.dataformats.shapefile.ShapeFileParser.Box;
-import dk.dma.embryo.dataformats.shapefile.ShapeFileParser.Point;
-import dk.dma.embryo.dataformats.shapefile.ShapeFileParser.PolyLine;
-import dk.dma.embryo.dataformats.shapefile.ShapeFileParser.Record;
-
 /**
  * @author Jesper Tejlgaard
  */
+@Slf4j
 public class PolygonSplitter {
-
-    private final Logger logger = LoggerFactory.getLogger(PolygonSplitter.class);
 
     private double[] longitudinalSplits;
     int size = 360;
@@ -49,7 +46,7 @@ public class PolygonSplitter {
 
         if (parts != 0) {
             if (360 % parts != 0) {
-                throw new IllegalArgumentException("360/" + longitudinalSplits + " must be whole number");
+                throw new IllegalArgumentException("360/" + parts + " must be whole number");
             }
             size = 360 / parts;
             int index = 1;
@@ -72,7 +69,7 @@ public class PolygonSplitter {
             // polygon is smaller than longitudinal size of map parts. Just return it.
             return shape.getPartsAsPoints();
         }
-        logger.debug("Shape Box Xmax={}, Xmin={} and Xmax-Xmin={}", box.getxMax(), box.getxMin(),
+        log.debug("Shape Box Xmax={}, Xmin={} and Xmax-Xmin={}", box.getxMax(), box.getxMin(),
                 box.getxMax() - box.getxMin());
 
         List<List<Point>> newParts = new ArrayList<>(shape.getPartsAsPoints().size() + 10);
@@ -82,7 +79,7 @@ public class PolygonSplitter {
         for (List<Point> part : shape.getPartsAsPoints()) {
             List<SplitPoint> intersections = getIntersections(part);
 
-            logger.debug("Polygon split points {}", intersections.size());
+            log.debug("Polygon split points {}", intersections.size());
 
             if (intersections.size() > 0) {
                 newParts.addAll(splitPolygon(part, intersections));
@@ -204,16 +201,12 @@ public class PolygonSplitter {
     private TreeMap<Double, List<SplitPoint>> buildMap(List<SplitPoint> intersections) {
         TreeMap<Double, List<SplitPoint>> map = new TreeMap<>();
         for (SplitPoint sp : intersections) {
-            List<SplitPoint> list = map.get(sp.getSplitPoint().getX());
-            if (list == null) {
-                list = new LinkedList<>();
-                map.put(sp.getSplitPoint().getX(), list);
-            }
+            List<SplitPoint> list = map.computeIfAbsent(sp.getSplitPoint().getX(), k -> new LinkedList<>());
             list.add(sp);
         }
 
         for (List<SplitPoint> splitPoints : map.values()) {
-            Collections.sort(splitPoints, new Comparator<SplitPoint>() {
+            splitPoints.sort(new Comparator<SplitPoint>() {
                 @Override
                 public int compare(SplitPoint o1, SplitPoint o2) {
                     return Double.compare(o1.getSplitPoint().getY(), o2.getSplitPoint().getY());
@@ -231,7 +224,7 @@ public class PolygonSplitter {
         List<List<Point>> resultingPolygons = new ArrayList<>(intersections.size() / 2 + 1);
         LinkedList<List<Point>> polygonStack = new LinkedList<>();
         LinkedList<SplitPoint> matchingSplits = new LinkedList<>();
-        polygonStack.add(new ArrayList<Point>());
+        polygonStack.add(new ArrayList<>());
 
         for (Point p : part) {
             polygonStack.getLast().add(p);
@@ -261,7 +254,7 @@ public class PolygonSplitter {
                         double x = sp.getX() == 180 && dir == Direction.WEST_2_EAST ? -sp.getX() : sp.getX();
                         polygonStack.getLast().add(new Point(x, sp.getY()));
 
-                        polygonStack.add(new ArrayList<Point>());
+                        polygonStack.add(new ArrayList<>());
 
                         // add crossing on both sides
                         x = sp.getX() == 180 && dir == Direction.EAST_2_WEST ? -sp.getX() : sp.getX();
@@ -365,8 +358,8 @@ public class PolygonSplitter {
         return new Point(points[0].getX() >= 0 ? 180 : -180, y);
     }
 
-    public static enum Direction {
-        EAST_2_WEST, WEST_2_EAST;
+    public enum Direction {
+        EAST_2_WEST, WEST_2_EAST
     }
 
     public static class SplitPoint {

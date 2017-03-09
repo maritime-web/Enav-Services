@@ -73,10 +73,7 @@ public class CommonExceptionMappers {
         private static List<String> buildMessage(ConstraintViolationException ex) {
             List<String> result = new LinkedList<>();
             for (ConstraintViolation<?> v : ex.getConstraintViolations()) {
-                StringBuilder builder = new StringBuilder();
-                builder.append("Invalid value '").append(v.getInvalidValue()).append("'. ")
-                        .append(v.getPropertyPath().toString()).append(" ").append(v.getMessage());
-                result.add(builder.toString());
+                result.add("Invalid value '" + v.getInvalidValue() + "'. " + v.getPropertyPath().toString() + " " + v.getMessage());
             }
             return result;
         }

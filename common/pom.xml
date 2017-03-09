@@ -16,29 +16,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>dk.dma.enav.services</groupId>
-            <artifactId>test-utilities</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-sse</artifactId>
             <version>2.16</version>
-        </dependency>
-
-        <!-- Added here again because weld jar contains older version of slf4j. This must be first in the classpath for Eclipse
-          to work -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${dependencies.slf4j.version}</version>
-        </dependency>
-
-        <!-- APACHE COMMONS -->
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
         </dependency>
 
         <!-- Mail -->

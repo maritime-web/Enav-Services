@@ -24,11 +24,11 @@ import dk.dma.arcticweb.reporting.service.GreenPosService;
 import dk.dma.embryo.common.json.AbstractRestService;
 import dk.dma.embryo.common.util.DateTimeConverter;
 import dk.dma.embryo.user.security.Subject;
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -47,6 +47,7 @@ import java.util.List;
  * @author Jesper Tejlgaard
  */
 @Path("/greenpos")
+@Slf4j
 public class GreenPosRestService extends AbstractRestService {
 
     @Inject
@@ -54,9 +55,6 @@ public class GreenPosRestService extends AbstractRestService {
 
     @Inject
     private Subject subject;
-
-    @Inject
-    private Logger logger;
 
     public GreenPosRestService() {
     }
@@ -66,14 +64,14 @@ public class GreenPosRestService extends AbstractRestService {
     @Consumes("application/json")
     @Produces("application/json")
     public String save(GreenposRequest request) {
-        logger.info("save({})", request);
+        log.info("save({})", request);
 
         GreenPosReport toBeSaved = GreenPosReport.from(request.getReport());
         reportingService.saveReport(toBeSaved, request.getActiveRoute().getRouteId(), request.getActiveRoute().getActive(), request.getIncludeActiveRoute(), request.getReport().getRecipient());
 
         String email = subject.getUser().getEmail();
 
-        logger.info("save() : {}", email);
+        log.info("save() : {}", email);
         return email;
     }
 
@@ -83,7 +81,7 @@ public class GreenPosRestService extends AbstractRestService {
     @GZIP
     public Response latest(@Context Request request, @PathParam("mmsi") Long mmsi) {
         
-        logger.info("latest({})", mmsi);
+        log.info("latest({})", mmsi);
 
         GreenPos result = null;
 
@@ -93,7 +91,7 @@ public class GreenPosRestService extends AbstractRestService {
             result = report.toJsonModel();
         }
 
-        logger.info("latest({}) - {}", mmsi, result);
+        log.info("latest({}) - {}", mmsi, result);
 
         return super.getResponse(request, result, NO_CACHE);
     }
@@ -103,11 +101,11 @@ public class GreenPosRestService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response listLatest(@Context Request request) {
-        logger.info("listLatest()");
+        log.info("listLatest()");
 
         List<GreenposMinimal> reports = reportingService.getLatest();
 
-        logger.info("listLatest() - {}", reports);
+        log.info("listLatest() - {}", reports);
 
         return super.getResponse(request, reports, NO_CACHE);
     }
@@ -121,13 +119,13 @@ public class GreenPosRestService extends AbstractRestService {
             @Context Request request,
             @PathParam("id") String id) {
         
-        logger.info("get({})", id);
+        log.info("get({})", id);
 
         GreenPosReport report = reportingService.get(id);
 
         GreenPos result = report.toJsonModel();
 
-        logger.info("get() - {}", result);
+        log.info("get() - {}", result);
         
         return super.getResponse(request, result, NO_CACHE);
     }
@@ -147,7 +145,7 @@ public class GreenPosRestService extends AbstractRestService {
             @QueryParam("start") Integer start,
             @QueryParam("max") Integer max) {
         
-        logger.info("list({})");
+        log.info("list({})");
 
         DateTime dateTime = null;
         if (ts != null && ts.trim().length() > 0) {
@@ -161,13 +159,13 @@ public class GreenPosRestService extends AbstractRestService {
 
         GreenposSearch search = new GreenposSearch(type, mmsi, dateTime, sortBy, sortOrder, start, max);
 
-        logger.info("Searching with {}", search);
+        log.info("Searching with {}", search);
 
         List<GreenPosReport> reports = reportingService.findReports(search);
 
         GreenPosShort[] result = GreenPosReport.toJsonModelShort(reports);
 
-        logger.info("list() - {}", (Object[]) result);
+        log.info("list() - {}", (Object[]) result);
      
         return super.getResponse(request, result, NO_CACHE);
     }

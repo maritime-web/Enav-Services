@@ -29,11 +29,11 @@ import dk.dma.embryo.dataformats.netcdf.NetCDFRestriction;
 import dk.dma.embryo.dataformats.netcdf.NetCDFType;
 import dk.dma.embryo.dataformats.netcdf.NetCDFVar;
 import dk.dma.embryo.dataformats.persistence.ForecastDataRepository;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -52,11 +52,10 @@ import java.util.stream.Collectors;
 import java.util.zip.GZIPOutputStream;
 
 @Stateless
+@Slf4j
 public class ForecastServiceImpl implements ForecastService {
 
     private static boolean parsing;
-
-    private final Logger logger = LoggerFactory.getLogger(ForecastServiceImpl.class);
 
     private List<ForecastType> forecastTypes = new ArrayList<>();
 
@@ -95,9 +94,9 @@ public class ForecastServiceImpl implements ForecastService {
     public void init() {
         forecastTypes = createData();
         restrictions = initRestrictions();
-        logger.info("INIT");
+        log.info("INIT");
         reParse();
-        logger.info("AFTER reparse INIT");
+        log.info("AFTER reparse INIT");
     }
 
     @Override
@@ -147,12 +146,12 @@ public class ForecastServiceImpl implements ForecastService {
         Set<String> addedFiles = new HashSet<>();
 
         if (parsing) {
-            logger.info("Already parsing, will not re-parse at the moment.");
+            log.info("Already parsing, will not re-parse at the moment.");
             return;
         }
 
         parsing = true;
-        logger.info("Re-parsing NetCDF files.");
+        log.info("Re-parsing NetCDF files.");
         try {
             // Loop through providers (DMI and FCOO so far)
             for (String netcdfProvider : netcdfProviders.split(";")) {
@@ -160,7 +159,7 @@ public class ForecastServiceImpl implements ForecastService {
                 // (previously called prognoses)
                 for (String netcdfType : netcdfTypes.values()) {
                     String folderName = propertyFileService.getProperty("embryo." + netcdfType + "." + netcdfProvider + ".localDirectory", true);
-                    logger.info("NetCDF folder: " + folderName);
+                    log.info("NetCDF folder: " + folderName);
                     File folder = new File(folderName);
                     if (folder.exists()) {
                         File[] files = folder.listFiles(new FileFilter() {
@@ -176,7 +175,7 @@ public class ForecastServiceImpl implements ForecastService {
                                 String timestampStr = name.substring(name.length() - 13, name.length() - 3);
                                 long timestamp = getTimestamp(timestampStr);
                                 if (file.length() != 0) {
-                                    logger.info("Importing NetCDF data from file {}.", name);
+                                    log.info("Importing NetCDF data from file {}.", name);
                                     int errorSize = failedFiles.size();
                                     for (Map.Entry<String, NetCDFRestriction> entry : restrictions.get(provider).entrySet()) {
                                         String area;
@@ -185,15 +184,15 @@ public class ForecastServiceImpl implements ForecastService {
                                         } else {
                                             area = entry.getKey();
                                         }
-                                        logger.info("Parsing NetCDF area {} for file {}.", area, name);
+                                        log.info("Parsing NetCDF area {} for file {}.", area, name);
 
                                         for (NetCDFType type : getForecastTypes()) {
-                                            logger.info("Parsing NetCDF type {} for file {}.", type.getName(), name);
+                                            log.info("Parsing NetCDF type {} for file {}.", type.getName(), name);
                                             try {
                                                 Map<NetCDFType, String> parseResult = netCDFService.parseFile(file, type, entry.getValue());
                                                 String json = parseResult.get(type);
                                                 if (json != null) {
-                                                    logger.info("Got result of size {}.", json.length());
+                                                    log.info("Got result of size {}.", json.length());
                                                     Type forecastType = ((ForecastType) type).getType();
                                                     ForecastDataId id = new ForecastDataId(area, provider, forecastType);
                                                     ForecastData forecastData = new ForecastData(id, json);
@@ -204,11 +203,11 @@ public class ForecastServiceImpl implements ForecastService {
                                                     forecastData.add(additionalMetaData);
                                                     persistForecastData(forecastData);
                                                 } else {
-                                                    logger.info("Got empty result for {}.", name);
+                                                    log.info("Got empty result for {}.", name);
                                                 }
                                             } catch (IOException e) {
                                                 failedFiles.add(name);
-                                                logger.error("Got error parsing \"" + name + "\"", e);
+                                                log.error("Got error parsing \"" + name + "\"", e);
                                                 if (!failedFiles.contains(name)) {
                                                     embryoLogService.error("Error parsing file " + name, e);
                                                 }
@@ -218,14 +217,16 @@ public class ForecastServiceImpl implements ForecastService {
                                     if (errorSize == failedFiles.size()) {
                                         addedFiles.add(name);
                                     }
-                                    file.delete();
+                                    org.apache.commons.io.FileUtils.deleteQuietly(file);
                                     // Create a new, empty file so we
                                     // don't download it again
-                                    file.createNewFile();
+                                    if (!file.createNewFile()) {
+                                        log.warn("Unable to create dummy file, may result in downloading '{}' again", file);
+                                    }
                                 }
                             }
                         } else {
-                            logger.info("No files found in folder " + folder.getPath());
+                            log.info("No files found in folder " + folder.getPath());
                         }
                     } else {
                         throw new IOException("Folder " + folderName + " does not exist.");
@@ -238,7 +239,7 @@ public class ForecastServiceImpl implements ForecastService {
                 embryoLogService.info("Sucesssfully parsed files " + addedFiles);
             }
         } catch (IOException e) {
-            logger.error("Unhandled error parsing file", e);
+            log.error("Unhandled error parsing file", e);
             embryoLogService.error("Unhandled error parsing file", e);
         } finally {
             parsing = false;
@@ -252,9 +253,9 @@ public class ForecastServiceImpl implements ForecastService {
      * 
      * @param json JSON string to be zipped.
      * @return Size of the resulting zipped product.
-     * @throws IOException
      */
-    private int getJsonSize(String json) throws IOException {
+    @SneakyThrows(IOException.class) // can't happen since we are writing to a byteArray
+    private int getJsonSize(String json) {
         ObjectMapper mapper = new ObjectMapper();
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -269,7 +270,7 @@ public class ForecastServiceImpl implements ForecastService {
     private void persistForecastData(ForecastData forecastData) {
         ForecastHeader existingHeader = forecastDataRepository.getForecastHeader(forecastData.getId());
         if (forecastData.getHeader().isBetterThan(existingHeader)) {
-            logger.info("Persisting \"{}\".", forecastData.getId());
+            log.info("Persisting \"{}\".", forecastData.getId());
             forecastDataRepository.addOrUpdateForecastData(forecastData);
         }
     }

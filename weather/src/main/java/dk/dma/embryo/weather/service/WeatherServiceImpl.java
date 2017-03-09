@@ -14,8 +14,13 @@
  */
 package dk.dma.embryo.weather.service;
 
-import java.io.File;
-import java.io.IOException;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.weather.model.RegionForecast;
+import dk.dma.embryo.weather.model.Warnings;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.ConcurrencyManagement;
@@ -25,15 +30,8 @@ import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
-
-import org.apache.commons.io.FileUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.weather.model.RegionForecast;
-import dk.dma.embryo.weather.model.Warnings;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * 
@@ -42,6 +40,7 @@ import dk.dma.embryo.weather.model.Warnings;
 @Singleton
 @Startup
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
+@Slf4j
 public class WeatherServiceImpl {
 
     @Inject
@@ -54,9 +53,6 @@ public class WeatherServiceImpl {
     @Inject
     private DmiForecastParser_En parser;
 
-    @Inject
-    private Logger logger;
-    
     public static final String FORECAST_FILENAME = "grudseng";
     public static final String GALE_WARNING_FILENAME = "gronvar";
 
@@ -84,7 +80,7 @@ public class WeatherServiceImpl {
         try {
             refresh();
         } catch (Exception e) {
-            logger.error("Error initializing {}", getClass().getSimpleName(), e);
+            log.error("Error initializing {}", getClass().getSimpleName(), e);
         }
     }
 
@@ -119,7 +115,7 @@ public class WeatherServiceImpl {
     private void saveFaultyFile(String filename) {
         File faultyDir = new File(localDmiDir + "/faulty");
         if(!faultyDir.exists()) {
-            faultyDir.mkdir();
+            dk.dma.embryo.common.util.FileUtils.createDirectories(faultyDir);
         }
         File sourceFile = getXmlFileName(filename);
         DateTime now = DateTime.now(DateTimeZone.UTC);
@@ -128,7 +124,7 @@ public class WeatherServiceImpl {
         try {
             FileUtils.copyFile(sourceFile, destFile);
         } catch (IOException e) {
-            logger.error("Could not copy faulty file {} to {}", sourceFile.getAbsolutePath(), destFile.getAbsolutePath(), e);
+            log.error("Could not copy faulty file {} to {}", sourceFile.getAbsolutePath(), destFile.getAbsolutePath(), e);
         }
     }
     

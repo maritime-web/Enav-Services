@@ -21,9 +21,7 @@ import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.service.UserService;
 import dk.dma.embryo.vessel.model.Vessel;
-import org.apache.commons.lang.ObjectUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -47,6 +45,7 @@ import java.util.stream.Collectors;
 
 @Singleton
 @Startup
+@Slf4j
 public class DatabaseInitializer {
 
     @Inject
@@ -72,8 +71,6 @@ public class DatabaseInitializer {
     @Resource
     private TimerService timerService;
 
-    private final Logger logger = LoggerFactory.getLogger(DatabaseInitializer.class);
-
     private UserDb userDb;
 
     @Inject
@@ -82,7 +79,7 @@ public class DatabaseInitializer {
 
     public void initializeUserDatabase() {
         if (userDbUrl != null && userDbUrl.trim().length() != 0) {
-            logger.info("Initializing CouchDB with url {}", userDbUrl);
+            log.info("Initializing CouchDB with url {}", userDbUrl);
 
             AsyncHttpClient httpClient = new AsyncHttpClient();
 
@@ -103,7 +100,7 @@ public class DatabaseInitializer {
                 timerService.createCalendarTimer(userCron, new TimerConfig(null, false));
             }
         } else {
-            logger.info("embryo.couchDb.user.url not set");
+            log.info("embryo.couchDb.user.url not set");
         }
 
     }
@@ -113,7 +110,7 @@ public class DatabaseInitializer {
     public void initialize() {
 
         if (liveDbUrl != null && liveDbUrl.trim().length() != 0) {
-            logger.info("Initializing CouchDB with url {}", liveDbUrl);
+            log.info("Initializing CouchDB with url {}", liveDbUrl);
 
             AsyncHttpClient httpClient = new AsyncHttpClient();
 
@@ -124,7 +121,7 @@ public class DatabaseInitializer {
                     .build());
             db.cleanupViews();
         } else {
-            logger.info("embryo.couchDb.live.url not set");
+            log.info("embryo.couchDb.live.url not set");
         }
 
 
@@ -182,9 +179,9 @@ public class DatabaseInitializer {
     }
 
     @Timeout
-    public void replicateUsers() throws IOException {
+    public void replicateUsers() {
 
-        logger.info("replicating users from MySQL to CouchDB");
+        log.info("replicating users from MySQL to CouchDB");
         List<SecuredUser> users = userService.list();
 
         List<User> usersView = userDb.getUsersView().<User>createDocQuery().asDocs();
@@ -199,7 +196,7 @@ public class DatabaseInitializer {
                 String mmsi = getMmsi(user);
                 String name = getName(user);
                 newOrModifiedUsers.add(new User(id, user.getUserName(), name, mmsi));
-                logger.info("Adding user with id={} and name={}", user.getId(), name);
+                log.info("Adding user with id={} and name={}", user.getId(), name);
             } else {
                 User couchUser = couchUsers.get(id);
                 String mmsi = getMmsi(user);
@@ -208,7 +205,7 @@ public class DatabaseInitializer {
                     couchUser.setMmsi(mmsi);
                     couchUser.setName(name);
                     couchUser.setUserName(user.getUserName());
-                    logger.info("Updating user with id={} and name={}", id, name);
+                    log.info("Updating user with id={} and name={}", id, name);
                     newOrModifiedUsers.add(couchUser);
                 }
             }
@@ -222,7 +219,7 @@ public class DatabaseInitializer {
             if (!securedUsers.containsKey(Long.parseLong(user.getDocId()))) {
                 toRemove.add(user);
                 user.setDeleted();
-                logger.info("Removing user with id={} and name={}", user.getDocId(), user.getName());
+                log.info("Removing user with id={} and name={}", user.getDocId(), user.getName());
             }
         }
 

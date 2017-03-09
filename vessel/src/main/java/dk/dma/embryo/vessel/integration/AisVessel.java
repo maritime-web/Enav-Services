@@ -197,12 +197,9 @@ public class AisVessel {
 
     /**
      * This will match the list of aisVessels and vessels on MMSI number, and if any vessels are not in the aisVessels, they are automatically transformed and added.
-     * @param aisVessels
-     * @param vessels
-     * @return
      */
     public static List<AisVessel> addMissingVessels(List<AisVessel> aisVessels, List<Vessel> vessels){
-        List result = new ArrayList<>(aisVessels.size() + vessels.size());
+        List<AisVessel> result = new ArrayList<>(aisVessels.size() + vessels.size());
         Set<Long> mmsiNumbers = aisVessels.stream().map(aisVessel -> aisVessel.getMmsi()).collect(Collectors.toSet());
         for(Vessel vessel : vessels){
             if(!mmsiNumbers.contains(vessel.getMmsi())){
@@ -219,7 +216,7 @@ public class AisVessel {
     // //////////////////////////////////////////////////////////////////////
     // Object methods
     // //////////////////////////////////////////////////////////////////////
-
+    // todo this looks wrong, why would a Json DTO have hashCode and Equals which does not use all fields ?
     @Override
     public int hashCode() {
         final int prime = 31;
