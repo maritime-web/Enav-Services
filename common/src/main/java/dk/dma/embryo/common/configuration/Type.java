@@ -15,16 +15,20 @@
 
 package dk.dma.embryo.common.configuration;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Created by Jesper Tejlgaard on 10/2/14.
  */
 
-
+@Getter
+@Setter
 public class Type {
     // //////////////////////////////////////////////////////////////////////
     // Fields
     // //////////////////////////////////////////////////////////////////////
-    private String name;
+    private final String name;
     private String localDirectory;
 
     // //////////////////////////////////////////////////////////////////////
@@ -32,21 +36,6 @@ public class Type {
     // //////////////////////////////////////////////////////////////////////
     public Type(String name, String localDirectory) {
         this.name = name;
-        this.localDirectory = localDirectory;
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public String getName() {
-        return name;
-    }
-
-    public String getLocalDirectory() {
-        return localDirectory;
-    }
-
-    public void setLocalDirectory(String localDirectory) {
         this.localDirectory = localDirectory;
     }
 

@@ -15,11 +15,19 @@
 
 package dk.dma.embryo.tiles.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.time.Duration;
-import java.util.List;
-import java.util.Map;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.configuration.Provider;
+import dk.dma.embryo.common.configuration.Type;
+import dk.dma.embryo.common.log.EmbryoLogService;
+import dk.dma.embryo.common.mail.MailSender;
+import dk.dma.embryo.common.util.NamedtimeStamps;
+import dk.dma.embryo.tiles.image.ImageType;
+import dk.dma.embryo.tiles.image.ImageTypeFilter;
+import dk.dma.embryo.tiles.model.TileSet;
+import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -33,21 +41,11 @@ import javax.ejb.TimerService;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.common.configuration.Provider;
-import dk.dma.embryo.common.configuration.Type;
-import dk.dma.embryo.common.log.EmbryoLogService;
-import dk.dma.embryo.common.mail.MailSender;
-import dk.dma.embryo.common.util.NamedtimeStamps;
-import dk.dma.embryo.tiles.image.ImageType;
-import dk.dma.embryo.tiles.image.ImageTypeFilter;
-import dk.dma.embryo.tiles.model.TileSet;
+import java.io.File;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Jesper Tejlgaard on 8/26/14.
@@ -55,9 +53,8 @@ import dk.dma.embryo.tiles.model.TileSet;
 @Singleton
 @Startup
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@Slf4j
 public class TilerJob {
-    @Inject
-    private Logger logger;
 
     @Inject
     @Property(value = "embryo.tiles.maxConcurrentJobs")
@@ -106,30 +103,30 @@ public class TilerJob {
     @PostConstruct
     public void init() throws IOException {
         if (timerService == null) {
-            logger.error("Timerservice not available. Skipping initialization");
+            log.error("Timerservice not available. Skipping initialization");
             return;
         }
 
         providers = propertyFileService.getProvidersProperty("embryo.tiles.providers");
 
         if (cron != null && providers.size() > 0) {
-            logger.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
-            logger.info("Initializing {} with providers {}", this.getClass().getSimpleName(), providers);
+            log.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
+            log.info("Initializing {} with providers {}", this.getClass().getSimpleName(), providers);
             timerService.createCalendarTimer(cron, new TimerConfig(null, false));
         } else {
-            logger.info("Cron job not scheduled.");
+            log.info("Cron job not scheduled.");
         }
     }
 
     @PreDestroy
     public void shutdown() throws InterruptedException {
-        logger.info("Shutdown called.");
+        log.info("Shutdown called.");
     }
 
     @Timeout
     public void convertToTiles() {
         try {
-            logger.debug("Max concurrent jobs: {}", maxConcurrentJobs);
+            log.debug("Max concurrent jobs: {}", maxConcurrentJobs);
             DateTime youngerThan = DateTime.now(DateTimeZone.UTC).minusDays(ageInDays).minusDays(1);
             DateTime invalidateConvertingOlderThan = DateTime.now(DateTimeZone.UTC).minus(Duration.parse(invalidateConvertingJobsOlderThan).toMillis());
 
@@ -149,20 +146,20 @@ public class TilerJob {
 
             String msg = "Started new " + result.jobsStarted + " jobs. Deleted " + result.deleted + ". Detected " + result.errorCount + " errors.";
             if (result.errorCount > 0) {
-                logger.error(msg);
+                log.error(msg);
                 embryoLogService.error(msg);
             } else {
-                logger.debug(msg);
+                log.debug(msg);
                 embryoLogService.info(msg);
             }
         } catch (Exception e) {
             String msg = "Fatal error tiling geo referenced images";
-            logger.error(msg, e);
+            log.error(msg, e);
             embryoLogService.error(msg, e);
         }
     }
 
-    private Result deleteOldImages(Provider provider, DateTime limit) throws Exception {
+    private Result deleteOldImages(Provider provider, DateTime limit) {
         DeleteGeoImageVisitor visitor = new DeleteGeoImageVisitor(limit, tileSetDao, embryoLogService);
         provider.accept(visitor);
         return visitor.getResult();
@@ -199,13 +196,13 @@ public class TilerJob {
     }
 
 
-    private Result convertImagesToTiles(Provider provider) throws Exception {
+    private Result convertImagesToTiles(Provider provider) {
         Result result = new Result();
         for (Type type : provider.getTypes()) {
             try {
                 int concurrentJobs = tileSetDao.listByStatus(TileSet.Status.CONVERTING).size();
                 if (concurrentJobs >= maxConcurrentJobs) {
-                    logger.debug("{} (concurrentJobs) >= {} (maxConcurrentjobs), skipping upstart of new jobs", concurrentJobs, maxConcurrentJobs);
+                    log.debug("{} (concurrentJobs) >= {} (maxConcurrentjobs), skipping upstart of new jobs", concurrentJobs, maxConcurrentJobs);
                     return result;
                 }
                 File directory = new File(type.getLocalDirectory());
@@ -213,7 +210,7 @@ public class TilerJob {
                 result = startTileJobs(provider.getShortName(), type.getName(), files, concurrentJobs, result);
             } catch (Exception e) {
                 String msg = "Fatal error tiling geo referenced images of type " + type.getName() + " for provider " + provider.getShortName();
-                logger.error(msg, e);
+                log.error(msg, e);
                 embryoLogService.error(msg, e);
                 result.errorCount++;
             }

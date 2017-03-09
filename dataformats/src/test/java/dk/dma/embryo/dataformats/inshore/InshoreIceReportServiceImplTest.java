@@ -31,10 +31,10 @@ public class InshoreIceReportServiceImplTest {
         try {
             service.update();
 
-            Assert.assertTrue("Exception should have been thrown", false);
+            Assert.fail("Exception should have been thrown");
         } catch (InshoreIceReportException iire) {
             Assert.assertTrue(iire.getCauses().containsKey("2014-10-20.txt"));
-            Assert.assertTrue(iire.getCauses().get("2014-10-20.txt") instanceof Exception);
+            Assert.assertTrue(iire.getCauses().get("2014-10-20.txt") != null);
         }
 
     }

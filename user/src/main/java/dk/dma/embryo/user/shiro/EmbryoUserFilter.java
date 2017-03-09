@@ -14,33 +14,28 @@
  */
 package dk.dma.embryo.user.shiro;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.dma.embryo.user.shiro.Error.AuthCode;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.web.filter.authc.UserFilter;
+import org.apache.shiro.web.util.WebUtils;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.shiro.web.filter.authc.UserFilter;
-import org.apache.shiro.web.util.WebUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import dk.dma.embryo.user.shiro.Error.AuthCode;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * @author Jesper Tejlgaard
  */
+@Slf4j
 public class EmbryoUserFilter extends UserFilter {
-
-    Logger logger = LoggerFactory.getLogger(EmbryoUserFilter.class);
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response)
             throws IOException {
-        logger.debug("Access denied: {}", WebUtils.toHttp(request).getRequestURI());
+        log.debug("Access denied: {}", WebUtils.toHttp(request).getRequestURI());
 
         HttpServletResponse httpResp = WebUtils.toHttp(response);
         httpResp.setContentType("application/json");

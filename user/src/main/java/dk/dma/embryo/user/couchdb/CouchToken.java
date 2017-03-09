@@ -49,7 +49,7 @@ public class CouchToken {
         }
         try{
             return calculateRFC2104HMAC(userName, secret);
-        }catch(SignatureException | NoSuchAlgorithmException | InvalidKeyException e){
+        }catch(NoSuchAlgorithmException | InvalidKeyException e){
             throw new EmbryonicException("Error calculating couch token", e);
         }
     }
@@ -65,7 +65,7 @@ public class CouchToken {
     private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
 
     public static String calculateRFC2104HMAC(String data, String key)
-            throws SignatureException, NoSuchAlgorithmException, InvalidKeyException
+            throws NoSuchAlgorithmException, InvalidKeyException
     {
         SecretKeySpec signingKey = new SecretKeySpec(key.getBytes(), HMAC_SHA1_ALGORITHM);
         Mac mac = Mac.getInstance(HMAC_SHA1_ALGORITHM);

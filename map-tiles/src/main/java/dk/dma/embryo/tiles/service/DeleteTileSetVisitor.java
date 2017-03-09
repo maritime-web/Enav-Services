@@ -15,21 +15,19 @@
 
 package dk.dma.embryo.tiles.service;
 
-import java.util.List;
-
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import dk.dma.embryo.common.configuration.Type;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.tiles.model.TileSet;
+import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
+
+import java.util.List;
 
 /**
  * Created by Jesper Tejlgaard on 11/10/14.
  */
+@Slf4j
 public class DeleteTileSetVisitor extends AbstractTileProviderVisitor {
-    private final Logger logger = LoggerFactory.getLogger(DeleteTileSetVisitor.class);
 
     public DeleteTileSetVisitor(DateTime limit, TileSetDao tileSetDao, EmbryoLogService embryoLogService) {
         super(limit, tileSetDao, embryoLogService);
@@ -46,7 +44,7 @@ public class DeleteTileSetVisitor extends AbstractTileProviderVisitor {
                         result.deleted++;
                     } catch (Exception e) {
                         String msg = "Fatal error deleting tile set entry " + tileSet.getName() + " from the database";
-                        logger.error(msg, e);
+                        log.error(msg, e);
                         embryoLogService.error(msg, e);
                         result.errorCount++;
                     }
@@ -54,7 +52,7 @@ public class DeleteTileSetVisitor extends AbstractTileProviderVisitor {
             }
         } catch (Exception e) {
             String msg = "Fatal error deleting tile sets from database for provider " + currentProvider.getShortName() + " and type " + type.getName();
-            logger.error(msg, e);
+            log.error(msg, e);
             embryoLogService.error(msg, e);
             result.errorCount++;
         }

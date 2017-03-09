@@ -15,11 +15,9 @@
 
 package dk.dma.embryo.tiles.image;
 
-import java.io.File;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import dk.dma.embryo.tiles.model.BoundingBox;
+import dk.dma.embryo.tiles.model.ImageCenter;
+import lombok.extern.slf4j.Slf4j;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.coverage.grid.io.GridCoverage2DReader;
 import org.geotools.coverage.grid.io.GridFormatFinder;
@@ -27,28 +25,25 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
-import org.slf4j.Logger;
 
-import dk.dma.embryo.tiles.model.BoundingBox;
-import dk.dma.embryo.tiles.model.ImageCenter;
+import javax.inject.Named;
+import java.io.File;
 
 /**
  * Created by Jesper Tejlgaard on 8/20/14.
  */
 
 @Named
+@Slf4j
 public class GeoTiffSourceMetaReader implements ImageSourceMetaReader {
-
-    @Inject
-    private Logger logger;
 
     public ImageSourceMeta read(File imageSource) {
         try {
-            logger.debug("Image source {}", imageSource.getAbsolutePath());
-            logger.debug("File exists: {}", imageSource.exists());
+            log.debug("Image source {}", imageSource.getAbsolutePath());
+            log.debug("File exists: {}", imageSource.exists());
 
             AbstractGridFormat format = GridFormatFinder.findFormat(imageSource);
-            logger.debug("Format {}", format);
+            log.debug("Format {}", format);
             GridCoverage2DReader rdr = format.getReader(imageSource);
 
             ReferencedEnvelope re = ReferencedEnvelope.create(rdr.getOriginalEnvelope(), rdr.getCoordinateReferenceSystem());

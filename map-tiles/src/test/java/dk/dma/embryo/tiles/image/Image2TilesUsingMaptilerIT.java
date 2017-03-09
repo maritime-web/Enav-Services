@@ -40,7 +40,7 @@ public class Image2TilesUsingMaptilerIT {
 
         File destinationFile = new File("/home/jesper/Documents/201408051525.rgb_MODIS_Dundee.mbtiles");
         if (destinationFile.exists()) {
-            destinationFile.delete();
+            FileUtils.deleteQuietly(destinationFile);
             Thread.sleep(100);
         }
 

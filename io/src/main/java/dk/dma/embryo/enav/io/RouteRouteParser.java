@@ -14,6 +14,17 @@
  */
 package dk.dma.embryo.enav.io;
 
+import dk.dma.enav.model.voyage.Route;
+import dk.dma.enav.model.voyage.RouteLeg;
+import dk.dma.enav.model.voyage.RouteLeg.Heading;
+import dk.dma.enav.model.voyage.Waypoint;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,19 +39,6 @@ import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import dk.dma.enav.model.voyage.Route;
-import dk.dma.enav.model.voyage.RouteLeg;
-import dk.dma.enav.model.voyage.RouteLeg.Heading;
-import dk.dma.enav.model.voyage.Waypoint;
-
 /**
  * Parser for reading routes in ROUTE format. ROUTE format is exported using a 'VisionMaster FT' ECDIS from 'Sperry
  * Marine'. This parser was developed for a VisionMaster FT ECDIS with Software Version 4.1.
@@ -53,8 +51,6 @@ import dk.dma.enav.model.voyage.Waypoint;
 public class RouteRouteParser extends RouteParser {
 
     private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-
-    // private static final Logger LOGGER = LoggerFactory.getLogger(RouteLoader.class);
 
     private boolean closeReader;
     private BufferedReader reader;

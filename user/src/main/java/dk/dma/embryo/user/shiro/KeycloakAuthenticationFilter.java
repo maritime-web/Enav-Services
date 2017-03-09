@@ -17,6 +17,7 @@ package dk.dma.embryo.user.shiro;
 import dk.dma.embryo.common.configuration.Configuration;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.user.service.KeycloakBearerToken;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
@@ -28,8 +29,6 @@ import org.keycloak.adapters.KeycloakDeploymentBuilder;
 import org.keycloak.adapters.servlet.OIDCServletHttpFacade;
 import org.keycloak.adapters.spi.AuthOutcome;
 import org.keycloak.representations.AccessToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -43,8 +42,8 @@ import java.net.URL;
  * Created by Steen on 15-03-2016.
  *
  */
+@Slf4j
 public class KeycloakAuthenticationFilter extends AuthenticatingFilter {
-    public static final Logger LOGGER = LoggerFactory.getLogger(KeycloakAuthenticationFilter.class);
 
     private AdapterDeploymentContext deploymentContext;
 
@@ -98,7 +97,7 @@ public class KeycloakAuthenticationFilter extends AuthenticatingFilter {
 
     @Override
     protected boolean onLoginFailure(AuthenticationToken token, AuthenticationException e, ServletRequest request, ServletResponse response) {
-        LOGGER.error("Failed to login for " + ((KeycloakBearerToken)token).getPreferredUserName(), e);
+        log.error("Failed to login for " + ((KeycloakBearerToken) token).getPreferredUserName(), e);
         return super.onLoginFailure(token, e, request, response);
     }
 }

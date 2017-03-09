@@ -33,7 +33,7 @@ public class LogEntryDaoImpl extends DaoImpl implements LogEntryDao {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void save(LogEntry entry) {
-        saveEntity(entry);
+        saveEntity  (entry);
     }
 
     @Override

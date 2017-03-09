@@ -19,6 +19,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import dk.dma.embryo.vessel.json.TrackPos;
 import dk.dma.enav.model.geometry.Position;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import javax.ws.rs.GET;
@@ -48,7 +52,8 @@ public interface AisStoreClient {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-    public static class TrackPosition {
+    @Data
+    class TrackPosition {
 
         @JsonProperty("src.id")
         private String srcId;
@@ -106,97 +111,6 @@ public interface AisStoreClient {
         public double distance(TrackPosition pos2) {
             TrackPosition pos1 = this;
             return Position.create(pos1.getLat(), pos1.getLon()).rhumbLineDistanceTo(Position.create(pos2.getLat(), pos2.getLon()));
-        }
-
-        // //////////////////////////////////////////////////////////////////////
-        // Object methods
-        // //////////////////////////////////////////////////////////////////////
-        @Override
-        public String toString() {
-            return ReflectionToStringBuilder.toString(this);
-        }
-
-        // //////////////////////////////////////////////////////////////////////
-        // Property methods
-        // //////////////////////////////////////////////////////////////////////
-        public String getSrcId() {
-            return srcId;
-        }
-
-        public void setSrcId(String srcId) {
-            this.srcId = srcId;
-        }
-
-        public Date getSrcClk() {
-            return srcClk;
-        }
-
-        public void setSrcClk(Date srcClk) {
-            this.srcClk = srcClk;
-        }
-
-        public String getSrcCty() {
-            return srcCty;
-        }
-
-        public void setSrcCty(String srcCty) {
-            this.srcCty = srcCty;
-        }
-
-        public String getSrcReg() {
-            return srcReg;
-        }
-
-        public void setSrcReg(String srcReg) {
-            this.srcReg = srcReg;
-        }
-
-        public Double getLat() {
-            return lat;
-        }
-
-        public void setLat(Double lat) {
-            this.lat = lat;
-        }
-
-        public Double getLon() {
-            return lon;
-        }
-
-        public void setLon(Double lon) {
-            this.lon = lon;
-        }
-
-        public Double getSog() {
-            return sog;
-        }
-
-        public void setSog(Double sog) {
-            this.sog = sog;
-        }
-
-        public Double getCog() {
-            return cog;
-        }
-
-        public void setCog(Double cog) {
-            this.cog = cog;
-        }
-
-        public Integer getHdg() {
-            return hdg;
-        }
-
-        public void setHdg(Integer hdg) {
-            this.hdg = hdg;
-        }
-
-        public Integer getAcc() {
-            return acc;
-        }
-
-        public void setAcc(Integer acc) {
-            this.acc = acc;
         }
     }
 }

@@ -14,21 +14,6 @@
  */
 package dk.dma.embryo.vessel.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptors;
-import javax.interceptor.InvocationContext;
-
-import org.slf4j.Logger;
-
 import dk.dma.embryo.vessel.component.RouteActivator;
 import dk.dma.embryo.vessel.component.RouteSaver;
 import dk.dma.embryo.vessel.model.Route;
@@ -37,9 +22,23 @@ import dk.dma.embryo.vessel.model.Voyage;
 import dk.dma.embryo.vessel.model.WayPoint;
 import dk.dma.embryo.vessel.persistence.ScheduleDao;
 import dk.dma.embryo.vessel.persistence.VesselDao;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptors;
+import javax.interceptor.InvocationContext;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
+@Slf4j
 public class ScheduleServiceImpl implements ScheduleService {
 
     @Inject
@@ -47,9 +46,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Inject
     private VesselDao vesselRepository;
-
-    @Inject
-    private Logger logger;
 
     public ScheduleServiceImpl() {
     }
@@ -64,8 +60,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         if (!toBeSaved.isEmpty()) {
             List<String> ids = new ArrayList<>(toBeSaved.size());
-            for (int i = 0; i < toBeSaved.size(); i++) {
-                ids.add(toBeSaved.get(i).getEnavId());
+            for (Voyage aToBeSaved : toBeSaved) {
+                ids.add(aToBeSaved.getEnavId());
             }
             List<Voyage> persisted = scheduleRepository.getByEnavIds(ids);
             Map<String, Voyage> persistedAsMap = Voyage.asMap(persisted);
@@ -75,7 +71,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             // In order to maintain JPA relations we have to select from DB and
             // merge data manually
             for (Voyage voyage : toBeSaved) {
-                Voyage v = null;
+                Voyage v;
                 if (persistedAsMap.containsKey(voyage.getEnavId())) {
                     v = persistedAsMap.get(voyage.getEnavId());
 
@@ -157,14 +153,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     @Interceptors(RouteModifierInterceptor.class)
     public Route activateRoute(String routeEnavId, Boolean activate) {
-        logger.debug("activateRoute({}, {})", routeEnavId, activate);
+        log.debug("activateRoute({}, {})", routeEnavId, activate);
         return new RouteActivator(scheduleRepository).activateRoute(routeEnavId, activate);
     }
 
     @Override
     public Route getRouteByEnavId(String enavId) {
-        Route route = scheduleRepository.getRouteByEnavId(enavId);
-        return route;
+        return scheduleRepository.getRouteByEnavId(enavId);
     }
 
     public static class RouteModifierInterceptor {
@@ -173,15 +168,15 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         @AroundInvoke
         Object onlyOwnRoutes(InvocationContext ctx) throws Exception {
-            String enavId;
-
-            if (ctx.getParameters()[0] instanceof Route) {
-                enavId = ((Route) ctx.getParameters()[0]).getEnavId();
-            } else if (ctx.getParameters()[0] instanceof String) {
-                enavId = (String) ctx.getParameters()[0];
-            } else {
-                throw new IllegalArgumentException("First argument must be one of types " + Route.class.getName() + ", " + String.class.getName());
-            }
+//            String enavId;
+//
+//            if (ctx.getParameters()[0] instanceof Route) {
+//                enavId = ((Route) ctx.getParameters()[0]).getEnavId();
+//            } else if (ctx.getParameters()[0] instanceof String) {
+//                enavId = (String) ctx.getParameters()[0];
+//            } else {
+//                throw new IllegalArgumentException("First argument must be one of types " + Route.class.getName() + ", " + String.class.getName());
+//            }
 
             // if(enavId != null && !subject.authorizedToModifyRoute(enavId)){
             // throw new

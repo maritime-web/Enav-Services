@@ -18,6 +18,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.dma.embryo.common.EmbryonicException;
 import dk.dma.embryo.common.area.Area;
 import dk.dma.embryo.common.persistence.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,6 +33,11 @@ import java.util.LinkedHashMap;
 import java.util.stream.Stream;
 
 @Entity
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class AreasOfInterest extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -8480232439011093135L;
@@ -37,10 +47,10 @@ public class AreasOfInterest extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
 
     private String name;
-    private Boolean active;
     @Lob
     @Column(columnDefinition = "TEXT")
     private String polygonsAsJson;
+    private Boolean active;
 
     private static final String LEFT = "left";
     private static final String RIGHT = "right";
@@ -54,6 +64,7 @@ public class AreasOfInterest extends BaseEntity<Long> {
         if (getPolygonsAsJson() != null && !getPolygonsAsJson().trim().equalsIgnoreCase("[]")) {
             ObjectMapper mapper = new ObjectMapper();
             try {
+                @SuppressWarnings("unchecked")
                 ArrayList<LinkedHashMap<String, Double>> bounds = (ArrayList<LinkedHashMap<String, Double>>) mapper.readValue(getPolygonsAsJson(), ArrayList.class);
                 return bounds.stream().map(entry -> new Area(entry.get(LEFT), entry.get(TOP), entry.get(RIGHT), entry.get(BOTTOM)));
             } catch (IOException e) {
@@ -61,51 +72,5 @@ public class AreasOfInterest extends BaseEntity<Long> {
             }
         }
         return Stream.empty();
-    }
-
-
-    // //////////////////////////////////////////////////////////////////////
-    // Constructors
-    // //////////////////////////////////////////////////////////////////////
-    public AreasOfInterest() {
-    }
-
-    public AreasOfInterest(String name, String polygonsAsJson, Boolean active) {
-        super();
-        this.name = name;
-        this.polygonsAsJson = polygonsAsJson;
-        this.active = active;
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Object methods
-    // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName() + " [name=" + name + ", id=" + id + ", active=" + active + "]";
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-
-    public String getPolygonsAsJson() {
-        return polygonsAsJson;
-    }
-    public void setPolygonsAsJson(String polygonsAsJson) {
-        this.polygonsAsJson = polygonsAsJson;
     }
 }

@@ -14,8 +14,7 @@
  */
 package dk.dma.embryo.common.servlet;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import javax.servlet.Filter;
@@ -39,12 +38,10 @@ import static dk.dma.embryo.common.servlet.ETagFilter.Headers.ETAG;
 import static dk.dma.embryo.common.servlet.ETagFilter.Headers.IF_MODIFIED_SINCE;
 import static dk.dma.embryo.common.servlet.ETagFilter.Headers.IF_NONE_MATCH;
 import static dk.dma.embryo.common.servlet.ETagFilter.Headers.LAST_MODIFIED;
-
+@Slf4j
 public class ETagFilter implements Filter {
 
     private final ResourceManager resourceManager;
-
-    private final Logger LOGGER = LoggerFactory.getLogger(ETagFilter.class);
 
     private String basePath;
 
@@ -55,11 +52,11 @@ public class ETagFilter implements Filter {
 
     public void init(FilterConfig filterConfig) throws ServletException {
         basePath = filterConfig.getServletContext().getRealPath(File.separator);
-        LOGGER.info("Initialized with base path{} ", basePath);
+        log.info("Initialized with base path{} ", basePath);
     }
 
     public void destroy() {
-        LOGGER.info("destroy...");
+        log.info("destroy...");
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -68,29 +65,29 @@ public class ETagFilter implements Filter {
 
         Resource requestedResource = resourceManager.getRequestedResource(basePath, req.getServletPath());
 
-        LOGGER.trace("{}, {}={}, {}={}", req.getServletPath(), IF_NONE_MATCH, req.getHeader(IF_NONE_MATCH), IF_MODIFIED_SINCE, req.getHeader(IF_MODIFIED_SINCE));
+        log.trace("{}, {}={}, {}={}", req.getServletPath(), IF_NONE_MATCH, req.getHeader(IF_NONE_MATCH), IF_MODIFIED_SINCE, req.getHeader(IF_MODIFIED_SINCE));
 
         if(requestedResource.exists()){
             if (requestedResource.getETag().matches(req.getHeader(IF_NONE_MATCH))) {
                 String eTag = requestedResource.getETag().getValue();
                 resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
                 resp.setHeader(ETAG, eTag);
-                LOGGER.debug("{} value ({}) matches {}. Setting status code {}", IF_NONE_MATCH, req.getHeader(IF_NONE_MATCH), eTag, HttpServletResponse.SC_NOT_MODIFIED);
+                log.debug("{} value ({}) matches {}. Setting status code {}", IF_NONE_MATCH, req.getHeader(IF_NONE_MATCH), eTag, HttpServletResponse.SC_NOT_MODIFIED);
                 return;
             } else if (req.getHeader(IF_MODIFIED_SINCE) != null){
                 // Previous version of ArcticWeb (2.5.3 and earlier) did not use ETag but Last-Modified header
                 // remove If-Modified-Since to force reload of resource
                 // This needs to be maintained for at least a year as some users only use ArcticWeb once a year
-                LOGGER.debug("{} header present in request. Ignoring.", IF_MODIFIED_SINCE);
+                log.debug("{} header present in request. Ignoring.", IF_MODIFIED_SINCE);
                 request = new IgnoreIfModifiedSinceRequestWrapper(req);
             }
 
-            LOGGER.debug("Adding response header {}", ETAG);
+            log.debug("Adding response header {}", ETAG);
             resp.setHeader(ETAG, requestedResource.getETag().getValue());
 
             resp =  new IgnoreLastModifiedResponseWrapper(resp);
         } else{
-            LOGGER.debug("Requested resource {} not existing", req.getServletPath());
+            log.debug("Requested resource {} not existing", req.getServletPath());
         }
 
         chain.doFilter(request, resp);

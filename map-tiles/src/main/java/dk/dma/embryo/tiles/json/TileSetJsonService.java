@@ -14,7 +14,11 @@
  */
 package dk.dma.embryo.tiles.json;
 
-import java.util.List;
+import dk.dma.embryo.common.json.AbstractRestService;
+import dk.dma.embryo.tiles.model.TileSet;
+import dk.dma.embryo.tiles.service.TileSetDao;
+import lombok.extern.slf4j.Slf4j;
+import org.jboss.resteasy.annotations.GZIP;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -25,20 +29,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-
-import org.jboss.resteasy.annotations.GZIP;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.common.json.AbstractRestService;
-import dk.dma.embryo.tiles.model.TileSet;
-import dk.dma.embryo.tiles.service.TileSetDao;
+import java.util.List;
 
 @Path("/tileset")
 @Named
+@Slf4j
 public class TileSetJsonService extends AbstractRestService {
-
-    @Inject
-    private Logger logger;
 
     @Inject
     private TileSetDao tileSetDao;
@@ -48,7 +44,7 @@ public class TileSetJsonService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response filter(@PathParam("type") String type, @Context Request request) {
-        logger.info("filter({})", type);
+        log.info("filter({})", type);
 
         List<TileSet> tileSets = tileSetDao.listByTypeAndStatus(type, TileSet.Status.SUCCESS);
         List<JsonTileSet> result = TileSet.toJsonModel(tileSets);

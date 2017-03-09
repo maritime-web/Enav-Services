@@ -14,6 +14,10 @@
  */
 package dk.dma.embryo.dataformats.netcdf;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.util.Map;
 
 /**
@@ -26,8 +30,11 @@ import java.util.Map;
  * @author avlund
  *
  */
+@Getter
+@ToString
 public class NetCDFVar {
-    private String varname, description;
+    private final String varname, description;
+    @Setter
     private int digits = 3;
 
     public NetCDFVar(String varname, String description) {
@@ -35,35 +42,11 @@ public class NetCDFVar {
         this.description = description;
     }
 
-    public String getVarname() {
-        return varname;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-    
-    public int getDigits() {
-        return digits;
-    }
-    
-    public void setDigits(int digits) {
-        this.digits = digits;
-    }
-
     /**
      * Convenience method to add a CDF variable to a map using the varname as map key. 
      * 
-     * @param map
-     * @param varname
-     * @param description
      */
     public static void addToMap(Map<String, NetCDFVar> map, String varname, String description) {
         map.put(varname, new NetCDFVar(varname, description));
-    }
-    
-    @Override
-    public String toString() {
-        return varname + " (" + description + ")";
     }
 }

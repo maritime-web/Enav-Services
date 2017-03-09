@@ -17,10 +17,18 @@ package dk.dma.embryo.user.model;
 import javax.persistence.MappedSuperclass;
 
 import dk.dma.embryo.common.persistence.BaseEntity;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+import java.io.Serializable;
 
 
 @MappedSuperclass
-public abstract class AbstractAuthorizationEntity<K> extends BaseEntity<K> {
+@Setter
+@Getter
+@ToString
+public abstract class AbstractAuthorizationEntity<K extends Serializable> extends BaseEntity<K> {
 
     private static final long serialVersionUID = 6625306470923937976L;
 
@@ -36,31 +44,5 @@ public abstract class AbstractAuthorizationEntity<K> extends BaseEntity<K> {
     // //////////////////////////////////////////////////////////////////////
     private String logicalName;
 
-    // //////////////////////////////////////////////////////////////////////
-    // business logic
-    // //////////////////////////////////////////////////////////////////////
-
-    // //////////////////////////////////////////////////////////////////////
-    // Utility methods
-    // //////////////////////////////////////////////////////////////////////
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public String getLogicalName() {
-        return logicalName;
-    }
-
-    public void setLogicalName(String logicalName) {
-        this.logicalName = logicalName;
-    }
-
-    public String toStringRaw() {
-        return "id=" + id + ", logicalName=" + logicalName;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "[" + toStringRaw() + "]";
-    }
 }
+

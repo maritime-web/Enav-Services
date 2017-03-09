@@ -14,6 +14,19 @@
  */
 package dk.dma.embryo.dataformats.inshore;
 
+import com.google.common.collect.Collections2;
+import dk.dma.embryo.common.configuration.Property;
+import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateMidnight;
+import org.joda.time.DateTimeZone;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,28 +38,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-
-import org.joda.time.DateMidnight;
-import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
-
-import com.google.common.collect.Collections2;
-
-import dk.dma.embryo.common.configuration.Property;
-
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+@Slf4j
 public class InshoreIceReportServiceImpl implements InshoreIceReportService {
-
-    @Inject
-    private Logger logger;
 
     @Property(value = "embryo.inshoreIceReport.dmi.localDirectory", substituteSystemProperties = true)
     @Inject
@@ -63,7 +58,6 @@ public class InshoreIceReportServiceImpl implements InshoreIceReportService {
     public InshoreIceReportServiceImpl(String localDirectory, Integer maxAgeInDays){
         this.localDirectory = localDirectory;
         this.maxAgeInDays = maxAgeInDays;
-        logger = org.slf4j.LoggerFactory.getLogger(getClass());
     }
 
     @PostConstruct
@@ -71,7 +65,7 @@ public class InshoreIceReportServiceImpl implements InshoreIceReportService {
         try {
             update();
         } catch (Exception e) {
-            logger.error("Error initializing inshore ice report information", e);
+            log.error("Error initializing inshore ice report information", e);
         }
     }
 
@@ -80,7 +74,7 @@ public class InshoreIceReportServiceImpl implements InshoreIceReportService {
         File[] readFiles = findInshoreIceReports();
 
         DateMidnight limit = DateMidnight.now(DateTimeZone.UTC).minusDays(maxAgeInDays);
-        logger.debug("Date must be > {}", limit);
+        log.debug("Date must be > {}", limit);
 
         InshoreIceReportMerged result = new InshoreIceReportMerged();
         List<File> rFiles = Arrays.asList(readFiles);
@@ -89,7 +83,7 @@ public class InshoreIceReportServiceImpl implements InshoreIceReportService {
 
         List<FileInfo> sorted = new ArrayList<>();
         sorted.addAll(filtered);
-        Collections.sort(sorted, new FileInfoComparator());
+        sorted.sort(new FileInfoComparator());
 
         Map<String, Exception> problems = new HashMap<>();
 
@@ -112,10 +106,9 @@ public class InshoreIceReportServiceImpl implements InshoreIceReportService {
         }
     }
 
-    private File[] findInshoreIceReports() throws IOException {
+    private File[] findInshoreIceReports() {
         File dir = new File(localDirectory);
-        File[] files = dir.listFiles();
-        return files;
+        return dir.listFiles();
     }
 
     @Override

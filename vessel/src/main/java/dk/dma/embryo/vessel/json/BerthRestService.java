@@ -16,9 +16,10 @@ package dk.dma.embryo.vessel.json;
 
 import dk.dma.embryo.vessel.model.Berth;
 import dk.dma.embryo.vessel.service.GeographicService;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
-import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -34,13 +35,11 @@ import java.util.stream.Collectors;
  * @author Jesper Tejlgaard
  */
 @Path("/berth")
+@Slf4j
 public class BerthRestService {
 
     @Inject
     private GeographicService geoService;
-
-    @Inject
-    private Logger logger;
 
     @GET
     @Path("/search")
@@ -48,9 +47,9 @@ public class BerthRestService {
     @GZIP
     @NoCache
     public List<BerthDatum> remote(@QueryParam("q") String query) {
-        logger.debug("remoteFetch({})", query);
+        log.debug("remoteFetch({})", query);
 
-        List<Berth> berths = null;
+        List<Berth> berths;
         List<BerthDatum> transformed = null;
         
         if(query != null && query.trim().length() > 0){
@@ -63,26 +62,19 @@ public class BerthRestService {
             transformed = berths.stream().map(new BerthTransformerFunction()).collect(Collectors.toList());
         }
 
-        logger.debug("berths={}", transformed);
+        log.debug("berths={}", transformed);
         return transformed;
     }
-    
+
+    @Getter
     public static class BerthDatum extends TypeaheadDatum {
-        private Double latitude;
-        private Double longitude;
+        private final Double latitude;
+        private final Double longitude;
 
         public BerthDatum(String value, String[] tokens, Double latitude, Double longitude) {
             super(value, tokens);
             this.latitude = latitude;
             this.longitude = longitude;
-        }
-
-        public Double getLatitude() {
-            return latitude;
-        }
-
-        public Double getLongitude() {
-            return longitude;
         }
     }
     

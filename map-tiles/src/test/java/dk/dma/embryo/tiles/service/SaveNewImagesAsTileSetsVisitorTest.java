@@ -50,9 +50,7 @@ public class SaveNewImagesAsTileSetsVisitorTest {
 
     private File initDir(File dest, String name) {
         File dir = new File(dest, name);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
+        dk.dma.embryo.common.util.FileUtils.createDirectoriesIfNeeded(dir);
         return dir;
     }
 

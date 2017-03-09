@@ -14,6 +14,11 @@
  */
 package dk.dma.embryo.enav.io;
 
+import dk.dma.enav.model.voyage.Route;
+import dk.dma.enav.model.voyage.RouteLeg;
+import dk.dma.enav.model.voyage.RouteLeg.Heading;
+import dk.dma.enav.model.voyage.Waypoint;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,11 +30,6 @@ import java.io.Reader;
 import java.util.Date;
 import java.util.Map;
 
-import dk.dma.enav.model.voyage.Route;
-import dk.dma.enav.model.voyage.RouteLeg;
-import dk.dma.enav.model.voyage.RouteLeg.Heading;
-import dk.dma.enav.model.voyage.Waypoint;
-
 /**
  * Utility class for loading routes in different file formats.
  * 
@@ -38,8 +38,6 @@ import dk.dma.enav.model.voyage.Waypoint;
  * @author Jesper Tejlgaard
  */
 public class SimpleRouteParser extends RouteParser {
-
-    // private static final Logger LOG = LoggerFactory.getLogger(RouteLoader.class);
 
     private BufferedReader reader;
     
@@ -68,7 +66,7 @@ public class SimpleRouteParser extends RouteParser {
         route = null;
         try {
             boolean firstLine = true;
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null) {
                 // Ignore empty lines and comments
                 if (line.length() == 0 || line.startsWith("//") || line.startsWith("#")) {
@@ -100,11 +98,11 @@ public class SimpleRouteParser extends RouteParser {
                         throw newException("Waypoint line has less than seven fields", line);
                     }
 
-                    double latitude = 0;
-                    double longitude = 0;
-                    Double turnRadius = null;
-                    Double speed = null;
-                    Heading heading = null;
+                    double latitude;
+                    double longitude;
+                    Double turnRadius;
+                    Double speed;
+                    Heading heading;
                     // Get position
                     try {
                         latitude = ParseUtils.parseLatitude(fields[1]);
@@ -148,8 +146,8 @@ public class SimpleRouteParser extends RouteParser {
                         xtdPort = xtdParts[1];
                     }
 
-                    Double xtdDouble = null;
-                    Double xtdStarboardDouble = null;
+                    Double xtdDouble;
+                    Double xtdStarboardDouble;
                     try {
                         xtdStarboardDouble = ParseUtils.parseDouble(xtdStarboard.trim());
                         xtdDouble = ParseUtils.parseDouble(xtdPort.trim());
@@ -160,10 +158,8 @@ public class SimpleRouteParser extends RouteParser {
                     createWaypointLeg(speed, heading, xtdDouble, xtdStarboardDouble);
                 }
             }
+        } finally {
             reader.close();
-        } catch (IOException e) {
-            // LOG.error("Failed to load route file: " + e.getMessage());
-            throw e;
         }
 
         return route;

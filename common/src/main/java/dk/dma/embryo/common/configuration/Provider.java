@@ -15,11 +15,16 @@
 
 package dk.dma.embryo.common.configuration;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
 /**
  * Created by Jesper Tejlgaard on 10/2/14.
  */
+@Getter
+@Setter
 public class Provider {
     private String shortName;
     private String notificationEmail;
@@ -32,33 +37,6 @@ public class Provider {
     public Provider(String shortName, String notificationEmail) {
         this.shortName = shortName;
         this.notificationEmail = notificationEmail;
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public String getShortName() {
-        return shortName;
-    }
-
-    public String getNotificationEmail() {
-        return notificationEmail;
-    }
-
-    public List<Type> getTypes() {
-        return types;
-    }
-
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
-
-    public void setNotificationEmail(String notificationEmail) {
-        this.notificationEmail = notificationEmail;
-    }
-
-    public void setTypes(List<Type> types) {
-        this.types = types;
     }
 
     public void accept(ProviderVisitor visitor) {

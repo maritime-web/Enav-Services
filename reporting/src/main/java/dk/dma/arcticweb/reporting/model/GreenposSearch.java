@@ -14,6 +14,8 @@
  */
 package dk.dma.arcticweb.reporting.model;
 
+import lombok.Getter;
+import lombok.ToString;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.joda.time.DateTime;
 
@@ -21,6 +23,8 @@ import org.joda.time.DateTime;
  * 
  * @author Jesper Tejlgaard
  */
+@Getter
+@ToString
 public class GreenposSearch {
 
     // //////////////////////////////////////////////////////////////////////
@@ -83,57 +87,6 @@ public class GreenposSearch {
             Integer first, Integer numberOfReports) {
         this(reportType, null, vesselMmsi, null, null, ts, sortBy, sortOrder, first, numberOfReports);
 
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Object methods
-    // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public String getVesselName() {
-        return vesselName;
-    }
-
-    public String getVesselCallSign() {
-        return vesselCallSign;
-    }
-
-    public Long getVesselMmsi() {
-        return vesselMmsi;
-    }
-
-    public String getReportedBy() {
-        return reportedBy;
-    }
-
-    public DateTime getTs() {
-        return ts;
-    }
-
-    public String getReportType() {
-        return reportType;
-    }
-
-    public String getSortByField() {
-        return sortByField;
-    }
-
-    public int getFirst() {
-        return first == null ? 0 : first;
-    }
-
-    public int getNumberOfReports() {
-        return numberOfReports != null ? numberOfReports : 0;
-    }
-
-    public String getSortOrder() {
-        return sortOrder;
     }
 
 }

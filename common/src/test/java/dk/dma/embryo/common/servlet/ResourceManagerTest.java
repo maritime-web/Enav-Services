@@ -24,14 +24,13 @@ import java.io.UnsupportedEncodingException;
  */
 public class ResourceManagerTest {
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testGetRequestedResourceNoBasePath(){
         ResourceManager manager = new ResourceManager();
         try{
-            Resource resource = manager.getRequestedResource(null, "default-configuration.properties");
+            manager.getRequestedResource(null, "default-configuration.properties");
             Assert.fail("Expected load to fail");
-        }catch(NullPointerException e){
-        }catch(UnsupportedEncodingException e){
+        } catch(UnsupportedEncodingException e){
             Assert.fail("Expected NullPointerException");
         }
     }

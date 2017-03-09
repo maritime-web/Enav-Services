@@ -23,6 +23,8 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * A NetCDFMoment represents a "frozen" overview of everything's position in a
@@ -32,6 +34,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  * @author avlund
  *
  */
+@Getter
+@ToString
 public class NetCDFMoment implements Serializable {
 
     private static final long serialVersionUID = 3229249855444903196L;
@@ -53,19 +57,6 @@ public class NetCDFMoment implements Serializable {
             observations.put(order, obs);
             entries.put(point, observations);
         }
-    }
-
-    public Map<NetCDFPoint, Map<Integer, Float>> getEntries() {
-        return entries;
-    }
-
-    public int getTime() {
-        return time;
-    }
-
-    @Override
-    public String toString() {
-        return "Time: " + time + ", entries: " + entries;
     }
 
     /**

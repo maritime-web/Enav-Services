@@ -52,7 +52,7 @@ public class Java8StreamTestCode {
     
     public static class TestOrderTest {
         enum Side {
-            BUY, SELL;
+            BUY, SELL
         }
 
         private final String symbol;

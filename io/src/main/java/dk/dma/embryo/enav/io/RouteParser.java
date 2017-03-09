@@ -30,27 +30,6 @@ import dk.dma.enav.model.voyage.Route;
 public abstract class RouteParser {
 
     RouteDefaults defaults = new RouteDefaults(); 
-    
-    public static RouteParser getRouteParser(File file) throws FileNotFoundException {
-        String ext = getExtension(file.getName());
-        switch (ext) {
-        case "TXT":
-            return new SimpleRouteParser(file);
-        case "ROU":
-            return new RouRouteParser(file);
-        case "RT3":
-            return new Rt3RouteParser(file);
-        case "ROUTE":
-            return new RouteRouteParser(file);
-        case "" : 
-            if(file.getName().matches("map\\d{4}t")){
-                return new SAMRouteParser(file);
-            }
-        default:
-            throw new IllegalArgumentException("Unknown file extension. Known extensions are 'TXT' and 'ROU'.");
-//            return new PertinaciousRouteParser(file);
-        }
-    }
 
     public static RouteParser getRouteParser(String fileName, InputStream io, Map<String, String> config) {
         String ext = getExtension(fileName);

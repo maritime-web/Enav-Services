@@ -16,6 +16,9 @@ package dk.dma.embryo.vessel.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dk.dma.embryo.vessel.integration.AisVessel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import java.util.Map;
@@ -25,6 +28,9 @@ import java.util.Map;
  * @author Jesper Tejlgaard
  */
 @JsonIgnoreProperties(ignoreUnknown=true)
+@ToString
+@Getter
+@Setter
 public class VesselDetails {
     
     /** Ship name */
@@ -75,14 +81,10 @@ public class VesselDetails {
         return getAisVessel().getMmsi();
     }
 
-    // //////////////////////////////////////////////////////////////////////
-    // Object methods
-    // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
-    }
-
+    /**
+     * Can't be replaced by lombok because of suspicious call  to aisVessel.hashCodeAllFields()
+     *
+     */
     @Override
     public int hashCode() {
 
@@ -100,80 +102,5 @@ public class VesselDetails {
         result = prime * result + ((aisVessel == null)              ? 0 : aisVessel.hashCodeAllFields());
         
         return result;
-    }
-    
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-
-    public Long getMmsi() {
-        return mmsi;
-    }
-    public void setMmsi(Long vesselMmsi) {
-        this.mmsi = vesselMmsi;
-    }
-
-    public String getMaritimeId() {
-        return maritimeId;
-    }
-    public void setMaritimeId(String vesselMaritimeId) {
-        this.maritimeId = vesselMaritimeId;
-    }
-
-
-    public String getCommCapabilities() {
-        return commCapabilities;
-    }
-    public void setCommCapabilities(String commCapabilities) {
-        this.commCapabilities = commCapabilities;
-    }
-
-    public Float getMaxSpeed() {
-        return maxSpeed;
-    }
-    public void setMaxSpeed(Float maxSpeed) {
-        this.maxSpeed = maxSpeed;
-    }
-
-    public Integer getGrossTon() {
-        return grossTon;
-    }
-    public void setGrossTon(Integer tonnage) {
-        this.grossTon = tonnage;
-    }
-
-    public String getIceClass() {
-        return iceClass;
-    }
-    public void setIceClass(String iceClass) {
-        this.iceClass = iceClass;
-    }
-
-    public Boolean getHelipad() {
-        return helipad;
-    }
-    public void setHelipad(Boolean helipad) {
-        this.helipad = helipad;
-    }
-    
-    public Integer getMaxPersons() {
-        return maxPersons;
-    }
-    public void setMaxPersons(Integer maxPersons) {
-        this.maxPersons = maxPersons;
-    }
-
-    public Map<String, Object> getAdditionalInformation() {
-        return additionalInformation;
-    }
-    public void setAdditionalInformation(Map<String, Object> additionalInformation) {
-        this.additionalInformation = additionalInformation;
-    }
-
-    public AisVessel getAisVessel() {
-        return aisVessel;
-    }
-    public void setAisVessel(AisVessel aisVessel) {
-        this.aisVessel = aisVessel;
     }
 }

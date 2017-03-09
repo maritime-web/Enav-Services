@@ -17,6 +17,9 @@ package dk.dma.arcticweb.reporting.model;
 import dk.dma.arcticweb.reporting.json.model.GreenPos;
 import dk.dma.arcticweb.reporting.json.model.GreenPosShort;
 import dk.dma.embryo.vessel.model.Position;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
@@ -35,6 +38,8 @@ import java.util.Date;
  */
 @Entity
 @DiscriminatorValue("SP")
+@Getter
+@ToString
 public class GreenPosSailingPlanReport extends GreenPosPositionReport {
 
     private static final long serialVersionUID = -7205030526506222850L;
@@ -56,6 +61,7 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
     private String routeDescription;
 
     @OneToOne(cascade = CascadeType.PERSIST)
+    @Setter
     private ReportedRoute route;
 
 
@@ -71,10 +77,9 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
         DateTime eta = from.getEta() == null ? null : new DateTime(from.getEta().getTime(), DateTimeZone.UTC);
         Position pos = new Position(from.getLat(), from.getLon());
 
-        GreenPosSailingPlanReport report = new GreenPosSailingPlanReport(from.getVesselName(), from.getMmsi(),
+        return new GreenPosSailingPlanReport(from.getVesselName(), from.getMmsi(),
                 from.getCallSign(), pos, from.getNumber(), from.getWeather(), from.getIce(), from.getSpeed(), from.getCourse(),
                 from.getDestination(), eta, from.getPersonsOnBoard(), from.getDescription(), from.getMalFunctions());
-        return report;
     }
 
     @Override
@@ -143,40 +148,5 @@ public class GreenPosSailingPlanReport extends GreenPosPositionReport {
         this.personsOnBoard = personsOnBoard;
         this.etaOfArrival = eta;
         this.routeDescription = routeDescription;
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Object methods
-    // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public String getDestination() {
-        return destination;
-    }
-
-    public DateTime getEtaOfArrival() {
-        return etaOfArrival;
-    }
-
-    public Integer getPersonsOnBoard() {
-        return personsOnBoard;
-    }
-
-    public String getRouteDescription() {
-        return routeDescription;
-    }
-
-    public ReportedRoute getRoute() {
-        return route;
-    }
-
-    public void setRoute(ReportedRoute route) {
-        this.route = route;
     }
 }

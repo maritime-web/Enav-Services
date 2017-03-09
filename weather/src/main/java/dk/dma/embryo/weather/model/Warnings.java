@@ -14,6 +14,10 @@
  */
 package dk.dma.embryo.weather.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +25,9 @@ import java.util.Map;
 /**
  * @author Jesper Tejlgaard
  */
+@Setter
+@Getter
+@ToString
 public class Warnings {
 
     private Integer number;
@@ -29,46 +36,4 @@ public class Warnings {
     private Map<String, String> gale = new HashMap<>();
     private Map<String, String> storm = new HashMap<>();
     private Map<String, String> icing = new HashMap<>();
-
-    public Integer getNumber() {
-        return number;
-    }
-
-    public void setNumber(Integer number) {
-        this.number = number;
-    }
-
-    public Date getFrom() {
-        return from;
-    }
-
-    public void setFrom(Date from) {
-        this.from = from;
-    }
-
-    public Map<String, String> getGale() {
-        return gale;
-    }
-
-    public void setGale(Map<String, String> gale) {
-        this.gale = gale;
-    }
-
-    public Map<String, String> getStorm() {
-        return storm;
-    }
-
-    public void setStorm(Map<String, String> storm) {
-        this.storm = storm;
-    }
-
-    public Map<String, String> getIcing() {
-        return icing;
-    }
-
-    public void setIce(Map<String, String> icing) {
-        this.icing = icing;
-    }
-
-    
 }

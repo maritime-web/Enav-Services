@@ -15,6 +15,7 @@
 package dk.dma.embryo.user.security;
 
 import dk.dma.embryo.user.model.SecuredUser;
+import lombok.Getter;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.SimpleHash;
@@ -29,19 +30,15 @@ import org.apache.shiro.util.ByteSource;
  */
 public class SecurityUtil{
 
-
+    private static RandomNumberGenerator RANDOM_NUMBER_GENERATOR = new SecureRandomNumberGenerator();
     public static SecuredUser createUser(String userName, String password, String email, String aisFilterName) {
        
         HashedPassword hashedPassword = hashPassword(password);
-
-        SecuredUser user = new SecuredUser(userName, hashedPassword.getPassword(), hashedPassword.getSalt(), email, aisFilterName);
-        
-        return user;
+        return new SecuredUser(userName, hashedPassword.getPassword(), hashedPassword.getSalt(), email, aisFilterName);
     }
     
     public static HashedPassword hashPassword(String password) {
-        RandomNumberGenerator rng = new SecureRandomNumberGenerator();
-        ByteSource salt = rng.nextBytes();
+        ByteSource salt = RANDOM_NUMBER_GENERATOR.nextBytes();
 
 //        HashedCredentialsMatcher matcher = (HashedCredentialsMatcher)jpaRealm.getCredentialsMatcher();
         String algorithmName = "SHA-512";//matcher.getHashAlgorithmName();
@@ -50,27 +47,18 @@ public class SecurityUtil{
         //Now hash the plain-text password with the random salt and multiple
         //iterations and then Base64-encode the value (requires less space than Hex):
         String hashedPasswordBase64 = new SimpleHash(algorithmName, password, salt, iterations).toBase64();
-        
-        HashedPassword hashedPassword = new HashedPassword(hashedPasswordBase64, salt.getBytes());
-        
-        return hashedPassword;
+
+        return new HashedPassword(hashedPasswordBase64, salt.getBytes());
      }
-    
+
+    @Getter
     public static class HashedPassword {
-        private String password;
-        private byte[] salt;
+        private final String password;
+        private final byte[] salt;
         
         public HashedPassword(String password, byte[] salt) {
             this.password = password;
             this.salt = salt;
-        }
-        
-        public String getPassword() {
-            return password;
-        }
-        
-        public byte[] getSalt() {
-            return salt;
         }
     }
 }

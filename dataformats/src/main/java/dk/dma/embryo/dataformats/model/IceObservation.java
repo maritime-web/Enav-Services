@@ -14,46 +14,19 @@
  */
 package dk.dma.embryo.dataformats.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
+
 import java.util.Date;
-
+@AllArgsConstructor
+@Getter
+@ToString
 public class IceObservation {
-    private String source;
-    
-    private Date date;
-    private String shapeFileName;
-    private String region;
-    private long size;
+    private final String source;
+    private final String region;
+    private final Date date;
+    private final long size;
+    private final String shapeFileName;
 
-    public IceObservation(String source, String region, Date date, long size, String shapeFileName) {
-        this.source = source;
-        this.region = region;
-        this.date = date;
-        this.shapeFileName = shapeFileName;
-        this.size = size;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public String getShapeFileName() {
-        return shapeFileName;
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public long getSize() {
-        return size;
-    }
-
-    public String toString() {
-        return "IceObservation { source: " + source + " region: " + region + " date: " + date +
-                " size: " + size + " shapeFileName: " + shapeFileName + "}";
-    }
 }

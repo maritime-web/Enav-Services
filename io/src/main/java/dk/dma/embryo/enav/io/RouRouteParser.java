@@ -14,6 +14,13 @@
  */
 package dk.dma.embryo.enav.io;
 
+import dk.dma.enav.model.geometry.Position;
+import dk.dma.enav.model.voyage.Route;
+import dk.dma.enav.model.voyage.RouteLeg;
+import dk.dma.enav.model.voyage.RouteLeg.Heading;
+import dk.dma.enav.model.voyage.Waypoint;
+import org.apache.commons.lang.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,14 +31,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-
-import dk.dma.enav.model.geometry.Position;
-import dk.dma.enav.model.voyage.Route;
-import dk.dma.enav.model.voyage.RouteLeg;
-import dk.dma.enav.model.voyage.RouteLeg.Heading;
-import dk.dma.enav.model.voyage.Waypoint;
-
 /**
  * Utility class for loading routes in different file formats.
  * 
@@ -40,8 +39,6 @@ import dk.dma.enav.model.voyage.Waypoint;
  * @author Jesper Tejlgaard
  */
 public class RouRouteParser extends RouteParser {
-
-    // private static final Logger LOG = LoggerFactory.getLogger(RouteLoader.class);
 
     private Double sogDefault;
     private int wpCount = 1;
@@ -68,7 +65,7 @@ public class RouRouteParser extends RouteParser {
 
     public Route parse() throws IOException {
         route = new Route();
-        String line = null;
+        String line;
         
         while ((line = reader.readLine()) != null) {
             try {
@@ -87,7 +84,7 @@ public class RouRouteParser extends RouteParser {
     }
 
     private void parseWp() throws IOException, FormatException {
-        String line = null;
+        String line;
         Waypoint wp = new Waypoint();
         RouteLeg leg = new RouteLeg();
         wp.setRouteLeg(leg);
@@ -157,7 +154,7 @@ public class RouRouteParser extends RouteParser {
     }
 
     private void parseHeader() throws IOException, FormatException {
-        String line = null;
+        String line;
         while ((line = reader.readLine()) != null) {
             String str = line.trim();
             if (str.length() == 0) {

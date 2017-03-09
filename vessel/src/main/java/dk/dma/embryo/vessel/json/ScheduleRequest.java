@@ -14,12 +14,14 @@
  */
 package dk.dma.embryo.vessel.json;
 
+import lombok.Data;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
  * 
  * @author Jesper Tejlgaard
  */
+@Data
 public class ScheduleRequest {
 
     /**
@@ -43,40 +45,6 @@ public class ScheduleRequest {
         super();
     }
 
-    // //////////////////////////////////////////////////////////////////////
-    // Object methods
-    // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public Voyage[] getVoyages() {
-        return voyages;
-    }
-
-    public void setVoyages(Voyage[] voyages) {
-        this.voyages = voyages;
-    }
-
-    public String[] getToDelete() {
-        return toDelete;
-    }
-
-    public void setToDelete(String[] toDelete) {
-        this.toDelete = toDelete;
-    }
-
-    public Long getMmsi() {
-        return mmsi;
-    }
-
-    public void setMmsi(Long mmsi) {
-        this.mmsi = mmsi;
-    }
     
     
 }

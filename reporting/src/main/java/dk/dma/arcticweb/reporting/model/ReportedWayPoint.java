@@ -23,8 +23,12 @@ import javax.validation.constraints.Size;
 
 import dk.dma.embryo.vessel.model.Position;
 import dk.dma.embryo.vessel.model.WayPoint;
+import lombok.Getter;
+import lombok.Setter;
 
 @Embeddable
+@Setter
+@Getter
 public class ReportedWayPoint implements Serializable {
 
     private static final long serialVersionUID = -7205030526506222850L;
@@ -45,9 +49,8 @@ public class ReportedWayPoint implements Serializable {
     // //////////////////////////////////////////////////////////////////////
 
     public static ReportedWayPoint fromModel(WayPoint wayPoint) {
-        ReportedWayPoint transformed = new ReportedWayPoint(wayPoint.getName(), wayPoint.getPosition().getLatitude(),
+        return new ReportedWayPoint(wayPoint.getName(), wayPoint.getPosition().getLatitude(),
                 wayPoint.getPosition().getLongitude());
-        return transformed;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -67,32 +70,5 @@ public class ReportedWayPoint implements Serializable {
         position = new Position(latitude, longitude);
     }
 
-    
-    // //////////////////////////////////////////////////////////////////////
-    // Object methods
-    // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return "ReportedWayPoint [name=" + name + ", position=" + position + "]";
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public String getName() {
-        return name;
-    }
-
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
 
 }

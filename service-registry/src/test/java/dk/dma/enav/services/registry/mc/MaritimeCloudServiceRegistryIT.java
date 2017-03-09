@@ -36,7 +36,6 @@ import static org.hamcrest.Matchers.is;
  *
  */
 public class MaritimeCloudServiceRegistryIT {
-    private InstanceRepository repository;
     private MaritimeCloudServiceRegistry cut;
     private ApiFactory apiFactory;
 
@@ -44,7 +43,7 @@ public class MaritimeCloudServiceRegistryIT {
     public void setUp() throws Exception {
         apiFactory = new ApiFactory("http://sr-test.maritimecloud.net:8080", 2000);
         InstanceMapper mapper = new InstanceMapper(new InstanceXmlParser());
-        repository = new InstanceRepository(apiFactory, mapper, 5);
+        InstanceRepository repository = new InstanceRepository(apiFactory, mapper, 5);
         cut = new MaritimeCloudServiceRegistry(repository);
     }
 

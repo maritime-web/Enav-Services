@@ -15,6 +15,9 @@
 package dk.dma.arcticweb.reporting.model;
 
 import dk.dma.embryo.vessel.model.Position;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import javax.persistence.Entity;
@@ -24,6 +27,8 @@ import javax.validation.constraints.NotNull;
  * @author Jesper Tejlgaard
  */
 @Entity
+@Getter
+@ToString
 public abstract class GreenPosDMIReport extends GreenPosReport {
 
     private static final long serialVersionUID = -7205030526506222850L;
@@ -56,24 +61,5 @@ public abstract class GreenPosDMIReport extends GreenPosReport {
         super(vesselName, vesselMmsi, vesselCallSign, position, number, vesselMalFunctions);
         this.weather = weather;
         this.iceInformation = iceInformation;
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Object methods
-    // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public String getWeather() {
-        return weather;
-    }
-
-    public String getIceInformation() {
-        return iceInformation;
     }
 }

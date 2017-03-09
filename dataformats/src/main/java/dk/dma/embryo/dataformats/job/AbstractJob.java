@@ -15,12 +15,12 @@
 package dk.dma.embryo.dataformats.job;
 
 import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.util.FileUtils;
 import dk.dma.embryo.common.util.NamedtimeStamps;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 import dk.dma.embryo.dataformats.persistence.ShapeFileMeasurementDao;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import javax.ejb.ScheduleExpression;
@@ -33,11 +33,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
-
+@Slf4j
 public abstract class AbstractJob {
 
-    private final Logger logger = LoggerFactory.getLogger(AbstractJob.class);
-    
     @Resource
     private TimerService timerService;
     
@@ -57,12 +55,12 @@ public abstract class AbstractJob {
     protected abstract Map<String, String> getCharttypes();
     protected abstract List<ShapeFileMeasurement> getMeasurementsFromDatabase();
     
-    protected static enum Dirtype {
+    protected enum Dirtype {
         DIR("dir"), FILE("file");
 
         protected String type;
 
-        private Dirtype(String type) {
+        Dirtype(String type) {
             this.type = type;
         }
     }
@@ -70,7 +68,7 @@ public abstract class AbstractJob {
     protected void init(String ftpServerName, ScheduleExpression cron) {
         
         if (!ftpServerName.trim().equals("") && (cron != null)) {
-            logger.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
+            log.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
             String[] localDirs = new String[getCharttypes().size()];
             List<String> regions = new ArrayList<>();
             int count = 0;
@@ -79,39 +77,40 @@ public abstract class AbstractJob {
                 Map<String, String> regionsForChartType = getRegions(chartType);
                 regions.addAll(regionsForChartType.keySet());
             }
-            logger.info("Initializing {} with localDirectories {} and regions {}", this.getClass().getSimpleName(), localDirs, regions);
+            log.info("Initializing {} with localDirectories {} and regions {}", this.getClass().getSimpleName(), localDirs, regions);
             timerService.createCalendarTimer(cron, new TimerConfig(null, false));
         } else {
-            logger.info("FTP site is not configured - cron job not scheduled.");
+            log.info("FTP site is not configured - cron job not scheduled.");
         }
     }
 
     protected void shutdown() {
-        logger.info("Shutdown called.");
+        log.info("Shutdown called.");
         if(this.ftpClient != null) {
 
             boolean logout = false;
             try {
                 logout = this.ftpClient.logout();
             } catch (IOException e) {
-                logger.error("Could not close FTP Connection", e);
+                log.error("Could not close FTP Connection", e);
             }
-            logger.info("did the job manage to logout -> " + logout);
+            log.info("did the job manage to logout -> " + logout);
         }
         
         if(this.futureTransfers != null) {
             boolean cancelSucceeded = this.futureTransfers.cancel(true);
-            logger.info("did the job manage to cancel -> " + cancelSucceeded);
+            log.info("did the job manage to cancel -> " + cancelSucceeded);
         }
     }
     
     protected void makeDirectoriesIfNecessary() {
-        logger.info("Making directories if necessary ...");
+        log.info("Making directories if necessary ...");
         for (String chartType : getCharttypes().values()) {
             String localDir = getLocalDir(chartType);
-            if (!new File(localDir).exists()) {
-                logger.info("Making local directory for files: " + localDir);
-                new File(localDir).mkdirs();
+            File file = new File(localDir);
+            if (!file.exists()) {
+                log.info("Making local directory for files: " + localDir);
+                FileUtils.createDirectories(file);
             }
         }
     }

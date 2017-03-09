@@ -19,6 +19,9 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
@@ -30,13 +33,15 @@ import dk.dma.embryo.common.persistence.BaseEntity;
         @NamedQuery(name = "ShapeFileMeasurement:list", query = "SELECT m FROM ShapeFileMeasurement m WHERE m.chartType = :chartType"),
         @NamedQuery(name = "ShapeFileMeasurement:listByProvider", query = "SELECT m FROM ShapeFileMeasurement m WHERE m.provider = :provider AND m.chartType = :chartType")})
 @Entity
+@Getter
+@Setter
 public class ShapeFileMeasurement extends BaseEntity<Long> {
     private static final long serialVersionUID = -3131809653155886572L;
 
-    private long fileSize;
-    private String fileName;
-    private String provider;
     private String chartType;
+    private String provider;
+    private String fileName;
+    private long fileSize;
     private int version;
 
     @NotNull
@@ -58,58 +63,5 @@ public class ShapeFileMeasurement extends BaseEntity<Long> {
         this.fileName = fileName;
         this.provider = provider;
         this.version = version;
-    }
-
-    public long getFileSize() {
-        return fileSize;
-    }
-
-    public void setFileSize(long fileSize) {
-        this.fileSize = fileSize;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getProvider() {
-        return provider;
-    }
-
-    public void setProvider(String provider) {
-        this.provider = provider;
-    }
-
-    public String getChartType() {
-        return chartType;
-    }
-
-    public void setChartType(String chartType) {
-        this.chartType = chartType;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    public DateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(DateTime created) {
-        this.created = created;
-    }
-
-    @Override
-    public String toString() {
-        return "ShapeFileMeasurement [fileSize=" + fileSize + ", fileName=" + fileName + ", provider=" + provider + "]";
     }
 }

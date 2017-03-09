@@ -27,7 +27,7 @@ import dk.dma.embryo.user.security.SecurityUtil;
 import dk.dma.embryo.user.security.SecurityUtil.HashedPassword;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.persistence.VesselDao;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.FinderException;
 import javax.ejb.Stateless;
@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Stateless
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     @Inject
@@ -43,9 +44,6 @@ public class UserServiceImpl implements UserService {
 
     @Inject
     private VesselDao vesselDao;
-
-    @Inject
-    private Logger logger;
 
     private Role createRole(String role, Long mmsi) {
         switch (role) {

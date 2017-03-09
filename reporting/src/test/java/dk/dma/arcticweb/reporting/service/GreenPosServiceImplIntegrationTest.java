@@ -68,12 +68,6 @@ public class GreenPosServiceImplIntegrationTest {
 
     private GreenPosService greenPosService;
 
-    private VesselDao vesselDao;
-
-    private GreenPosDao greenPosDao;
-
-    private MailSender mailSender;
-
     private ScheduleDao scheduleDao;
 
     @BeforeClass
@@ -102,12 +96,12 @@ public class GreenPosServiceImplIntegrationTest {
     @Before
     public void setup() {
         entityManager = factory.createEntityManager();
-        vesselDao = new VesselDaoImpl(entityManager);
-        greenPosDao = new GreenPosDaoImpl(entityManager);
+        VesselDao vesselDao = new VesselDaoImpl(entityManager);
+        GreenPosDao greenPosDao = new GreenPosDaoImpl(entityManager);
 
         subject = Mockito.mock(Subject.class);
         realmDao = Mockito.mock(RealmDao.class);
-        mailSender = Mockito.mock(MailSender.class);
+        MailSender mailSender = Mockito.mock(MailSender.class);
         scheduleDao = Mockito.mock(ScheduleDao.class);
 
         greenPosService = new GreenPosServiceImpl(greenPosDao, vesselDao, subject, realmDao, mailSender, scheduleDao);

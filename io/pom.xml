@@ -15,10 +15,6 @@
     </parent>
 
     <dependencies>
-        <dependency>
-            <groupId>dk.dma.enav.services</groupId>
-            <artifactId>test-utilities</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>dk.dma.enav</groupId>

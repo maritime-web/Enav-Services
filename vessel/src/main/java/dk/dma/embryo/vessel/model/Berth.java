@@ -20,11 +20,17 @@ import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
 
 import dk.dma.embryo.common.persistence.BaseEntity;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @Entity
 @NamedQueries({@NamedQuery(name = "Berth:findByQuery", query = "SELECT b FROM Berth b WHERE b.name LIKE :query OR b.alias like :query"),
         @NamedQuery(name = "Berth:lookup", query = "SELECT b FROM Berth b WHERE UPPER(b.name) = :name OR UPPER(b.alias) = :name")})
+@NoArgsConstructor
+@Setter
+@Getter
 public class Berth extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -7720878907095105915L;
@@ -40,18 +46,8 @@ public class Berth extends BaseEntity<Long> {
     private Position position;
 
     // //////////////////////////////////////////////////////////////////////
-    // business logic
-    // //////////////////////////////////////////////////////////////////////
-
-    // //////////////////////////////////////////////////////////////////////
-    // Utility methods
-    // //////////////////////////////////////////////////////////////////////
-
-    // //////////////////////////////////////////////////////////////////////
     // Constructors
     // //////////////////////////////////////////////////////////////////////
-    public Berth() {
-    }
 
     public Berth(String name, String latitude, String longitude) {
         this.name = name;
@@ -62,28 +58,5 @@ public class Berth extends BaseEntity<Long> {
         this.name = name;
         this.alias = alias;
         this.position = new Position(latitude, longitude);
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
-    public Position getPosition() {
-        return position;
     }
 }

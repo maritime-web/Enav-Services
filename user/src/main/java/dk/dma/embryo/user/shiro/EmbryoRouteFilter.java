@@ -14,22 +14,19 @@
  */
 package dk.dma.embryo.user.shiro;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import dk.dma.embryo.common.configuration.Configuration;
 import dk.dma.embryo.user.security.Subject;
 import dk.dma.embryo.vessel.persistence.ScheduleDao;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 /**
  * @author Jesper Tejlgaard
  */
+@Slf4j
 public class EmbryoRouteFilter extends EmbryoVesselDataFilter {
-
-    Logger logger = LoggerFactory.getLogger(EmbryoRouteFilter.class);
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue)
@@ -38,7 +35,7 @@ public class EmbryoRouteFilter extends EmbryoVesselDataFilter {
         String routeId = Util.getValue(jsonObject, ((String[]) mappedValue)[0]);
         
         ScheduleDao scheduleService = Configuration.getBean(ScheduleDao.class);
-        Long mmsi = null;
+        Long mmsi;
         if(((Object[])mappedValue).length > 1){
             String voyageId = Util.getValue(jsonObject, ((String[]) mappedValue)[1]);
             mmsi = scheduleService.getMmsiByVoyageEnavId(voyageId);

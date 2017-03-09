@@ -2,7 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>dk.dma.enav.services</groupId>
 	<artifactId>weather</artifactId>
 	<packaging>jar</packaging>
 	<name>e-Navigation Weather</name>
@@ -15,23 +14,12 @@
 	</parent>
 
 	<dependencies>
-        <dependency>
-            <groupId>dk.dma.enav.services</groupId>
-            <artifactId>test-utilities</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>dk.dma.enav.services</groupId>
 			<artifactId>common</artifactId>
 		</dependency>
 
-		<!-- Added here again because weld jar contains older version of slf4j. 
-			This must be first in the classpath for Eclipse to work -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${dependencies.slf4j.version}</version>
-		</dependency>
 
 		<!-- Import the CDI API. -->
 		<dependency>

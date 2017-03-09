@@ -17,6 +17,7 @@ package dk.dma.embryo.vessel.integration;
 import dk.dma.embryo.common.EmbryonicException;
 import dk.dma.embryo.common.area.AreaFilter;
 import dk.dma.embryo.vessel.model.Vessel;
+import lombok.ToString;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import java.io.UnsupportedEncodingException;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
  * Created by Jesper Tejlgaard on 6/5/15.
  *
  */
+@ToString
 public class AisTrackRequestParamBuilder {
 
     private AreaFilter areaFilter;
@@ -43,7 +45,7 @@ public class AisTrackRequestParamBuilder {
     // Builder methods (business logic)
     // //////////////////////////////////////////////////////////////////////
     public AisTrackRequestParamBuilder includeVessels(List<Vessel> vessels) {
-        mmsiNumbers = vessels.stream().map(vessel -> vessel.getMmsi()).collect(Collectors.toList());
+        mmsiNumbers = vessels.stream().map(Vessel::getMmsi).collect(Collectors.toList());
         return this;
     }
 
@@ -72,24 +74,9 @@ public class AisTrackRequestParamBuilder {
         return this;
     }
 
-    // //////////////////////////////////////////////////////////////////////
-    // Constructors
-    // //////////////////////////////////////////////////////////////////////
-
-    // //////////////////////////////////////////////////////////////////////
-    // Object methods
-    // //////////////////////////////////////////////////////////////////////
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
-    }
-
     public String requestValuesAsString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(getClass().getSimpleName()).append("{").append("baseArea=").append(getBaseArea()).append(", ");
-        builder.append("sourceFilter=").append(getSourceFilter()).append(",");
-        builder.append("mmsiNumbers=").append(getMmsiNumbers()).append(",");
-        builder.append("userSelectedAreas=").append(getUserSelectedAreas()).append("}");
-        return builder.toString();
+        return getClass().getSimpleName() + "{" + "baseArea=" + getBaseArea() + ", " + "sourceFilter=" + getSourceFilter() +
+                "," + "mmsiNumbers=" + getMmsiNumbers() + "," + "userSelectedAreas=" + getUserSelectedAreas() + "}";
     }
 
     // //////////////////////////////////////////////////////////////////////

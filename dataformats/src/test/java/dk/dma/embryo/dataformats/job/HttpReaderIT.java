@@ -17,6 +17,7 @@ package dk.dma.embryo.dataformats.job;
 import java.io.File;
 import java.io.IOException;
 
+import dk.dma.embryo.common.util.FileUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -42,7 +43,7 @@ public class HttpReaderIT {
         HttpReader reader = new HttpReader("http", "wdc.aari.ru", 10000);
 
         File dir = new File(System.getProperty("user.home") + "/arcticweb/tmp");
-        dir.mkdirs();
+        FileUtils.createDirectories(dir);
         
         File file = new File(dir.getAbsoluteFile(), "" + Math.random());
         

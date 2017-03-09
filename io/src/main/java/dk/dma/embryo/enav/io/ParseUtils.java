@@ -55,8 +55,11 @@ public class ParseUtils {
     }
     
     public static String parseString(String str) {
+        if (str == null) {
+            return null;
+        }
         str = str.trim();
-        if (str == null || str.length() == 0) {
+        if (str.isEmpty()) {
             return null;
         }
         return str;
@@ -173,33 +176,4 @@ public class ParseUtils {
             throw new FormatException(e.getMessage());
         }
     }
-    
-    public static Date parseVariuosDateTime(String dateStr) {
-        // Preparation
-        int i = dateStr.indexOf('(');
-        if (i >=0) {
-            dateStr = dateStr.substring(0, i);
-        }
-        
-        SimpleDateFormat dateFormat;
-        List<String> patterns = new ArrayList<>();
-        patterns.add("MM/dd HH:mm:ss");
-        patterns.add("MM/dd HH:mm");
-        patterns.add("MM/dd/yyyy HH:mm:ss");
-        patterns.add("MM/dd/yyyy HH:mm");
-        patterns.add("dd-MM-yyyy HH:mm");
-        patterns.add("dd-MM-yyyy HH:mm:ss");        
-        Date res = null;
-        for (String pattern : patterns) {
-            dateFormat = new SimpleDateFormat(pattern);
-            try {
-                res = dateFormat.parse(dateStr);                
-            } catch (ParseException e) {
-                
-            }
-        }
-        return res;
-    }
-    
-    
 }    

@@ -22,6 +22,8 @@ import javax.ws.rs.Path;
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.mail.MailSender;
 import dk.dma.embryo.user.mail.RequestAccessMail;
+import lombok.Getter;
+import lombok.Setter;
 
 @Path("/request-access")
 public class RequestAccessRestService {
@@ -38,42 +40,12 @@ public class RequestAccessRestService {
         mailSender.sendEmail(new RequestAccessMail(request, propertyFileService));
     }
 
+    @Getter
+    @Setter
     public static class SignupRequest {
         private String preferredLogin;
         private String contactPerson;
         private String emailAddress;
         private Long mmsiNumber;
-
-        public String getPreferredLogin() {
-            return preferredLogin;
-        }
-
-        public void setPreferredLogin(String preferredLogin) {
-            this.preferredLogin = preferredLogin;
-        }
-
-        public String getContactPerson() {
-            return contactPerson;
-        }
-
-        public void setContactPerson(String contactPerson) {
-            this.contactPerson = contactPerson;
-        }
-
-        public String getEmailAddress() {
-            return emailAddress;
-        }
-
-        public void setEmailAddress(String emailAddress) {
-            this.emailAddress = emailAddress;
-        }
-
-        public Long getMmsiNumber() {
-            return mmsiNumber;
-        }
-
-        public void setMmsiNumber(Long mmsiNumber) {
-            this.mmsiNumber = mmsiNumber;
-        }
     }
 }

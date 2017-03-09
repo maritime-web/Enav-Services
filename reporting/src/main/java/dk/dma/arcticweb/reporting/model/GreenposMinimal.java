@@ -17,81 +17,22 @@ package dk.dma.arcticweb.reporting.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
  * 
  * @author Jesper Tejlgaard
  */
+@AllArgsConstructor
+@Data
 public class GreenposMinimal implements Serializable{
 
     private static final long serialVersionUID = -7205030526506222850L;
 
-    // //////////////////////////////////////////////////////////////////////
-    // Class fields (also see super class)
-    // //////////////////////////////////////////////////////////////////////
-    private String name;
-    private Long mmsi;
-    private String type;
-    private Date ts;
-    
-    // //////////////////////////////////////////////////////////////////////
-    // Constructors
-    // //////////////////////////////////////////////////////////////////////
-    public GreenposMinimal(String name, Long mmsi, String type, Date ts) {
-        super();
-        this.name = name;
-        this.mmsi = mmsi;
-        this.type = type;
-        this.ts = ts;
-    }
-    // //////////////////////////////////////////////////////////////////////
-    // Object methods
-    // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-
-        result = prime * result + ((mmsi == null) ? 0 : mmsi.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((ts == null) ? 0 : ts.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        
-        return result;
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public Date getTs() {
-        return ts;
-    }
-    public void setTs(Date ts) {
-        this.ts = ts;
-    }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public Long getMmsi() {
-        return mmsi;
-    }
-    public void setMmsi(Long mmsi) {
-        this.mmsi = mmsi;
-    }
-    public String getType() {
-        return type;
-    }
-    public void setType(String type) {
-        this.type = type;
-    }
-
+    private final String name;
+    private final Long mmsi;
+    private final String type;
+    private final Date ts;
 }

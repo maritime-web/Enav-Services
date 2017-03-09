@@ -109,7 +109,7 @@ public class TileSet extends BaseEntity<Long> {
     }
 
     public static List<JsonTileSet> toJsonModel(List<TileSet> tileSets) {
-        List<JsonTileSet> result = new ArrayList(tileSets.size());
+        List<JsonTileSet> result = new ArrayList<>(tileSets.size());
         for (TileSet tileSet : tileSets) {
             result.add(tileSet.toJsonModel());
         }
@@ -124,7 +124,7 @@ public class TileSet extends BaseEntity<Long> {
     }
 
     public static Map<String, TileSet> toMap(List<TileSet> images) {
-        Map<String, TileSet> result = new HashMap();
+        Map<String, TileSet> result = new HashMap<>();
         for (TileSet image : images) {
             result.put(image.getName(), image);
         }
@@ -201,7 +201,7 @@ public class TileSet extends BaseEntity<Long> {
     // //////////////////////////////////////////////////////////////////////
     // Inner types
     // //////////////////////////////////////////////////////////////////////
-    public static enum Status {
+    public enum Status {
         UNCONVERTED, CONVERTING, SUCCESS, FAILED, DELETING
     }
 

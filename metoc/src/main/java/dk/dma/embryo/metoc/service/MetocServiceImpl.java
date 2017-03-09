@@ -26,11 +26,11 @@ import dk.dma.embryo.vessel.model.Route;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.persistence.VesselDao;
 import dk.dma.enav.model.geometry.Position;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
-
+@Slf4j
 public class MetocServiceImpl implements MetocService {
 
     @Inject
@@ -41,9 +41,6 @@ public class MetocServiceImpl implements MetocService {
 
     @Inject
     private EmbryoLogService logService;
-
-    @Inject
-    private Logger logger;
 
     @Inject
     @Property("embryo.metoc.minDistance")
@@ -95,14 +92,14 @@ public class MetocServiceImpl implements MetocService {
         request.setWaypoints(waypoints);
 
         try {
-            logger.debug("Sending METOC request: {}", request);
+            log.debug("Sending METOC request: {}", request);
 
             DmiSejlRuteService.SejlRuteResponse sejlRuteResponse = dmiSejlRuteService.sejlRute(request);
 
             if (sejlRuteResponse.getError() != 0) {
                 throw new EmbryonicException("METOC response contains error with code " + sejlRuteResponse.getError() + " and message '" + sejlRuteResponse.getErrorMsg() + "'");
             } else {
-                logger.debug("Received METOC response: {}", sejlRuteResponse);
+                log.debug("Received METOC response: {}", sejlRuteResponse);
                 int number = sejlRuteResponse.getMetocForecast() != null
                         && sejlRuteResponse.getMetocForecast().getForecasts() != null ? sejlRuteResponse.getMetocForecast()
                         .getForecasts().length : 0;
@@ -115,17 +112,17 @@ public class MetocServiceImpl implements MetocService {
                 Forecast[] forecasts = sejlRuteResponse.getMetocForecast().getForecasts();
                 ArrayList<Forecast> result = new ArrayList<>(forecasts.length);
                 Position lastPosition = null;
-                for (int i = 0; i < forecasts.length; i++) {
-                    Position position = Position.create(forecasts[i].getLat(), forecasts[i].getLon());
+                for (Forecast forecast : forecasts) {
+                    Position position = Position.create(forecast.getLat(), forecast.getLon());
                     if (lastPosition != null) {
                         // Using geodesic distance. Because the small distances in the comparison, geodesic vs rhumbline
                         // shouldnt matter
                         if (position.rhumbLineDistanceTo(lastPosition) > minimumMetocDistance) {
-                            result.add(forecasts[i]);
+                            result.add(forecast);
                             lastPosition = position;
                         }
                     } else {
-                        result.add(forecasts[i]);
+                        result.add(forecast);
                         lastPosition = position;
                     }
                 }
@@ -136,7 +133,7 @@ public class MetocServiceImpl implements MetocService {
 
             return sejlRuteResponse;
         } catch (Exception e) {
-            logger.error("Error requesting METOC from {}", dmiSejlRuteServiceUrl, e);
+            log.error("Error requesting METOC from {}", dmiSejlRuteServiceUrl, e);
             logService.error("Error requesting METOC from " + dmiSejlRuteServiceUrl, e);
             throw e;
         }

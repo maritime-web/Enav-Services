@@ -26,10 +26,10 @@ import dk.dma.enav.model.voyage.RouteLeg.Heading;
 public class RouteDecorator {
 
     private Route route;
-    
+    // todo this code is not done, looks like it was stoppe in themiddle of a feature
     private Long estimatedTotalTime;
 
-    private ArrayList<WaypointDecorator> waypoints = new ArrayList<WaypointDecorator>();
+    private ArrayList<WaypointDecorator> waypoints = new ArrayList<>();
     
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -94,10 +94,6 @@ public class RouteDecorator {
         return route.getDeparture();
     }
 
-    public void getEstimatedTotalTime(){
-        
-    }
-    
     public String getDestination() {
         return route.getDestination();
     }

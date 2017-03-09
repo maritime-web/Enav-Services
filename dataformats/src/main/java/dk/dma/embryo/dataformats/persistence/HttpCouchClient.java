@@ -16,6 +16,7 @@
 package dk.dma.embryo.dataformats.persistence;
 
 import dk.dma.embryo.common.EmbryonicException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpResponseException;
@@ -23,8 +24,6 @@ import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
 import org.apache.http.entity.ContentType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -37,8 +36,8 @@ import java.util.Arrays;
 /**
  *
  */
+@Slf4j
 public class HttpCouchClient {
-    private static final Logger LOGGER = LoggerFactory.getLogger(HttpCouchClient.class);
 
     private final CouchDbConfig config;
     private final Executor executor;
@@ -158,7 +157,7 @@ public class HttpCouchClient {
         String designDocument = readFromClassPath(config.getDesignDocumentResourceUrl());
         String designDocumentId = config.getDesignDocumentId();
         String designUrl = config.getForecastDbUrl() + (config.getForecastDbUrl().endsWith("/") ? designDocumentId : "/" + designDocumentId);
-        LOGGER.info("Upserting design document with id \"" + designDocumentId + "\"");
+        log.info("Upserting design document with id \"" + designDocumentId + "\"");
         try {
             HttpResponse httpResponse = execute(Request.Put(designUrl).bodyString(designDocument, ContentType.APPLICATION_JSON))
                     .returnResponse();
@@ -182,7 +181,7 @@ public class HttpCouchClient {
 
         StringBuilder sb = new StringBuilder(designDocument);
         sb.insert(sb.indexOf("{") + 1, "\"_rev\": " + revId + ", ");
-        LOGGER.info("Updating existing design document\n" + sb);
+        log.info("Updating existing design document\n" + sb);
         httpResponse = execute(Request.Put(designUrl).bodyString(sb.toString(), ContentType.APPLICATION_JSON))
                 .returnResponse();
 

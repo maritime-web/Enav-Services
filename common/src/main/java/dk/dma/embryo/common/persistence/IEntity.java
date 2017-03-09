@@ -19,7 +19,7 @@ import java.io.Serializable;
 /**
  * Interface for all entities
  */
-public interface IEntity<K> extends Serializable {
+public interface IEntity<K extends Serializable> extends Serializable {
 
     K getId();
 

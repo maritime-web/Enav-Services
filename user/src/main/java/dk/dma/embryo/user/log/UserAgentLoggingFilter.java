@@ -16,8 +16,7 @@ package dk.dma.embryo.user.log;
 
 import dk.dma.embryo.common.configuration.Configuration;
 import dk.dma.embryo.user.security.Subject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -27,10 +26,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-
+@Slf4j
 public class UserAgentLoggingFilter implements Filter {
-
-    private final Logger RESOURCE_LOGGER = LoggerFactory.getLogger(UserAgentLoggingFilter.class);
 
     public void init(FilterConfig filterConfig) throws ServletException {
 
@@ -38,24 +35,24 @@ public class UserAgentLoggingFilter implements Filter {
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         chain.doFilter(request, response);
-        logRequest(RESOURCE_LOGGER, request);
+        logRequest(request);
     }
 
     public void destroy() {
 
     }
 
-    public static void logRequest(Logger logger, ServletRequest req) {
+    public static void logRequest(ServletRequest req) {
 
         HttpServletRequest request = (HttpServletRequest) req;
 
-        if (logger.isInfoEnabled()) {
+        if (log.isInfoEnabled()) {
 
             Subject subject = Configuration.getBean(Subject.class);
             String user = subject.isLoggedIn() ? subject.getUser().getUserName() : "Unknown";
 
             String userAgent = request.getHeader("User-Agent");
-            logger.info("User: {}, User-Agent: {}", user, userAgent);
+            log.info("User: {}, User-Agent: {}", user, userAgent);
         }
     }
 }

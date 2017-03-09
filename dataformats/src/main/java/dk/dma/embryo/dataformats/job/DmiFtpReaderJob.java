@@ -18,10 +18,9 @@ import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.dataformats.job.JobContext.Context;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -37,9 +36,8 @@ import java.util.Map;
 
 @Singleton
 @Startup
+@Slf4j
 public class DmiFtpReaderJob extends AbstractJob {
-
-    private final Logger logger = LoggerFactory.getLogger(DmiFtpReaderJob.class);
 
     @Inject
     @Property("embryo.iceChart.dmi.cron")
@@ -104,10 +102,10 @@ public class DmiFtpReaderJob extends AbstractJob {
         try {
             makeDirectoriesIfNecessary();
             
-            logger.info("Calling transfer files ...");
+            log.info("Calling transfer files ...");
             
             this.ftpClient = new FTPClient();
-            logger.info("Connecting to " + dmiServer + " using " + dmiLogin + " ...");
+            log.info("Connecting to " + dmiServer + " using " + dmiLogin + " ...");
 
             ftpClient.setDefaultTimeout(30000);
             ftpClient.connect(dmiServer);
@@ -132,7 +130,7 @@ public class DmiFtpReaderJob extends AbstractJob {
             this.futureTransfers = this.asyncProxy.transferFiles(jobContext);
             
         } catch (Throwable t) {
-            logger.error("Unhandled error scanning/transfering files from DMI (" + dmiServer + "): " + t, t);
+            log.error("Unhandled error scanning/transfering files from DMI (" + dmiServer + "): " + t, t);
             embryoLogService.error("Unhandled error scanning/transfering files from DMI (" + dmiServer + "): " + t, t);
             this.ftpClient.logout();
         }

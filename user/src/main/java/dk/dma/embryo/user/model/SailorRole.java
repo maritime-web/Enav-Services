@@ -21,9 +21,13 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 import dk.dma.embryo.vessel.model.Vessel;
+import lombok.Getter;
+import lombok.Setter;
 
 @NamedQueries({ @NamedQuery(name = "Sailor:withVessel", query = "SELECT r FROM SailorRole r inner join r.user AS u JOIN FETCH r.vessel where u.id = :id") })
 @Entity
+@Getter
+@Setter
 public class SailorRole extends Role {
     private static final long serialVersionUID = 1L;
 
@@ -32,13 +36,5 @@ public class SailorRole extends Role {
 
     public SailorRole() {
         super(KnownRoles.Sailor.toString());
-    }
-
-    public Vessel getVessel() {
-        return vessel;
-    }
-
-    public void setVessel(Vessel vessel) {
-        this.vessel = vessel;
     }
 }

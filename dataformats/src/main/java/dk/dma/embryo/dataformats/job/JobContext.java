@@ -17,12 +17,17 @@ package dk.dma.embryo.dataformats.job;
 import java.util.List;
 import java.util.Map;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.apache.commons.net.ftp.FTPClient;
 
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
 
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 public final class JobContext {
     
     public enum Context{
@@ -31,7 +36,7 @@ public final class JobContext {
     
         private final String name;
         
-        private Context(String name) {
+        Context(String name) {
             this.name = name;
         }
         
@@ -52,36 +57,7 @@ public final class JobContext {
     private final String tmpDir;
     private final EmbryoLogService embryoLogService;
     private final Context context;
-    
-    private JobContext(
-            Map<String, String> charttypes, 
-            Map<String, String> dirtypes, 
-            List<ShapeFileMeasurement> measurementsFromDatabase, 
-            PropertyFileService propertyFileService,
-            FTPClient ftpClient, 
-            String ftpBaseDirectory, 
-            String ftpBaseFileName,
-            Integer ageInDays, 
-            String mailTo, 
-            String tmpDir,
-            EmbryoLogService embryoLogService,
-            Context context) {
-        
-        super();
-        this.charttypes = charttypes;
-        this.dirtypes = dirtypes;
-        this.measurementsFromDatabase = measurementsFromDatabase;
-        this.propertyFileService = propertyFileService;
-        this.ftpClient = ftpClient;
-        this.ftpBaseDirectory = ftpBaseDirectory;
-        this.ftpBaseFileName = ftpBaseFileName;
-        this.ageInDays = ageInDays;
-        this.mailTo = mailTo;
-        this.tmpDir = tmpDir;
-        this.embryoLogService = embryoLogService;
-        this.context = context;
-    }
-    
+
   //Factory method to store object creation logic in single place
     public static JobContext createNewInstance(
             Map<String, String> charttypes, 
@@ -107,50 +83,6 @@ public final class JobContext {
 
     protected Map<String, String> getRegions(String chartType, String context) {
         return this.propertyFileService.getMapProperty(String.format("embryo.%s.%s.regions", chartType, context));
-    }
-
-    public Map<String, String> getCharttypes() {
-        return charttypes;
-    }
-
-    public Map<String, String> getDirtypes() {
-        return dirtypes;
-    }
-
-    public List<ShapeFileMeasurement> getMeasurementsFromDatabase() {
-        return measurementsFromDatabase;
-    }
-
-    public FTPClient getFtpClient() {
-        return ftpClient;
-    }
-
-    public String getFtpBaseDirectory() {
-        return ftpBaseDirectory;
-    }
-
-    public String getFtpBaseFileName() {
-        return ftpBaseFileName;
-    }
-
-    public Integer getAgeInDays() {
-        return ageInDays;
-    }
-
-    public String getMailTo() {
-        return mailTo;
-    }
-
-    public String getTmpDir() {
-        return tmpDir;
-    }
-
-    public EmbryoLogService getEmbryoLogService() {
-        return embryoLogService;
-    }
-
-    public Context getContext() {
-        return context;
     }
     
 }

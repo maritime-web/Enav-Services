@@ -14,46 +14,18 @@
  */
 package dk.dma.embryo.enav.io;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 /**
  * @author Jesper Tejlgaard
  */
+@AllArgsConstructor
+@Getter
 public class RouteDefaults {
+    private final double defaultSpeed = 10.0;
+    private final double defaultTurnRad = 0.5;
+    private final double defaultXtd = 0.1;
 
-    private static final long serialVersionUID = 1L;
-        
-    // //////////////////////////////////////////////////////////////////////
-    // fields
-    // //////////////////////////////////////////////////////////////////////
-    private double defaultSpeed = 10.0;
-    private double defaultTurnRad = 0.5;
-    private double defaultXtd = 0.1;
-    
-    // //////////////////////////////////////////////////////////////////////
-    // Constructors
-    // //////////////////////////////////////////////////////////////////////
-    public RouteDefaults() {
-        super();
-    }
-
-    public RouteDefaults(double defaultSpeed, double defaultTurnRad, double defaultXtd) {
-        super();
-        this.defaultSpeed = defaultSpeed;
-        this.defaultTurnRad = defaultTurnRad;
-        this.defaultXtd = defaultXtd;
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public double getDefaultSpeed() {
-        return defaultSpeed;
-    }
-
-    public double getDefaultTurnRad() {
-        return defaultTurnRad;
-    }
-
-    public double getDefaultXtd() {
-        return defaultXtd;
-    }
 }

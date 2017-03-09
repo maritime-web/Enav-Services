@@ -19,13 +19,12 @@ import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.persistence.RealmDao;
 import dk.dma.embryo.vessel.persistence.ScheduleDao;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.slf4j.Logger;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -36,6 +35,7 @@ import java.util.List;
  * 
  */
 @SessionScoped
+@Slf4j
 public class SubjectImpl implements Subject {
 
     private static final long serialVersionUID = -7771436245663646148L;
@@ -45,9 +45,6 @@ public class SubjectImpl implements Subject {
 
     @Inject
     private transient ScheduleDao scheduleDao;
-
-    @Inject
-    private transient Logger logger;
 
     public SecuredUser login(String userName, String password, Boolean rememberMe) {
         // collect user principals and credentials in a gui specific manner
@@ -63,8 +60,7 @@ public class SubjectImpl implements Subject {
     }
     
     public SecuredUser findUserWithUuid(String uuid) {
-        SecuredUser user = realmDao.findByUuid(uuid);
-        return user;
+        return realmDao.findByUuid(uuid);
     }
 
     public SecuredUser login(String userName, String password) {
@@ -74,8 +70,6 @@ public class SubjectImpl implements Subject {
 
     /**
      * Expected used while transitioning from role base security to feature base security
-     * 
-     * @return
      */
     public <R extends Role> boolean hasRole(Class<R> roleType) {
         try {
@@ -115,20 +109,22 @@ public class SubjectImpl implements Subject {
     }
 
     public boolean authorizedToModifyVessel(Long mmsi) {
-        logger.debug("authorizedToModifyVessel({})", mmsi);
+        log.debug("authorizedToModifyVessel({})", mmsi);
         if(!hasRole(SailorRole.class)){
-            logger.debug("authorizedToModifyVessel({}) - not Sailor", mmsi);
+            log.debug("authorizedToModifyVessel({}) - not Sailor", mmsi);
             return false;
         }
 
         SailorRole sailor = realmDao.getSailor((Long)SecurityUtils.getSubject().getPrincipal());
-        logger.debug("authorizedToModifyVessel({}) - sailor={}", mmsi, sailor);
+        log.debug("authorizedToModifyVessel({}) - sailor={}", mmsi, sailor);
 
-        if(sailor != null){
-            logger.debug("authorizedToModifyVessel({}) - vessel={}", mmsi, sailor.getVessel());
+        if(sailor.getVessel() != null){
+            log.debug("authorizedToModifyVessel({}) - vessel={}", mmsi, sailor.getVessel());
+            return mmsi.equals(sailor.getVessel().getMmsi());
+        } else {
+            log.debug("authorizedToModifyVessel({}) - sailor {} not assigned to any vessel", mmsi, sailor);
+            return false;
         }
-
-        return mmsi.equals(sailor.getVessel().getMmsi());
     }
     
     public SecuredUser getUserForEmail(String email) {

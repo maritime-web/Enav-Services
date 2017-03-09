@@ -17,34 +17,25 @@ package dk.dma.embryo.tiles.model;
 
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
  * Created by Jesper Tejlgaard on 10/20/14.
  */
 @Embeddable
+@NoArgsConstructor // required because it is @Embeddable
+@AllArgsConstructor
+@ToString
+@Getter
+@Setter
 public class ImageCenter {
 
     private Double x;
     private Double y;
-
-    public ImageCenter() {
-    }
-
-    public ImageCenter(Double x, Double y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    public Double getX() {
-        return x;
-    }
-
-    public Double getY() {
-        return y;
-    }
-
-    public String toString() {
-        return new ReflectionToStringBuilder(this).toString();
-    }
 }

@@ -16,10 +16,11 @@ package dk.dma.embryo.weather.service;
 
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.common.log.EmbryoLogService;
+import dk.dma.embryo.common.util.FileUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
-import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -47,10 +48,8 @@ import java.util.List;
  */
 @Singleton
 @Startup
+@Slf4j
 public class DmiWeatherJob {
-
-    @Inject
-    private Logger logger;
 
     @Resource
     private TimerService timerService;
@@ -91,10 +90,10 @@ public class DmiWeatherJob {
     @PostConstruct
     public void init() {
         if (!dmiServer.trim().equals("") && (cron != null)) {
-            logger.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
+            log.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
             timerService.createCalendarTimer(cron, new TimerConfig(null, false));
         } else {
-            logger.info("DMI FTP site is not configured - cron job not scheduled.");
+            log.info("DMI FTP site is not configured - cron job not scheduled.");
         }
     }
 
@@ -103,21 +102,23 @@ public class DmiWeatherJob {
         // notifications.clearOldThanMinutes(silencePeriod);
 
         try {
-            logger.info("Making directories if necessary ...");
+            log.info("Making directories if necessary ...");
 
-            if (!new File(localDmiDir).exists()) {
-                logger.info("Making local directory for DMI files: " + localDmiDir);
-                new File(localDmiDir).mkdirs();
+            File localDmiDirFile = new File(localDmiDir);
+            if (!localDmiDirFile.exists()) {
+                log.info("Making local directory for DMI files: " + localDmiDir);
+                FileUtils.createDirectories(localDmiDirFile);
             }
 
-            if (!new File(tmpDir).exists()) {
-                logger.info("Making local temporary directory: " + tmpDir);
-                new File(tmpDir).mkdirs();
+            File tempDirFile = new File(tmpDir);
+            if (!tempDirFile.exists()) {
+                log.info("Making local temporary directory: " + tmpDir);
+                FileUtils.createDirectories(tempDirFile);
             }
 
             FTPClient ftp = connect();
 
-            logger.info("Transfer files ...");
+            log.info("Transfer files ...");
             final List<String> transfered = new ArrayList<>();
             final List<String> error = new ArrayList<>();
 
@@ -146,14 +147,14 @@ public class DmiWeatherJob {
             String msg = "Scanned DMI (" + dmiServer + ") for files. Transfered: " + toString(transfered)
                     + ", Errors: " + toString(error);
             if (error.size() == 0) {
-                logger.info(msg);
+                log.info(msg);
                 embryoLogService.info(msg);
             } else {
-                logger.error(msg);
+                log.error(msg);
                 embryoLogService.error(msg);
             }
         } catch (Throwable t) {
-            logger.error("Unhandled error scanning/transfering files from DMI (" + dmiServer + "): " + t, t);
+            log.error("Unhandled error scanning/transfering files from DMI (" + dmiServer + "): " + t, t);
             embryoLogService.error("Unhandled error scanning/transfering files from DMI (" + dmiServer + "): " + t, t);
         }
     }
@@ -173,7 +174,7 @@ public class DmiWeatherJob {
 
     FTPClient connect() throws IOException {
         FTPClient ftp = new FTPClient();
-        logger.info("Connecting to " + dmiServer + " using " + dmiLogin + " ...");
+        log.info("Connecting to " + dmiServer + " using " + dmiLogin + " ...");
 
         ftp.setDefaultTimeout(30000);
         ftp.connect(dmiServer);
@@ -188,27 +189,23 @@ public class DmiWeatherJob {
 
         File tmpFile = new File(tmpDir, "dmiWeather" + Math.random());
 
-        FileOutputStream fos = new FileOutputStream(tmpFile);
-
-        try {
-            logger.info("Transfering " + file.getName() + " to " + tmpFile.getAbsolutePath());
+        try (FileOutputStream fos = new FileOutputStream(tmpFile)) {
+            log.info("Transfering " + file.getName() + " to " + tmpFile.getAbsolutePath());
             if (!ftp.retrieveFile(file.getName(), fos)) {
                 Thread.sleep(10);
                 if (tmpFile.exists()) {
-                    logger.info("Deleting temporary file " + tmpFile.getAbsolutePath());
-                    tmpFile.delete();
+                    log.info("Deleting temporary file " + tmpFile.getAbsolutePath());
+                    org.apache.commons.io.FileUtils.deleteQuietly(tmpFile);
                 }
 
                 throw new RuntimeException("File transfer failed (" + file.getName() + ")");
             }
-        } finally {
-            fos.close();
         }
 
         Thread.sleep(10);
 
         Path dest = Paths.get(localDmiDir).resolve(file.getName());
-        logger.info("Moving " + tmpFile + " to " + dest.getFileName());
+        log.info("Moving " + tmpFile + " to " + dest.getFileName());
         Files.move(Paths.get(tmpFile.getAbsolutePath()), dest, StandardCopyOption.REPLACE_EXISTING);
 
         return true;

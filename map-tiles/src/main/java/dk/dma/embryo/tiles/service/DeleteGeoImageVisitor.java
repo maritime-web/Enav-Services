@@ -15,24 +15,23 @@
 
 package dk.dma.embryo.tiles.service;
 
-import java.io.File;
-import java.util.Map;
-
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import dk.dma.embryo.common.configuration.Type;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.tiles.image.GeoImage;
 import dk.dma.embryo.tiles.image.ImageTypeFilter;
 import dk.dma.embryo.tiles.model.TileSet;
+import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Map;
 
 /**
  * Created by Jesper Tejlgaard on 11/10/14.
  */
+@Slf4j
 public class DeleteGeoImageVisitor extends AbstractTileProviderVisitor {
-    private final Logger logger = LoggerFactory.getLogger(DeleteGeoImageVisitor.class);
 
     public DeleteGeoImageVisitor(DateTime limit, TileSetDao tileSetDao, EmbryoLogService embryoLogService) {
         super(limit, tileSetDao, embryoLogService);
@@ -43,15 +42,19 @@ public class DeleteGeoImageVisitor extends AbstractTileProviderVisitor {
         try {
             File directory = new File(type.getLocalDirectory());
             if (!directory.exists()) {
-                logger.info("Unexisting directory {} . Skipping ...", type.getLocalDirectory());
+                log.info("Unexisting directory {} . Skipping ...", type.getLocalDirectory());
                 return;
             }
 
             Map<String, TileSet> tileSets = getTileSets(type);
 
             File[] files = directory.listFiles(new ImageTypeFilter());
+            if (files == null) {
+                log.warn("Unable to delete images in folder '{}'", directory);
+                return;
+            }
             // TODO validate download of jpg, prj and jtw?
-            logger.debug("Files: " + files);
+            log.debug("Files: " + Arrays.toString(files));
             for (File file : files) {
                 TileSet tileSet = GeoImage.parse(file);
                 if (tileSet.getTs().isBefore(limit)) {
@@ -61,13 +64,13 @@ public class DeleteGeoImageVisitor extends AbstractTileProviderVisitor {
                                 result.deleted++;
                             } else {
                                 String msg = "Failed deleting geo referenced image " + file.getAbsolutePath();
-                                logger.error(msg);
+                                log.error(msg);
                                 embryoLogService.error(msg);
                                 result.errorCount++;
                             }
                         } catch (Exception e) {
                             String msg = "Fatal error deleting geo referenced image " + file.getAbsolutePath();
-                            logger.error(msg, e);
+                            log.error(msg, e);
                             embryoLogService.error(msg, e);
                             result.errorCount++;
                         }
@@ -76,7 +79,7 @@ public class DeleteGeoImageVisitor extends AbstractTileProviderVisitor {
             }
         } catch (Exception e) {
             String msg = "Fatal error deleting geo referenced image files for provider " + currentProvider.getShortName() + " and type " + type.getName();
-            logger.error(msg, e);
+            log.error(msg, e);
             embryoLogService.error(msg, e);
             result.errorCount++;
         }

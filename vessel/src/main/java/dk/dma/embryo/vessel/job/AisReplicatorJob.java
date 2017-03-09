@@ -21,7 +21,7 @@ import dk.dma.embryo.vessel.model.AisData;
 import dk.dma.embryo.vessel.model.Vessel;
 import dk.dma.embryo.vessel.service.AisDataService;
 import dk.dma.embryo.vessel.service.VesselService;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -42,6 +42,7 @@ import java.util.stream.Collectors;
 @Singleton
 @Startup
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@Slf4j
 public class AisReplicatorJob {
     
     @Inject
@@ -68,30 +69,27 @@ public class AisReplicatorJob {
     @Property("embryo.vessel.aisjob.initialExecution")
     private int initialExecution;
 
-    @Inject
-    private Logger logger;
-
     public AisReplicatorJob() {
     }
 
     @PostConstruct
     public void startTimer() {
-        logger.info("Setting up ais replication job");
+        log.info("Setting up ais replication job");
 
         if (enabled != null && "true".equals(enabled.trim().toLowerCase()) && cron != null) {
             // Replicate AIS information 5 seconds after startup
             if (initialExecution >= 0) {
-                logger.info("Initial Execution with delay of {} milliseconds", initialExecution);
+                log.info("Initial Execution with delay of {} milliseconds", initialExecution);
                 service.createSingleActionTimer(5000, new TimerConfig(null, false));
             } else {
-                logger.info("no value for embryo.vessel.aisjob.initialExecution, skipping initial execution");
+                log.info("no value for embryo.vessel.aisjob.initialExecution, skipping initial execution");
             }
 
             // Replicate AIS data on confired interval
             TimerConfig config = new TimerConfig(null, false);
             service.createCalendarTimer(cron, config);
         } else {
-            logger.info("Ais replication job not enabled");
+            log.info("Ais replication job not enabled");
         }
     }
 
@@ -105,7 +103,7 @@ public class AisReplicatorJob {
     @Timeout
     void updateAisBaseData() {
         try {
-            logger.info("UPDATING AIS BASE DATA ON VESSELS");
+            log.info("UPDATING AIS BASE DATA ON VESSELS");
 
             List<Vessel> arcticWebVessels = vesselService.getAll();
 
@@ -118,27 +116,27 @@ public class AisReplicatorJob {
                 try{
                     vesselService.save(vessel);
 
-                    logger.info("AIS base data updated, mmsi={}, name='{}', callSign='{}', imo='{}'",
-                            vessel.getMmsi(), vessel.getAisData().getName(), vessel.getAisData().getCallsign(), vessel.getAisData().getImoNo() );
+                    log.info("AIS base data updated, mmsi={}, name='{}', callSign='{}', imo='{}'",
+                            vessel.getMmsi(), vessel.getAisData().getName(), vessel.getAisData().getCallsign(), vessel.getAisData().getImoNo());
                 }catch(Exception e){
                     failedVessels.add(vessel);
                     String msg = "Failed updating AIS base data on PolarWeb vessel with mmsi=" + vessel.getMmsi();
-                    logger.error(msg, e);
+                    log.error(msg, e);
                     embryoLogService.error(msg, e);
                 }
             }
 
             if(failedVessels.size() == 0){
                 String message = "Updated AIS data for " + vesselsToUpdate.size() + " of " + arcticWebVessels.size()+ " PolarWeb vessels";
-                logger.info(message);
+                log.info(message);
                 embryoLogService.info(message);
             }else{
                 String msg = "AIS Replication Error. Failed saving data for " + failedVessels.size() + "vessels";
-                logger.error(msg);
+                log.error(msg);
                 embryoLogService.error(msg);
             }
         } catch (Throwable t) {
-            logger.error("AIS Replication Error", t);
+            log.error("AIS Replication Error", t);
             embryoLogService.error("AIS Replication Error", t);
         }
     }
@@ -158,7 +156,7 @@ public class AisReplicatorJob {
         }
 
         List<Vessel> build() {
-            List<Vessel> vesselsToUpdate = arcticWebVessels.stream().filter(vessel -> {
+            return arcticWebVessels.stream().filter(vessel -> {
                 AisVessel ves = aisVessels.get(vessel.getMmsi());
                 return ves != null && !vessel.isUpToDate(ves.getName(), ves.getCallsign(), ves.getImoNo());
             }).map(vessel -> {
@@ -166,7 +164,6 @@ public class AisReplicatorJob {
                 vessel.setAisData(new AisData(ves.getName(), ves.getCallsign(), ves.getImoNo()));
                 return vessel;
             }).collect(Collectors.toList());
-            return vesselsToUpdate;
         }
     }
 }

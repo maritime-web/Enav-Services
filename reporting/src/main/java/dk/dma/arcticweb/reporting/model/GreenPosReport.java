@@ -18,6 +18,8 @@ import dk.dma.arcticweb.reporting.json.model.GreenPos;
 import dk.dma.arcticweb.reporting.json.model.GreenPosShort;
 import dk.dma.embryo.common.persistence.BaseEntity;
 import dk.dma.embryo.vessel.model.Position;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
@@ -40,6 +42,7 @@ import java.util.UUID;
 @NamedQueries({
         @NamedQuery(name = "GreenPosReport:findLatest", query = "SELECT DISTINCT g FROM GreenPosReport g where g.vesselMmsi = :vesselMmsi ORDER By g.ts DESC"),
         @NamedQuery(name = "GreenPosReport:findById", query = "SELECT g FROM GreenPosReport g where g.enavId = :id")})
+@Getter
 public abstract class GreenPosReport extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -7205030526506222850L;
@@ -62,18 +65,23 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
     @Valid
     private Position position;
 
+    @Setter
     private String vesselMalFunctions;
 
     @NotNull
+    @Setter
     private String reportedBy;
 
     @NotNull
+    @Setter
     private String recipient;
 
+    @Setter
     private Integer number;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @NotNull
+    @Setter
     private DateTime ts;
 
     // //////////////////////////////////////////////////////////////////////
@@ -167,74 +175,4 @@ public abstract class GreenPosReport extends BaseEntity<Long> {
         this.number = number;
     }
 
-    // //////////////////////////////////////////////////////////////////////
-    // Object methods
-    // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public String getVesselName() {
-        return vesselName;
-    }
-
-    public String getEnavId() {
-        return enavId;
-    }
-
-    public String getVesselCallSign() {
-        return vesselCallSign;
-    }
-
-    public Long getVesselMmsi() {
-        return vesselMmsi;
-    }
-
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setReportedBy(String userName) {
-        this.reportedBy = userName;
-    }
-
-    public String getReportedBy() {
-        return reportedBy;
-    }
-
-    public DateTime getTs() {
-        return ts;
-    }
-
-    public void setTs(DateTime ts) {
-        this.ts = ts;
-    }
-
-    public String getRecipient() {
-        return recipient;
-    }
-
-    public void setRecipient(String recipient) {
-        this.recipient = recipient;
-    }
-
-    public String getVesselMalFunctions() {
-        return vesselMalFunctions;
-    }
-
-    public void setVesselMalFunctions(String vesselMalFunctions) {
-        this.vesselMalFunctions = vesselMalFunctions;
-    }
-
-    public Integer getNumber() {
-        return number;
-    }
-
-    public void setNumber(Integer number) {
-        this.number = number;
-    }
 }

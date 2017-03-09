@@ -27,8 +27,15 @@ import javax.validation.constraints.NotNull;
 import dk.dma.embryo.common.persistence.BaseEntity;
 import dk.dma.embryo.vessel.model.Route;
 import dk.dma.embryo.vessel.model.WayPoint;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
+@Setter
+@Getter
+@ToString
 public class ReportedRoute extends BaseEntity<Long> {
 
     private static final long serialVersionUID = -7205030526506222850L;
@@ -46,6 +53,7 @@ public class ReportedRoute extends BaseEntity<Long> {
     @CollectionTable(name = "ReportedWayPoint")
     @OrderColumn(name = "orderNumber")
     @Valid
+    @Setter(AccessLevel.NONE)
     private List<ReportedWayPoint> wayPoints = new ArrayList<>();
 
 
@@ -113,42 +121,4 @@ public class ReportedRoute extends BaseEntity<Long> {
         this.name = name;
     }
 
-    // //////////////////////////////////////////////////////////////////////
-    // Object methods
-    // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return "ReportedRoute [enavId=" + enavId + ", name=" + name + ", wayPoints" + wayPoints + "]";
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<ReportedWayPoint> getWayPoints() {
-        return wayPoints;
-    }
-
-    public String getEnavId() {
-        return enavId;
-    }
-
-    public void setEnavId(String enavId) {
-        this.enavId = enavId;
-    }
-
-    public void setId(Long id) {
-        if (this.id != null) {
-            throw new IllegalStateException("Can not modify existing id");
-        }
-
-        this.id = id;
-    }
 }

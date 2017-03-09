@@ -14,13 +14,21 @@
  */
 package dk.dma.embryo.vessel.json;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.dma.embryo.common.util.ParseUtils;
+import dk.dma.embryo.vessel.component.RouteParserComponent;
+import dk.dma.embryo.vessel.component.ScheduleParser;
+import dk.dma.embryo.vessel.component.ScheduleUploadPostProcessor;
+import dk.dma.embryo.vessel.model.Voyage;
+import dk.dma.embryo.vessel.service.ScheduleService;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -29,27 +37,19 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.slf4j.Logger;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import dk.dma.embryo.common.util.ParseUtils;
-import dk.dma.embryo.vessel.component.RouteParserComponent;
-import dk.dma.embryo.vessel.component.ScheduleParser;
-import dk.dma.embryo.vessel.component.ScheduleUploadPostProcessor;
-import dk.dma.embryo.vessel.model.Voyage;
-import dk.dma.embryo.vessel.service.ScheduleService;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jesper Tejlgaard
  */
 @Path("/routeUpload")
+@Slf4j
 public class RouteUploadRestService {
 
     @Inject
@@ -61,9 +61,6 @@ public class RouteUploadRestService {
     @Inject
     private ScheduleUploadPostProcessor scheduleUploadPostProcessor;
 
-    @Inject
-    private Logger logger;
-
     public RouteUploadRestService() {
     }
 
@@ -74,10 +71,6 @@ public class RouteUploadRestService {
      * active - indicates whether the uploaded route is the new active or not. Optional request parameter : voyageId -
      * the enav id of the voyage, which the route belongs to (if any).
      *
-     * @param req
-     * @return
-     * @throws FileUploadException
-     * @throws IOException
      */
     @POST
     @Path("/single")
@@ -94,7 +87,7 @@ public class RouteUploadRestService {
 
         for (FileItem item : items) {
             if (item.isFormField()) {
-                logger.debug("Found FORM FIELD: {}={}", item.getFieldName(), item.getString());
+                log.debug("Found FORM FIELD: {}={}", item.getFieldName(), item.getString());
                 if ("voyageId".equals(item.getFieldName())) {
                     voyageId = item.getString();
                 } else if ("active".equals(item.getFieldName())) {
@@ -113,7 +106,7 @@ public class RouteUploadRestService {
                 if (fileItemCount == 1) {
                     throw new IllegalArgumentException("This REST service can only handle one file");
                 }
-                logger.debug("Handling uploaded route with file name: {}", item.getName());
+                log.debug("Handling uploaded route with file name: {}", item.getName());
 
                 dk.dma.embryo.vessel.model.Route route = new RouteParserComponent().parseRoute(item.getName(),
                         item.getInputStream(), context);
@@ -134,10 +127,6 @@ public class RouteUploadRestService {
      * here https://github.com/blueimp/jQuery-File-Upload/issues/123). by setting content type to text/html but
      * returning JSON it works.
      *
-     * @param req
-     * @return
-     * @throws FileUploadException
-     * @throws IOException
      */
     @POST
     @Path("/single")
@@ -158,7 +147,7 @@ public class RouteUploadRestService {
     @Consumes("multipart/form-data")
     @Produces({"application/json"})
     public ScheduleResponse uploadSchedule(@Context HttpServletRequest req) throws FileUploadException, IOException {
-        logger.debug("uploadSchedule(...)");
+        log.debug("uploadSchedule(...)");
 
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);
@@ -195,41 +184,22 @@ public class RouteUploadRestService {
             }
         }
 
-        logger.debug("uploadSchedule(): {}", response);
+        log.debug("uploadSchedule(): {}", response);
         return response;
     }
 
+    @Getter
     public static class Files {
         List<RestFile> files = new ArrayList<>(2);
-
-        public List<RestFile> getFiles() {
-            return files;
-        }
     }
 
+    @AllArgsConstructor
+    @Getter
     public static class RestFile {
-        private String name;
-        private long size;
-        private String routeId;
+        private final String name;
+        private final long size;
+        private final String routeId;
 
-        public RestFile(String name, long size, String routeId) {
-            super();
-            this.name = name;
-            this.size = size;
-            this.routeId = routeId;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public long getSize() {
-            return size;
-        }
-
-        public String getRouteId() {
-            return routeId;
-        }
     }
 
 }

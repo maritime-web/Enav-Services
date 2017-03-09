@@ -14,6 +14,9 @@
  */
 package dk.dma.embryo.dataformats.netcdf;
 
+import lombok.Getter;
+import lombok.ToString;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,11 +34,13 @@ import java.util.Map;
  * @author avlund
  *
  */
+@Getter
+@ToString
 public class SmallEntry implements Serializable {
     private static final long serialVersionUID = 5778890617311697112L;
 
-    private int lat, lon, time;
-    private Map<Integer, Float> obs;
+    private final int lat, lon, time;
+    private final Map<Integer, Float> obs;
 
     public SmallEntry(int lat, int lon, int time, int obsNo, float observation) {
         this.lat = lat;
@@ -43,26 +48,5 @@ public class SmallEntry implements Serializable {
         this.time = time;
         this.obs = new HashMap<>();
         obs.put(obsNo, observation);
-    }
-
-    public int getLat() {
-        return lat;
-    }
-
-    public int getLon() {
-        return lon;
-    }
-
-    public int getTime() {
-        return time;
-    }
-
-    public Map<Integer, Float> getObs() {
-        return obs;
-    }
-    
-    @Override
-    public String toString() {
-        return "Lat: " + lat + ", lon: " + lon + ", time: " + time + ", obs: " + obs;
     }
 }

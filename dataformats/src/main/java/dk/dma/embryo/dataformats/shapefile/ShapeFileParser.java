@@ -84,6 +84,7 @@ public class ShapeFileParser {
                         break;
                     // Null shape
                     case 0:
+                        // todo there is technically no guarantee that there are bytes enough to fill the buffer, multiple reads may be required.
                         is.read(new byte[Math.max(0, (int) r.header.contentLength * 2 - 4)]);
                         r.shape = new Unknown();
                         break;

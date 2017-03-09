@@ -17,9 +17,9 @@ package dk.dma.enav.services.nwnm;
 import dk.dma.enav.services.nwnm.MessageLoaderTask.MessageLoaderTaskBuilder;
 import dk.dma.enav.services.registry.api.EnavServiceRegister;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
+import lombok.extern.slf4j.Slf4j;
 import net.jodah.expiringmap.ExpiringMap;
 import org.niord.model.message.MessageVo;
-import org.slf4j.Logger;
 
 import javax.annotation.PreDestroy;
 import javax.ejb.Lock;
@@ -46,11 +46,8 @@ import java.util.concurrent.Future;
 @Singleton
 @Startup
 @Lock(LockType.READ)
+@Slf4j
 public class NwNmService {
-
-    @Inject
-    @SuppressWarnings("CdiInjectionPointsInspection")
-    private Logger logger;
 
     @Inject
     private EnavServiceRegister enavServiceRegister;
@@ -82,7 +79,7 @@ public class NwNmService {
             List<String> instanceIds,
             String mainType,
             String lang,
-            String wkt) throws Exception {
+            String wkt) {
 
         List<MessageVo> messages = new CopyOnWriteArrayList<>();
 
@@ -125,7 +122,7 @@ public class NwNmService {
                     Future<List<MessageVo>> future = compService.take();
                     messages.addAll(future.get());
                 } catch (Exception e) {
-                    logger.error("Error loading messages", e);
+                    log.error("Error loading messages", e);
                     // Do not re-throw exception, since others may succeed
                 }
             }

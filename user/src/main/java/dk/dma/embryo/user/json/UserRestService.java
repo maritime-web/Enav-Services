@@ -19,8 +19,8 @@ import dk.dma.embryo.common.json.AbstractRestService;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.model.User;
 import dk.dma.embryo.user.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.annotations.GZIP;
-import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -38,10 +38,8 @@ import java.util.List;
 import java.util.Map;
 
 @Path("/user")
+@Slf4j
 public class UserRestService extends AbstractRestService {
-
-    @Inject
-    private Logger logger;
 
     @Inject
     private UserService userService;
@@ -54,7 +52,7 @@ public class UserRestService extends AbstractRestService {
     @Path("/delete/{login}")
     @Produces("application/json")
     public void delete(@PathParam("login") String login) {
-        logger.info("Deleting " + login);
+        log.info("Deleting " + login);
         userService.delete(login);
     }
 
@@ -62,7 +60,7 @@ public class UserRestService extends AbstractRestService {
     @Path("/create")
     @Consumes("application/json")
     public void create(User user) {
-        logger.info("Creating new user '" + user.getLogin() + "'  in role '" + user.getRole() + "' access to AIS data '" + user.getAisFilterName() + "'");
+        log.info("Creating new user '" + user.getLogin() + "'  in role '" + user.getRole() + "' access to AIS data '" + user.getAisFilterName() + "'");
         userService.create(user.getLogin(), user.getPassword(), user.getShipMmsi(), user.getEmail(), user.getRole(), user.getAisFilterName());
     }
 
@@ -70,7 +68,7 @@ public class UserRestService extends AbstractRestService {
     @Path("/edit")
     @Consumes("application/json")
     public void edit(User user) {
-        logger.info("Editing new user '" + user.getLogin() + "'  in role '" + user.getRole() + "' access to AIS data '" + user.getAisFilterName() + "'");
+        log.info("Editing new user '" + user.getLogin() + "'  in role '" + user.getRole() + "' access to AIS data '" + user.getAisFilterName() + "'");
         userService.edit(user.getLogin(), user.getShipMmsi(), user.getEmail(), user.getRole(), user.getAisFilterName());
     }
 
@@ -80,7 +78,7 @@ public class UserRestService extends AbstractRestService {
     @Path("/list")
     @Produces("application/json")
     public Response list(@Context Request request) {
-        logger.info("/user/list called.");
+        log.info("/user/list called.");
 
         List<SecuredUser> users = userService.list();
         List<User> result = SecuredUser.toJsonModel(users);
@@ -93,7 +91,7 @@ public class UserRestService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response namedSourceFilters(@Context Request request) {
-        List sourceFilterNames = new ArrayList<>(namedSourceFilters.size());
+        List<String> sourceFilterNames = new ArrayList<>(namedSourceFilters.size());
         sourceFilterNames.addAll(namedSourceFilters.keySet());
         return super.getResponse(request, sourceFilterNames, MAX_AGE_15_MINUTES);
     }
@@ -103,7 +101,7 @@ public class UserRestService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response rolesCount(@Context Request request) {
-        logger.info("/user/roles-count called.");
+        log.info("/user/roles-count called.");
         List<Object[]> rolesCount = userService.rolesCount();
         return super.getResponse(request, rolesCount, NO_CACHE);
     }

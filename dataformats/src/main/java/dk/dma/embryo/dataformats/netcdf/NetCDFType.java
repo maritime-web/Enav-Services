@@ -14,39 +14,18 @@
  */
 package dk.dma.embryo.dataformats.netcdf;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.util.HashMap;
 import java.util.Map;
-
+@Setter
+@Getter
+@ToString
 public abstract class NetCDFType {
 
     private String name;
-    
     private String code;
-
     private Map<String, NetCDFVar> vars = new HashMap<>();
-    
-    protected void setName(String name) {
-        this.name = name;
-    }
-    
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-    
-    public String getCode() {
-        return code;
-    }
-
-    public Map<String, NetCDFVar> getVars() {
-        return vars;
-    }
-
-    @Override
-    public String toString() {
-        return name + " (" + code + "), vars: " + vars;
-    }
 }

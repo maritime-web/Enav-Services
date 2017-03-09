@@ -42,7 +42,7 @@ public class ForecastData {
 
     private String mergeWithMetaData() {
         ObjectMapper mapper = new ObjectMapper();
-        HashMap jsonMap;
+        HashMap<String,Object> jsonMap;
         try {
             jsonMap = mapper.readValue(json, HashMap.class);
             ((Map)jsonMap.get("metadata")).putAll(metaData.asMap());

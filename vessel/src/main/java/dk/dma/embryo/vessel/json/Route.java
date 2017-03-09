@@ -18,10 +18,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import lombok.ToString;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import dk.dma.enav.model.MaritimeId;
-
+@ToString
+// todo Setters and getter do not have standard names, maybe we should rename them and add Json serialization information
 public class Route {
 
     private final List<Waypoint> waypoints = new ArrayList<>();
@@ -42,37 +44,6 @@ public class Route {
 
     public Route(String id) {
         this.id = id;
-    }
-
-    /**
-     * Constructor generating an id
-     * 
-     * @param name
-     * @param departure
-     * @param destination
-     */
-    public Route(String name, String departure, String destination) {
-        super();
-        // TODO generate id
-        this.name = name;
-        this.destination = destination;
-        this.departure = departure;
-    }
-
-    public Route(String id, String name, String departure, String destination) {
-        super();
-        this.id = id;
-        this.name = name;
-        this.destination = destination;
-        this.departure = departure;
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Object methods
-    // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
     }
 
     // //////////////////////////////////////////////////////////////////////

@@ -14,46 +14,11 @@
  */
 package dk.dma.embryo.vessel.json;
 
+import lombok.Data;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
+@Data
 public class SaveRouteRequest {
 
     private String voyageId;
     private Route route;
-
-    // //////////////////////////////////////////////////////////////////////
-    // Constructors
-    // //////////////////////////////////////////////////////////////////////
-    public SaveRouteRequest() {
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Object methods
-    // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public String getVoyageId() {
-        return voyageId;
-    }
-
-    public void setVoyageId(String voyageId) {
-        this.voyageId = voyageId;
-    }
-
-    public Route getRoute() {
-        return route;
-    }
-
-    public void setRoute(Route route) {
-        this.route = route;
-    }
-
-    
-    
 }

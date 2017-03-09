@@ -14,6 +14,10 @@
  */
 package dk.dma.embryo.dataformats.inshore;
 
+import dk.dma.embryo.common.json.AbstractRestService;
+import lombok.extern.slf4j.Slf4j;
+import org.jboss.resteasy.annotations.GZIP;
+
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -23,26 +27,19 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
-import org.jboss.resteasy.annotations.GZIP;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.common.json.AbstractRestService;
-
 @Path("/inshore-ice-report")
+@Slf4j
 public class InshoreIceReportJsonService extends AbstractRestService {
 
     @Inject
     private InshoreIceReportService iceInformationService;
-
-    @Inject
-    private Logger logger;
 
     @GET
     @Path("/provider/{provider}")
     @Produces("application/json")
     @GZIP
     public Response inshoreIceReport(@PathParam("provider") String providerKey, @Context Request request) {
-        logger.info("iceInformations({})", providerKey);
+        log.info("iceInformations({})", providerKey);
 
         InshoreIceReportMerged report = iceInformationService.getInshoreIceReportsMerged(providerKey);
 

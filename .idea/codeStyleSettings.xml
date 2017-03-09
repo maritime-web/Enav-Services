@@ -4,6 +4,7 @@
     <option name="PER_PROJECT_SETTINGS">
       <value>
         <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="50" />
+        <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="50" />
         <XML>
           <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
         </XML>

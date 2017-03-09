@@ -14,6 +14,8 @@
  */
 package dk.dma.embryo.common.configuration;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,14 +24,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * @author Jesper Tejlgaard
  */
+@Slf4j
 public class PropertiesReader {
-    private final Logger logger = LoggerFactory.getLogger(PropertiesReader.class);
 
     private static String DEFAULT_CONFIGURATION_RESOURCE_NAME = "/default-configuration.properties";
 
@@ -46,7 +45,7 @@ public class PropertiesReader {
                 for(String moduleDefault : moduleDefaults.split(",")){
                     InputStream is = getClass().getResourceAsStream(moduleDefault + ".properties");
                     if(is == null){
-                        logger.info("Could not find property file {}");
+                        log.info("Could not find property file {}");
                     }else{
                         properties.load(is);
                     }
@@ -61,12 +60,12 @@ public class PropertiesReader {
                 "propertyFileService.externalConfigurationSystemProperty", "configuration");
 
         if (System.getProperty(externalConfigurationSystemProperty) != null) {
-            logger.info("Reading configuration from: " + System.getProperty(externalConfigurationSystemProperty));
+            log.info("Reading configuration from: " + System.getProperty(externalConfigurationSystemProperty));
             FileInputStream fis = new FileInputStream(new File(new URI(
                     System.getProperty(externalConfigurationSystemProperty))));
             properties.load(fis);
         } else {
-            logger.info("System property " + externalConfigurationSystemProperty
+            log.info("System property " + externalConfigurationSystemProperty
                     + " is not set. Not reading external configuration.");
         }
         

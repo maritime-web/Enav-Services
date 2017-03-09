@@ -59,6 +59,6 @@ public enum VesselType {
     }
 
     public void getText() {
-
+        // todo is this empty because of the generated JSon? otherwise it should return text or be removed
     }
 }

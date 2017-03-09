@@ -15,6 +15,9 @@
 
 package dk.dma.embryo.tiles.image;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import dk.dma.embryo.tiles.model.BoundingBox;
@@ -24,24 +27,10 @@ import dk.dma.embryo.tiles.model.ImageCenter;
 /**
  * Created by Jesper Tejlgaard on 10/20/14.
  */
+@Getter
+@ToString
+@AllArgsConstructor
 public class ImageSourceMeta {
     private ImageCenter center;
     private BoundingBox boundingBox;
-
-    public ImageSourceMeta(ImageCenter center, BoundingBox boundingBox) {
-        this.center = center;
-        this.boundingBox = boundingBox;
-    }
-
-    public ImageCenter getCenter() {
-        return center;
-    }
-
-    public BoundingBox getBoundingBox() {
-        return boundingBox;
-    }
-
-    public String toString() {
-        return new ReflectionToStringBuilder(this).toString();
-    }
 }

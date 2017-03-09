@@ -21,7 +21,7 @@ import java.io.File;
  */
 public class Resource {
 
-    private File file;
+    private final File file;
 
     private ETag eTag;
 

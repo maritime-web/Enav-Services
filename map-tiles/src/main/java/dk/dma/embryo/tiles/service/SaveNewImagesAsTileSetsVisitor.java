@@ -15,24 +15,23 @@
 
 package dk.dma.embryo.tiles.service;
 
-import java.io.File;
-import java.util.Map;
-
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import dk.dma.embryo.common.configuration.Type;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.tiles.image.GeoImage;
 import dk.dma.embryo.tiles.image.ImageTypeFilter;
 import dk.dma.embryo.tiles.model.TileSet;
+import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Map;
 
 /**
  * Created by Jesper Tejlgaard on 11/10/14.
  */
+@Slf4j
 public class SaveNewImagesAsTileSetsVisitor extends AbstractTileProviderVisitor {
-    private final Logger logger = LoggerFactory.getLogger(SaveNewImagesAsTileSetsVisitor.class);
 
     public SaveNewImagesAsTileSetsVisitor(DateTime limit, TileSetDao tileSetDao, EmbryoLogService embryoLogService) {
         super(limit, tileSetDao, embryoLogService);
@@ -47,7 +46,11 @@ public class SaveNewImagesAsTileSetsVisitor extends AbstractTileProviderVisitor 
             }
             Map<String, TileSet> imageMap = getTileSets(type);
             File[] files = directory.listFiles(new ImageTypeFilter());
-            logger.debug("Files: " + files);
+            log.debug("Files: " + Arrays.toString(files));
+            if (files == null) {
+                log.error("Filed to get list of filed in directory '{}'", directory);
+                return;
+            }
             for (File file : files) {
                 try {
                     TileSet tileSet = GeoImage.parse(file);
@@ -58,14 +61,14 @@ public class SaveNewImagesAsTileSetsVisitor extends AbstractTileProviderVisitor 
                     }
                 } catch (Exception e) {
                     String msg = "Failed converting geo referenced image " + file.getAbsolutePath() + " to database TileSet entry";
-                    logger.error(msg, e);
+                    log.error(msg, e);
                     embryoLogService.error(msg, e);
                     result.errorCount++;
                 }
             }
         } catch (Exception e) {
             String msg = "Fatal saving TileSet entries to database for provider " + currentProvider.getShortName() + " and type  " + type.getName();
-            logger.error(msg, e);
+            log.error(msg, e);
             embryoLogService.error(msg, e);
             result.errorCount++;
         }

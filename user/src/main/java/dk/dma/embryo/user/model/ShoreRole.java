@@ -23,8 +23,4 @@ public class ShoreRole extends Role {
     public ShoreRole() {
         super(KnownRoles.Shore.toString());
     }
-
-    public ShoreRole(String logicalName) {
-        super(logicalName);
-    }
 }

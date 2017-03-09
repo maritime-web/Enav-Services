@@ -14,9 +14,8 @@
  */
 package dk.dma.embryo.common.json;
 
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
-import javax.inject.Inject;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Request;
@@ -42,8 +41,8 @@ import javax.ws.rs.core.Response.ResponseBuilder;
  *
  * @author ThomasBerg
  */
+@Slf4j
 public abstract class AbstractRestService {
-    
     
     protected static final int NO_CACHE = -1;
     protected static final int MAX_AGE_15_MINUTES = 60 * 15;
@@ -51,11 +50,7 @@ public abstract class AbstractRestService {
     protected static final int MAX_AGE_5_MINUTES = 60 * 5;
     protected static final int MAX_AGE_10_SECONDS = 10;
     protected static final int MAX_AGE_1_DAY = 60 * 60 * 24;
-    
-    /** The logger. */
-    @Inject
-    private Logger logger;
-    
+
     /**
      * The Enum CacheControlSettings.
      */
@@ -98,7 +93,7 @@ public abstract class AbstractRestService {
         builder.tag(entityTag);
         Response response = builder.build();
 
-        logger.debug("HTTP STATUS CODE: {} - HASHCODE: {}", response.getStatus(), hashCode);
+        log.debug("HTTP STATUS CODE: {} - HASHCODE: {}", response.getStatus(), hashCode);
         
         return response;
     }
@@ -118,11 +113,11 @@ public abstract class AbstractRestService {
         
         if(settings == CacheControlSettings.MAXAGE_INCLUDE) {
             cc.setMaxAge(ageInSeconds);
-            logger.debug("CacheControl is activated for this service and maxAge is -> " + ageInSeconds);
+            log.debug("CacheControl is activated for this service and maxAge is -> " + ageInSeconds);
         }
         if(settings == CacheControlSettings.MAXAGE_DEFAULT) {
             cc.setNoCache(true);
-            logger.debug("CacheControl is NOT activated for this service.");
+            log.debug("CacheControl is NOT activated for this service.");
         }
         cc.setPrivate(false);
         cc.setNoTransform(false);

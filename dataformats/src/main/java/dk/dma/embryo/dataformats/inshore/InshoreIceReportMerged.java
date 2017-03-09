@@ -31,8 +31,8 @@ public class InshoreIceReportMerged {
 
     private final Map<Integer, Observation> observations = new HashMap<>();
     
-    private List<String> footer = new ArrayList<>();;
-    
+    private List<String> footer = new ArrayList<>();
+
     // //////////////////////////////////////////////////////////////////////
     // Business Logic
     // //////////////////////////////////////////////////////////////////////

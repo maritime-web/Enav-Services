@@ -17,6 +17,7 @@ package dk.dma.enav.services.registry.mc.api;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,6 +27,8 @@ import dk.dma.enav.services.registry.mc.ApiClient;
 import dk.dma.enav.services.registry.mc.ApiException;
 import dk.dma.enav.services.registry.mc.ApiResponse;
 import dk.dma.enav.services.registry.mc.model.Instance;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 
 /**
  * An iterator for looping through instances returned by a service.
@@ -47,7 +50,7 @@ class InstanceIterator implements Iterator<List<Instance>> {
                 return api.searchInstancesByGeometryWKTUsingGETWithHttpInfo(wktLocation, query, pageNumber, pageSize, null, null, Lists.newArrayList());
             }
         };
-    };
+    }
 
     private static final Pattern LINK_PATTERN = Pattern.compile(".*page=(?<page>\\d+).*size=(?<size>\\d+)");
     private final ServiceinstanceresourceApi api;
@@ -72,6 +75,9 @@ class InstanceIterator implements Iterator<List<Instance>> {
 
     @Override
     public List<Instance> next() {
+        if (!next.isPresent()) {
+            throw new NoSuchElementException("Iterator has no more data.");
+        }
         Link link = next.get();
         ApiResponse<List<Instance>> response = call(link.page, link.size);
         next = createNextLink(getLinkHeader(response));
@@ -112,14 +118,10 @@ class InstanceIterator implements Iterator<List<Instance>> {
         return new Link(Integer.valueOf(page), Integer.valueOf(size));
     }
 
+    @AllArgsConstructor(access = AccessLevel.PACKAGE)
     private class Link {
         int page;
         int size;
-
-        Link(int page, int size) {
-            this.page = page;
-            this.size = size;
-        }
     }
     public interface DataLoader {
         ApiResponse<List<Instance>> fetchData(ServiceinstanceresourceApi api, int pageNumber, int pageSize) throws ApiException;

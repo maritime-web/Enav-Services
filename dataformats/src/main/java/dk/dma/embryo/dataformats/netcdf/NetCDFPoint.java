@@ -14,46 +14,26 @@
  */
 package dk.dma.embryo.dataformats.netcdf;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+
 import java.io.Serializable;
 
 /**
  * Represents a coordinate's position in a NetCDF file.
- * 
+ * // todo It looks like this class only exposes data via toString()....
  * @author avlund
  *
  */
+@AllArgsConstructor
+@EqualsAndHashCode
 public class NetCDFPoint implements Serializable {
     private static final long serialVersionUID = 5935623275810717515L;
 
-    private int lat, lon;
+    private final int lat, lon;
 
-    NetCDFPoint(int lat, int lon) {
-        this.lat = lat;
-        this.lon = lon;
-    }
-
-    @Override
-    public int hashCode() {
-        return lat * 13 + lon * 17 + 51;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (obj == this) {
-            return true;
-        }
-        if (obj instanceof NetCDFPoint) {
-            NetCDFPoint that = (NetCDFPoint) obj;
-            if (lat == that.lat && lon == that.lon) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
     @Override
     public String toString() {
         return lat + "_" + lon;

@@ -20,6 +20,9 @@ import dk.dma.embryo.user.mail.ForgotPasswordMail;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.security.Subject;
 import dk.dma.embryo.user.service.UserService;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -69,43 +72,13 @@ public class ForgotPasswordRestService {
         throw new NoUserWithEmail("No user found for e-mail address " + request.getEmailAddress());
     }
 
+    @Setter
+    @Getter
     public static class ForgotPasswordRequest {
         private String username;
         private String emailAddress;
         private String uuid;
         private String host;
-
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        public String getEmailAddress() {
-            return emailAddress;
-        }
-
-        public void setEmailAddress(String emailAddress) {
-            this.emailAddress = emailAddress;
-        }
-
-        public String getUuid() {
-            return uuid;
-        }
-
-        public void setUuid(String uuid) {
-            this.uuid = uuid;
-        }
-
-        public String getHost() {
-            return host;
-        }
-
-        public void setHost(String host) {
-            this.host = host;
-        }
     }
 
     public static class NoUserWithEmail extends WebApplicationException {

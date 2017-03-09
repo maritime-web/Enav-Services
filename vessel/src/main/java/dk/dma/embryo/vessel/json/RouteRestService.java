@@ -17,9 +17,9 @@ package dk.dma.embryo.vessel.json;
 import dk.dma.embryo.vessel.component.RouteDecorator;
 import dk.dma.embryo.vessel.component.WaypointDecorator;
 import dk.dma.embryo.vessel.service.ScheduleService;
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
-import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -37,13 +37,11 @@ import java.util.List;
  * @author Jesper Tejlgaard
  */
 @Path("/route")
+@Slf4j
 public class RouteRestService {
 
     @Inject
     private ScheduleService scheduleService;
-
-    @Inject
-    private Logger logger;
 
     public RouteRestService() {
     }
@@ -54,7 +52,7 @@ public class RouteRestService {
     @GZIP
     @NoCache
     public Route getRoute(@PathParam("id") String id) {
-        logger.debug("getRoute({})", id);
+        log.debug("getRoute({})", id);
         
         dk.dma.embryo.vessel.model.Route route = scheduleService.getRouteByEnavId(id);
         
@@ -101,7 +99,7 @@ public class RouteRestService {
     @GZIP
     @NoCache
     public List<Route> getRoutes(@PathParam("ids") String ids) {
-        logger.debug("getRoutes({})", ids);
+        log.debug("getRoutes({})", ids);
         
         String[] idsArr = ids.split(":");
         List<Route> result = new ArrayList<>(idsArr.length);
@@ -111,11 +109,11 @@ public class RouteRestService {
             if(route != null){
                 result.add(route.toJsonModel());
             }else{
-                logger.info("No route found for id: {}", id);
+                log.info("No route found for id: {}", id);
             }
         }
 
-        logger.debug("getRoutes({}) : {}", ids, result);
+        log.debug("getRoutes({}) : {}", ids, result);
         return result;
     }
 
@@ -125,7 +123,7 @@ public class RouteRestService {
     @GZIP
     @NoCache
     public Route getActiveMeta(@PathParam("mmsi") String mmsi) {
-        logger.debug("getActiveMeta({})", mmsi);
+        log.debug("getActiveMeta({})", mmsi);
 
         Route result = null;
         dk.dma.embryo.vessel.model.Route route;
@@ -144,7 +142,7 @@ public class RouteRestService {
             result.getWps().clear();
         }
 
-        logger.debug("getActiveMeta({}) : {}", mmsi, result);
+        log.debug("getActiveMeta({}) : {}", mmsi, result);
         return result;
     }
 
@@ -152,7 +150,7 @@ public class RouteRestService {
     @Path("/save")
     @Consumes("application/json")
     public void save(SaveRouteRequest request) {
-        logger.debug("save({})", request);
+        log.debug("save({})", request);
 
         dk.dma.embryo.vessel.model.Route toBeSaved = dk.dma.embryo.vessel.model.Route.fromJsonModel(request.getRoute());
         scheduleService.saveRoute(toBeSaved, request.getVoyageId(), false);
@@ -162,7 +160,7 @@ public class RouteRestService {
     @Path("/save/activate")
     @Consumes("application/json")
     public void saveAndActivate(SaveRouteRequest request) {
-        logger.debug("saveAndActivate({})", request);
+        log.debug("saveAndActivate({})", request);
 
         dk.dma.embryo.vessel.model.Route toBeSaved = dk.dma.embryo.vessel.model.Route.fromJsonModel(request.getRoute());
         scheduleService.saveRoute(toBeSaved, request.getVoyageId(), true);
@@ -172,7 +170,7 @@ public class RouteRestService {
     @Path("/activate")
     @Consumes("application/json")
     public void activate(ActiveRoute activeRoute) {
-        logger.debug("Activating route: {}", activeRoute);
+        log.debug("Activating route: {}", activeRoute);
 
         scheduleService.activateRoute(activeRoute.getRouteId(), activeRoute.getActive());
     }

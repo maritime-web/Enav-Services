@@ -14,11 +14,15 @@
  */
 package dk.dma.embryo.dataformats.json;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
+import dk.dma.embryo.dataformats.model.factory.ShapeFileNameParserFactory;
+import dk.dma.embryo.dataformats.persistence.ShapeFileMeasurementDao;
+import dk.dma.embryo.dataformats.service.ShapeFileService;
+import dk.dma.embryo.dataformats.service.ShapeFileService.Shape;
+import lombok.extern.slf4j.Slf4j;
+import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.Cache;
+import org.joda.time.DateTime;
 
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
@@ -34,23 +38,15 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-
-import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.Cache;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.dataformats.model.ShapeFileMeasurement;
-import dk.dma.embryo.dataformats.model.factory.ShapeFileNameParserFactory;
-import dk.dma.embryo.dataformats.persistence.ShapeFileMeasurementDao;
-import dk.dma.embryo.dataformats.service.ShapeFileService;
-import dk.dma.embryo.dataformats.service.ShapeFileService.Shape;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 @Path("/shapefile")
+@Slf4j
 public class ShapeFileRestService {
-
-    @Inject
-    Logger logger;
 
     @Inject
     ShapeFileService shapeFileService;
@@ -75,7 +71,7 @@ public class ShapeFileRestService {
     @Path("/static/single/{id}")
     @Produces("application/json")
     @GZIP
-    @Cache(maxAge = 31556926, isPrivate = false)
+    @Cache(maxAge = 31556926)
     public Shape getSingleFile(
             @PathParam("id") String id, 
             @DefaultValue("0") @QueryParam("resolution") int resolution,
@@ -85,7 +81,7 @@ public class ShapeFileRestService {
             @DefaultValue("0") @QueryParam("parts") int parts)
             throws IOException {
         
-        logger.info("Request for single file: {}", id);
+        log.info("Request for single file: {}", id);
         try {
             return shapeFileService.readSingleFile(id, resolution, filter, delta, exponent, parts);
         } catch (FileNotFoundException e) {
@@ -98,14 +94,14 @@ public class ShapeFileRestService {
     @Path("/static/multiple/{ids}")
     @Produces("application/json")
     @GZIP
-    @Cache(maxAge = 31556926, isPrivate = false)
+    @Cache(maxAge = 31556926)
     public List<Shape> getMultipleFile(@PathParam("ids") String ids,
             @DefaultValue("0") @QueryParam("resolution") int resolution,
             @DefaultValue("") @QueryParam("filter") String filter,
             @DefaultValue("false") @QueryParam("delta") boolean delta,
             @DefaultValue("2") @QueryParam("exponent") int exponent, @DefaultValue("0") @QueryParam("parts") int parts)
             throws IOException {
-        logger.info("getMultipleFile({}, {}, {}, {}, {}, {})", ids, resolution, filter, delta, exponent, parts);
+        log.info("getMultipleFile({}, {}, {}, {}, {}, {})", ids, resolution, filter, delta, exponent, parts);
 
         try {
             List<Shape> result = new ArrayList<>();
@@ -137,7 +133,7 @@ public class ShapeFileRestService {
             @DefaultValue("false") @QueryParam("delta") boolean delta,
             @QueryParam("exponent") Integer exponent, @QueryParam("parts") Integer parts,
             @Context Request request) throws IOException {
-        logger.info("Request for single file: {}", id);
+        log.info("Request for single file: {}", id);
 
         try {
             CacheControl cc = getCacheControl();
@@ -155,7 +151,7 @@ public class ShapeFileRestService {
             // cached resource did change -> serve updated content
             if (builder == null) {
                 String file = id + (measurement.getVersion() > 0 ? "_v" + measurement.getVersion() : ""); 
-                logger.debug("looking up shape file {}", file);
+                log.debug("looking up shape file {}", file);
                 Shape shape = shapeFileService.readSingleFile(file, resolution, filter, delta, exponent, parts);
                 builder = Response.ok(shape);
             }

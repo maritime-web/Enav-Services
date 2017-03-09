@@ -48,18 +48,6 @@ public abstract class DaoImpl implements Dao {
     }
 
     /* (non-Javadoc)
-     * @see dk.dma.embryo.common.persistence.Dao#getByPrimaryKey(java.lang.Class, java.lang.Object)
-     */
-    @Override
-    public <E extends IEntity<?>> E getByPrimaryKey(Class<E> clazz, Object id) {
-        try {
-            return em.find(clazz, id);
-        } catch (EntityNotFoundException e) {
-            return null;
-        }
-    }
-
-    /* (non-Javadoc)
      * @see dk.dma.embryo.common.persistence.Dao#remove(dk.dma.embryo.common.persistence.IEntity)
      */
     @Override
@@ -136,11 +124,5 @@ public abstract class DaoImpl implements Dao {
         cq.select(cb.countDistinct(root));
         return em.createQuery(cq).getSingleResult();
     }
-    
-    /* (non-Javadoc)
-     * @see dk.dma.embryo.common.persistence.Dao#flush()
-     */
-    public void flush() {
-      em.flush();
-    }
+
 }

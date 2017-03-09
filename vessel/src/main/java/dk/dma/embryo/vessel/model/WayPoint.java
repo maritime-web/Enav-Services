@@ -22,8 +22,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import dk.dma.enav.model.voyage.Waypoint;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Embeddable
+@Getter
+@Setter
+@ToString
 public class WayPoint implements Serializable {
 
     private static final long serialVersionUID = -7205030526506222850L;
@@ -48,9 +54,6 @@ public class WayPoint implements Serializable {
     @Valid
     private RouteLeg leg;
 
-    // //////////////////////////////////////////////////////////////////////
-    // business logic
-    // //////////////////////////////////////////////////////////////////////
 
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
@@ -128,54 +131,4 @@ public class WayPoint implements Serializable {
         this.turnRadius = turnRadius;
     }
 
-    // //////////////////////////////////////////////////////////////////////
-    // Object methods
-    // //////////////////////////////////////////////////////////////////////
-    @Override
-    public String toString() {
-        return "WayPoint [name=" + name + ", position=" + position + ", turnRadius=" + turnRadius + "]";
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // Property methods
-    // //////////////////////////////////////////////////////////////////////
-    public String getName() {
-        return name;
-    }
-
-    public Position getPosition() {
-        return position;
-    }
-
-    public Double getTurnRadius() {
-        return turnRadius;
-    }
-
-    public RouteLeg getLeg() {
-        return leg;
-    }
-
-    public Double getRot() {
-        return rot;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setLeg(RouteLeg leg) {
-        this.leg = leg;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
-    public void setRot(Double rot) {
-        this.rot = rot;
-    }
-
-    public void setTurnRadius(Double turnRadius) {
-        this.turnRadius = turnRadius;
-    }
 }

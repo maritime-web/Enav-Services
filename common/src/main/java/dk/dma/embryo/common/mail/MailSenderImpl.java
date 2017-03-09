@@ -14,6 +14,10 @@
  */
 package dk.dma.embryo.common.mail;
 
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.log.EmbryoLogService;
+import lombok.extern.slf4j.Slf4j;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -23,15 +27,11 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.slf4j.Logger;
-
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.log.EmbryoLogService;
-
 /**
  * @author Jesper Tejlgaard
  */
 @Named
+@Slf4j
 public class MailSenderImpl implements MailSender {
 
     @Inject
@@ -44,26 +44,23 @@ public class MailSenderImpl implements MailSender {
     @Inject
     private EmbryoLogService embryoLogService;
 
-    @Inject
-    private Logger logger;
-
     @PostConstruct
     public void init() {
         if (enabled == null || !"TRUE".equals(enabled.toUpperCase())) {
-            logger.info("PolarWeb MAIL SERVICE DISABLED");
+            log.info("PolarWeb MAIL SERVICE DISABLED");
         } else {
-            logger.info("PolarWeb MAIL SERVICE ENABLED");
+            log.info("PolarWeb MAIL SERVICE ENABLED");
         }
     }
 
     public void sendEmail(Mail<?> mail) {
-        logger.debug("enabled={}", enabled);
+        log.debug("enabled={}", enabled);
 
         try {
             mail.build();
 
             if (enabled == null || !"TRUE".equals(enabled.toUpperCase())) {
-                logger.info("Email sending has been disabled. Would have sent the following to {} (cc {}):\n{}\n{}",
+                log.info("Email sending has been disabled. Would have sent the following to {} (cc {}):\n{}\n{}",
                         mail.getTo(), mail.getCc(), mail.getHeader(), mail.getBody());
                 return;
             }
@@ -86,7 +83,7 @@ public class MailSenderImpl implements MailSender {
             message.setText(mail.getBody());
             Transport.send(message);
 
-            logger.info("The following email to {} (cc {}) have been sent:\n{}\n{}", mail.getTo(), mail.getCc(),
+            log.info("The following email to {} (cc {}) have been sent:\n{}\n{}", mail.getTo(), mail.getCc(),
                     mail.getHeader(), mail.getBody());
             embryoLogService.info(mail.getHeader() + " sent to " + mail.getTo() + " (cc: " + mail.getCc() + ")");
         } catch (Exception mex) {

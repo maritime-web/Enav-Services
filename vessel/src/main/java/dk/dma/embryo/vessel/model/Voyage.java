@@ -82,6 +82,7 @@ public class Voyage extends BaseEntity<Long> {
         Date arrival = getArrival() == null ? null : getArrival().toDate();
         Date departure = getDeparture() == null ? null : getDeparture().toDate();
 
+        @SuppressWarnings("UnnecessaryLocalVariable")
         dk.dma.embryo.vessel.json.Voyage voyage = new dk.dma.embryo.vessel.json.Voyage(getEnavId(), getLocation(),
                 getPosition().getLatitude(), getPosition().getLongitude(), arrival, departure,
                 getCrewOnBoard(), getPassengersOnBoard(), getDoctorOnBoard());
@@ -111,7 +112,7 @@ public class Voyage extends BaseEntity<Long> {
         result.setDeparture(departure);
         result.setCrewOnBoard(voyage.getCrew());
         result.setPassengersOnBoard(voyage.getPassengers());
-        result.setDoctorOnBoard(voyage.isDoctor());
+        result.setDoctorOnBoard(voyage.getDoctor());
         return result;
     }
 

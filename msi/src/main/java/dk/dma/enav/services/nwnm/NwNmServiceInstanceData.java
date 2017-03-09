@@ -15,6 +15,8 @@
 package dk.dma.enav.services.nwnm;
 
 import com.vividsolutions.jts.geom.Geometry;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.niord.model.message.MessageVo;
 
 import java.io.Serializable;
@@ -25,23 +27,12 @@ import java.util.Objects;
 /**
  * Contains NW-NM data cached for each service instance
  */
+@Getter
+@AllArgsConstructor
 public class NwNmServiceInstanceData implements Serializable {
 
     private final List<MessageVo> messages;
     private final Map<String, List<Geometry>> geometries;
 
-    /** Constructor **/
-    public NwNmServiceInstanceData(List<MessageVo> messages, Map<String, List<Geometry>> geometries) {
-        this.messages = Objects.requireNonNull(messages);
-        this.geometries = Objects.requireNonNull(geometries);
-    }
-
-    public List<MessageVo> getMessages() {
-        return messages;
-    }
-
-    public Map<String, List<Geometry>> getGeometries() {
-        return geometries;
-    }
 }
 

@@ -87,7 +87,7 @@ public class DmiForecastParser_En {
 
             NodeList children = doc.getDocumentElement().getChildNodes();
             DateTime from = null;
-            DateTime to = null;
+            DateTime to;
 
             for (int i = 0; i < children.getLength(); i++) {
                 if (children.item(i) instanceof Element) {
@@ -143,8 +143,7 @@ public class DmiForecastParser_En {
 
         DateTimeFormatter formatter = DateTimeFormat.forPattern("EEEE dd MMMM YYYY HHmm").withZone(DateTimeZone.UTC)
                 .withLocale(DEFAULT_LOCALE);
-        DateTime dt = formatter.parseDateTime(text);
-        return dt;
+        return formatter.parseDateTime(text);
     }
 
     public DateTime extractTo(Element gyldighed, DateTime from) throws IOException {
@@ -191,7 +190,7 @@ public class DmiForecastParser_En {
         return forecast;
     }
 
-    public boolean isElementAvailable(Element root, String elementName) throws IOException {
+    public boolean isElementAvailable(Element root, String elementName) {
         NodeList uniqueList = root.getElementsByTagName(elementName);
         return uniqueList.getLength() > 0;
     }
@@ -224,7 +223,7 @@ public class DmiForecastParser_En {
 
     public static String trim(String input) throws IOException {
         BufferedReader reader = new BufferedReader(new StringReader(input));
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         String line;
         while ((line = reader.readLine()) != null) {
             if (result.length() > 0) {

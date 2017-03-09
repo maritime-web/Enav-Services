@@ -28,9 +28,9 @@ public class InshoreIceReport {
     private String overview;
     private final Map<Integer, String> notifications = new HashMap<>();
     
-    private List<String> footers = new ArrayList<>();;
-    
-    
+    private List<String> footers = new ArrayList<>();
+
+
     // //////////////////////////////////////////////////////////////////////
     // Constructors methods
     // //////////////////////////////////////////////////////////////////////

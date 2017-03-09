@@ -14,7 +14,13 @@
  */
 package dk.dma.embryo.vessel.json;
 
-import java.util.List;
+import dk.dma.embryo.vessel.json.Voyage.RouteOverview;
+import dk.dma.embryo.vessel.model.Route;
+import dk.dma.embryo.vessel.model.Voyage;
+import dk.dma.embryo.vessel.service.ScheduleService;
+import lombok.extern.slf4j.Slf4j;
+import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.annotations.cache.NoCache;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -23,24 +29,14 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-
-import org.jboss.resteasy.annotations.GZIP;
-import org.jboss.resteasy.annotations.cache.NoCache;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.vessel.json.Voyage.RouteOverview;
-import dk.dma.embryo.vessel.model.Route;
-import dk.dma.embryo.vessel.model.Voyage;
-import dk.dma.embryo.vessel.service.ScheduleService;
+import java.util.List;
 
 @Path("/schedule")
+@Slf4j
 public class ScheduleRestService {
 
     @Inject
     private ScheduleService scheduleService;
-
-    @Inject
-    private Logger logger;
 
     public ScheduleRestService() {
     }
@@ -51,7 +47,7 @@ public class ScheduleRestService {
     @GZIP
     @NoCache
     public dk.dma.embryo.vessel.json.ScheduleResponse getScheduleView(@PathParam("mmsi") Long mmsi) {
-        logger.trace("getScheduleView({})", mmsi);
+        log.trace("getScheduleView({})", mmsi);
 
         List<Voyage> schedule = scheduleService.getSchedule(mmsi);
         dk.dma.embryo.vessel.json.ScheduleResponse result = new dk.dma.embryo.vessel.json.ScheduleResponse();
@@ -72,7 +68,7 @@ public class ScheduleRestService {
             result.setVoyages(voyages);
         }
 
-        logger.debug("getScheduleView({}) : {}", mmsi, result);
+        log.debug("getScheduleView({}) : {}", mmsi, result);
         return result;
     }
 
@@ -80,12 +76,12 @@ public class ScheduleRestService {
     @Path("/save")
     @Consumes("application/json")
     public void save(ScheduleRequest scheduleRequest) {
-        logger.debug("savePlan({})", scheduleRequest);
+        log.debug("savePlan({})", scheduleRequest);
 
         List<Voyage> toBeSaved = Voyage.fromJsonModel(scheduleRequest.getVoyages());
         scheduleService.updateSchedule(scheduleRequest.getMmsi(), toBeSaved, scheduleRequest.getToDelete());
 
-        logger.debug("savePlan()");
+        log.debug("savePlan()");
     }
 
 }

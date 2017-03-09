@@ -14,11 +14,13 @@
  */
 package dk.dma.embryo.dataformats.job;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import dk.dma.embryo.common.configuration.Property;
+import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.log.EmbryoLogService;
+import dk.dma.embryo.common.util.FileUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -30,21 +32,16 @@ import javax.ejb.Timeout;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import dk.dma.embryo.common.configuration.Property;
-import dk.dma.embryo.common.configuration.PropertyFileService;
-import dk.dma.embryo.common.log.EmbryoLogService;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 @Singleton
 @Startup
+@Slf4j
 public class AariHttpReaderJob {
-
-    private final Logger logger = LoggerFactory.getLogger(AariHttpReaderJob.class);
 
     @Inject
     @Property("embryo.iceChart.aari.cron")
@@ -107,7 +104,7 @@ public class AariHttpReaderJob {
     @PostConstruct
     public void init() {
         if (!server.trim().equals("") && (cron != null)) {
-            logger.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
+            log.info("Initializing {} with {}", this.getClass().getSimpleName(), cron.toString());
             
             for (String dataSet : dataSets.split(";")) {
                 String path = propertyService.getProperty("embryo.iceChart.aari.http." + dataSet + ".path");
@@ -121,10 +118,10 @@ public class AariHttpReaderJob {
                 }
             }
 
-            logger.info("Initializing {} with {}", this.getClass().getSimpleName(), paths);
+            log.info("Initializing {} with {}", this.getClass().getSimpleName(), paths);
             timerService.createCalendarTimer(cron, new TimerConfig(null, false));
         } else {
-            logger.info("AARI HTTP site is not configured - cron job not scheduled.");
+            log.info("AARI HTTP site is not configured - cron job not scheduled.");
         }
     }
     
@@ -134,7 +131,7 @@ public class AariHttpReaderJob {
 
     @PreDestroy
     public void shutdown() throws InterruptedException {
-        logger.info("Shutdown called.");
+        log.info("Shutdown called.");
     }
 
     @Timeout
@@ -148,21 +145,21 @@ public class AariHttpReaderJob {
 
             Integer year = DateTime.now(DateTimeZone.UTC).getYear();
 
-            logger.info("protocol={}, server={}, timeout={}", protocol, server, timeout);
+            log.info("protocol={}, server={}, timeout={}", protocol, server, timeout);
 
             HttpReader reader = new HttpReader(protocol, server, timeout);
 
             for (String p : paths) {
                 String path = replaceYear(p, year);
 
-                List<String> files = null;
+                List<String> files;
                 try {
-                    logger.debug("Reading content in {}", path);
+                    log.debug("Reading content in {}", path);
                     files = reader.readContent(path);
                 } catch (Exception e) {
                     files = new ArrayList<>(0);
                     errorCount++;
-                    logger.error("Error reading folder {}", path);
+                    log.error("Error reading folder {}", path);
                     embryoLogService.error(
                             "Error reading folder  '" + path + "' from AARI (" + server + "): " + e.getMessage(), e);
                 }
@@ -170,12 +167,12 @@ public class AariHttpReaderJob {
                 for (String file : files) {
                     if (!isFileDownloaded(file)) {
                         try {
-                            logger.debug("Transfering file {}/{}", path, file);
+                            log.debug("Transfering file {}/{}", path, file);
                             transferFile(reader, path, file, tmpDir);
                             fileCount++;
                         } catch (Exception e) {
                             errorCount++;
-                            logger.error("Error transfering file {}/{}", path, file);
+                            log.error("Error transfering file {}/{}", path, file);
                             embryoLogService.error("Error transfering file '" + path + "/" + file + "' from AARI ("
                                     + server + "): " + e.getMessage(), e);
                         }
@@ -184,34 +181,35 @@ public class AariHttpReaderJob {
                 }
             }
         } catch (Exception e) {
-            logger.error("Unhandled error scanning/transfering files from AARI (" + server + "): " + e, e);
+            log.error("Unhandled error scanning/transfering files from AARI (" + server + "): " + e, e);
             embryoLogService.error("Unhandled error scanning/transfering files from AARI (" + server + "): " + e, e);
         }
 
         String msg = "Scanned AARI (" + server + ") for new files. Files transferred: " + fileCount;
         if (errorCount == 0) {
-            logger.info(msg);
+            log.info(msg);
             embryoLogService.info(msg);
         } else {
-            logger.error(msg);
+            log.error(msg);
             embryoLogService.error(msg + ". Transfer errors: " + errorCount);
         }
     }
 
     private void prepareLocalDirectory() {
-        logger.info("Making directory if necessary ...");
-        if (!new File(localDirectory).exists()) {
-            logger.info("Making local directory for AARI files: " + localDirectory);
-            new File(localDirectory).mkdirs();
+        log.info("Making directory if necessary ...");
+        File file = new File(localDirectory);
+        if (!file.exists()) {
+            log.info("Making local directory for AARI files: " + localDirectory);
+            FileUtils.createDirectories(file);
         }
     }
 
     private File prepareTemporaryDirectory() {
-        logger.info("Making temporary directory if necessary ...");
+        log.info("Making temporary directory if necessary ...");
         File tmpDirectory = new File(tmpDir);
         if (!tmpDirectory.exists()) {
-            logger.info("Making temporary directory " + tmpDir);
-            tmpDirectory.mkdirs();
+            log.info("Making temporary directory " + tmpDir);
+            FileUtils.createDirectories(tmpDirectory);
         }
         return tmpDirectory;
     }
@@ -220,13 +218,15 @@ public class AariHttpReaderJob {
             throws InterruptedException, IOException {
         File location = new File(tmpDir.getAbsoluteFile(), "AariHttpReader" + Math.random());
 
-        logger.info("Transfering " + fileName + " to " + location.getAbsolutePath());
+        log.info("Transfering " + fileName + " to " + location.getAbsolutePath());
         httpReader.getFile(path, fileName, location);
         Thread.sleep(10);
 
         String localName = localDirectory + "/" + fileName;
-        logger.info("Moving " + location.getAbsolutePath() + " to " + localName);
-        location.renameTo(new File(localName));
+        log.info("Moving " + location.getAbsolutePath() + " to " + localName);
+        if(!location.renameTo(new File(localName))) {
+            log.warn("Failed to move from {} to {}", location, localName);
+        }
     }
 
     private boolean isFileDownloaded(String name) {

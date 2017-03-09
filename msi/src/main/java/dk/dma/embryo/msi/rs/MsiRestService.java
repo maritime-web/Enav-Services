@@ -14,7 +14,11 @@
  */
 package dk.dma.embryo.msi.rs;
 
-import java.util.List;
+import dk.dma.embryo.common.json.AbstractRestService;
+import dk.dma.embryo.msi.MsiClient;
+import dk.dma.embryo.msi.MsiClient.MsiItem;
+import lombok.extern.slf4j.Slf4j;
+import org.jboss.resteasy.annotations.GZIP;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -24,19 +28,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-
-import org.jboss.resteasy.annotations.GZIP;
-import org.slf4j.Logger;
-
-import dk.dma.embryo.common.json.AbstractRestService;
-import dk.dma.embryo.msi.MsiClient;
-import dk.dma.embryo.msi.MsiClient.MsiItem;
+import java.util.List;
 
 @Path("/msi")
+@Slf4j
 public class MsiRestService extends AbstractRestService {
-    
-    @Inject
-    private Logger logger;
     
     @Inject
     private MsiClient msiClient;
@@ -45,8 +41,7 @@ public class MsiRestService extends AbstractRestService {
     @Path("/list")
     @Produces("application/json")
     @GZIP
-    /**
-     * 
+    /*
      * @param regions
      * @return List of MSI warnings
      */
@@ -62,7 +57,7 @@ public class MsiRestService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response getRegions(@Context Request request) {
-        logger.info("getRegions called from MsiRestService.");
+        log.info("getRegions called from MsiRestService.");
         return super.getResponse(request, msiClient.getRegions(), NO_CACHE);
     }
 }
