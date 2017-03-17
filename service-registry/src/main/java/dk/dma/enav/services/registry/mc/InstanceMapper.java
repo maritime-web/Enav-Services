@@ -61,15 +61,18 @@ public class InstanceMapper {
                 .setDescription(details.getDescription())
                 .setStatus(createStatus(details.getStatus()))
                 .setAvailability(details.getOffersServiceLevel().getAvailability())
-                .setProducedBy(createVendorInfo(details.getProducedBy()))
+                .setProducedBy(details.getProducedBy() == null ? null : createVendorInfo(details.getProducedBy()))
                 .setProvidedBy(createVendorInfo(details.getProvidedBy()))
         ;
         try {
-            result.withBoundary(toGeometryCollection(details));
+            if (details.getCoversAreas().getUnLoCode() == null)  {
+                result.withBoundary(toGeometryCollection(details));
+            }
         } catch (IllegalArgumentException e) {
             result.addError(new Error(e));
-            log.error("Error parsing geometry for service instance for url " + details.getURL() + ". Check data in Remote Service Register. NullPointerException = " + e.getMessage());
+            log.error("Error parsing geometry for service instance for url " + details.getURL() + ". Check data in Remote Service Register. NullPointerException = " + e.getMessage(), e);
         } catch (NullPointerException e) {
+            log.error("Error parsing geometry for service instance for url " + details.getURL() + ". Check data in Remote Service Register. NullPointerException = " + e.getMessage(), e);
         }
 
         List<Error> validationErrors = result.validate();
@@ -107,7 +110,8 @@ public class InstanceMapper {
 
     private String toGeometryCollection(ServiceInstance inst) {
         Stream<CoverageArea> coverageAreaStream = inst.getCoversAreas().getCoversArea().stream();
-        return "GEOMETRYCOLLECTION(" + coverageAreaStream.map(CoverageArea::getGeometryAsWKT).collect(joining(", ")) + ")";
+
+        return "GEOMETRYCOLLECTION(" + coverageAreaStream.map(a->a.getGeometryAsWKT() == null ? "POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))" : a.getGeometryAsWKT()).collect(joining(", ")) + ")";
     }
 
     private TechnicalDesignId createTechnicalDesignId(ServiceDesignReference ref) {
