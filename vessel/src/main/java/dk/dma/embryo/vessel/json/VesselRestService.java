@@ -118,10 +118,10 @@ public class VesselRestService extends AbstractRestService {
     @Produces("application/json")
     @GZIP
     public Response list(@Context Request request, @QueryParam("area") String specificAreaFilter ) {
-        log.info("  searching in area {} ", specificAreaFilter);
+        log.debug("  searching in area {} ", specificAreaFilter);
 
         List<AisVessel> aisVessels = this.aisDataService.getAisVesselsBBOX(specificAreaFilter);
-        log.info("area specific search resulted in {} found vessels ", aisVessels.size());
+        log.debug("area specific search resulted in {} found vessels ", aisVessels.size());
         List<VesselOverview> result = AisVessel.toVesselOverviewStream(aisVessels).collect(Collectors.toList());
 
         return super.getResponse(request, result, NO_CACHE);
