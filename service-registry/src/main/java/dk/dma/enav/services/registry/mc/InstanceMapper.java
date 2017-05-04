@@ -30,8 +30,6 @@ import org.efficiensea2.maritimecloud.serviceregistry.v1.ServiceInstance;
 import org.efficiensea2.maritimecloud.serviceregistry.v1.ServiceLevel;
 import org.efficiensea2.maritimecloud.serviceregistry.v1.ServiceStatus;
 import org.efficiensea2.maritimecloud.serviceregistry.v1.VendorInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.joining;
 
@@ -49,7 +47,7 @@ public class InstanceMapper {
     }
 
     InstanceMetadata toMetaData(Instance instance) {
-        InstanceMetadata result = new InstanceMetadata(instance.getInstanceId(), instance.getVersion())
+        InstanceMetadata result = new InstanceMetadata(instance.getInstanceId(), instance.getVersion(), instance.getId() )
                 .setName(instance.getName());
 
         ServiceInstance details = getDetails(instance);

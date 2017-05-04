@@ -22,7 +22,9 @@ import java.util.Set;
 import com.google.common.base.Strings;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKTReader;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
@@ -31,8 +33,12 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class InstanceMetadata {
-    private String instanceId;
-    private String version;
+    @Setter(value = AccessLevel.NONE)
+    private final Long id;  // this is the internal ID from the service registry database and therefore a unique identifier
+    @Setter(value = AccessLevel.NONE)
+    private final String instanceId;
+    @Setter(value = AccessLevel.NONE)
+    private final String version;
     private String name;
     private String description;
     private String status;
@@ -45,7 +51,7 @@ public class InstanceMetadata {
     private Set<Error> errors;
     private List<Error> warnings;
 
-    public InstanceMetadata(String instanceId, String version) {
+    public InstanceMetadata(String instanceId, String version, long id) {
         if (instanceId == null) {
             throw new IllegalArgumentException("Can not create InstanceMetadata with missing instanceId");
         }
@@ -56,6 +62,7 @@ public class InstanceMetadata {
         this.version = version;
         this.warnings = new ArrayList<>();
         this.errors = new HashSet<>();
+        this.id = id;
     }
 
     public boolean intersects(String wktFilter) {

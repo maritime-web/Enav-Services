@@ -33,12 +33,12 @@ import dk.dma.enav.services.registry.api.TechnicalDesignId;
 import dk.dma.enav.services.registry.mc.model.Instance;
 
 /**
- *
+ * Caches
  */
 public class InstanceRepository {
     private final ApiFactory apiFactory;
     private final InstanceMapper mapper;
-    private Cache<TechnicalDesignId, InstanceMetadata> instanceCache;
+    private Cache<Long, InstanceMetadata> instanceCache;
 
     @Inject
     public InstanceRepository(ApiFactory apiFactory,
@@ -94,8 +94,8 @@ public class InstanceRepository {
     }
 
     private void updateCache(List<InstanceMetadata> instances) {
-        Map<TechnicalDesignId, InstanceMetadata> data = new HashMap<>();
-        instances.forEach(instance -> data.put(instance.getTechnicalDesignId(), instance));
+        Map<Long, InstanceMetadata> data = new HashMap<>();
+        instances.forEach(instance -> data.put(instance.getId(), instance));
         instanceCache.putAll(data);
     }
 

@@ -33,7 +33,7 @@ public class NwNmTest {
         String url = "http://niord.e-navigation.net/rest/";
 
         try {
-            InstanceMetadata instance = new InstanceMetadata("test-nwnm", "1.0")
+            InstanceMetadata instance = new InstanceMetadata("test-nwnm", "1.0", 1)
                     .setUrl(url);
 
             MessageLoaderTask task =
