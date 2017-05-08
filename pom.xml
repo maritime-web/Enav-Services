@@ -126,6 +126,12 @@
             </dependency>
 
             <dependency>
+                <groupId>dk.dma.enav.services</groupId>
+                <artifactId>service-registry-api</artifactId>
+                <version>${enav-services.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>dk.dma.enav</groupId>
                 <artifactId>enav-model</artifactId>
                 <version>0.1</version>
@@ -604,8 +610,10 @@
         <module>sar</module>
         <module>reporting</module>
         <module>weather</module>
+        <module>service-registry-api</module>
         <module>service-registry</module>
         <module>vrmt</module>
+        <module>service-registry-static</module>
     </modules>
 
 </project>

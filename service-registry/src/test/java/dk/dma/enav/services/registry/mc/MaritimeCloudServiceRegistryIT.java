@@ -14,9 +14,7 @@
  */
 package dk.dma.enav.services.registry.mc;
 
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimaps;
 import dk.dma.enav.services.registry.api.InstanceMetadata;

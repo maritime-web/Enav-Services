@@ -14,6 +14,7 @@
  */
 package dk.dma.enav.services.registry.api;
 
+import java.lang.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -110,7 +111,7 @@ public class InstanceMetadata {
         return res;
     }
 
-    private Error createErrorforMissingAttribute(ErrorId id,  String attributeName) {
+    private Error createErrorforMissingAttribute(ErrorId id, String attributeName) {
         return new Error(id, ErrorType.MISSING_DATA , "Missing required attribute '"+attributeName+"'");
     }
 
