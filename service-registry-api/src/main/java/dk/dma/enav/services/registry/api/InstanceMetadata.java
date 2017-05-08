@@ -14,7 +14,6 @@
  */
 package dk.dma.enav.services.registry.api;
 
-import java.lang.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
