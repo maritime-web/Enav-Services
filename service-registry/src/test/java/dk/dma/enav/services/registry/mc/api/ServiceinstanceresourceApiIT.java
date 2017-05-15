@@ -35,7 +35,7 @@ import static org.hamcrest.Matchers.is;
  */
 public class ServiceinstanceresourceApiIT {
 
-    private final ApiClient apiClient = new ApiFactory("http://sr-test.maritimecloud.net:8080", 2000).createApiClient();
+    private final ApiClient apiClient = new ApiFactory("https://sr.maritimecloud.net", 2000).createApiClient();
     private final ServiceinstanceresourceApi api = new ServiceinstanceresourceApi(apiClient);
 
     @Test

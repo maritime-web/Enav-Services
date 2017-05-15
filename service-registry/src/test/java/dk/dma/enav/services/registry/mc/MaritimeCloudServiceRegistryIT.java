@@ -46,7 +46,7 @@ public class MaritimeCloudServiceRegistryIT {
 
     @Before
     public void setUp() throws Exception {
-        apiFactory = new ApiFactory("http://sr-test.maritimecloud.net:8080", 2000);
+        apiFactory = new ApiFactory("https://sr.maritimecloud.net", 2000);
         InstanceMapper mapper = new InstanceMapper(new InstanceXmlParser());
         repository = new InstanceRepository(apiFactory, mapper, 5);
         cut = new MaritimeCloudServiceRegistry(repository);
