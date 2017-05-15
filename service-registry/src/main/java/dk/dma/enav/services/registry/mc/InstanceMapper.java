@@ -30,8 +30,6 @@ import org.efficiensea2.maritimecloud.serviceregistry.v1.ServiceInstance;
 import org.efficiensea2.maritimecloud.serviceregistry.v1.ServiceLevel;
 import org.efficiensea2.maritimecloud.serviceregistry.v1.ServiceStatus;
 import org.efficiensea2.maritimecloud.serviceregistry.v1.VendorInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.joining;
 
@@ -49,7 +47,7 @@ public class InstanceMapper {
     }
 
     InstanceMetadata toMetaData(Instance instance) {
-        InstanceMetadata result = new InstanceMetadata(instance.getInstanceId(), instance.getVersion())
+        InstanceMetadata result = new InstanceMetadata(instance.getInstanceId(), instance.getVersion(), instance.getId() )
                 .setName(instance.getName());
 
         ServiceInstance details = getDetails(instance);
@@ -61,15 +59,18 @@ public class InstanceMapper {
                 .setDescription(details.getDescription())
                 .setStatus(createStatus(details.getStatus()))
                 .setAvailability(details.getOffersServiceLevel().getAvailability())
-                .setProducedBy(createVendorInfo(details.getProducedBy()))
+                .setProducedBy(details.getProducedBy() == null ? null : createVendorInfo(details.getProducedBy()))
                 .setProvidedBy(createVendorInfo(details.getProvidedBy()))
         ;
         try {
-            result.withBoundary(toGeometryCollection(details));
+            if (details.getCoversAreas().getUnLoCode() == null)  {
+                result.withBoundary(toGeometryCollection(details));
+            }
         } catch (IllegalArgumentException e) {
             result.addError(new Error(e));
-            log.error("Error parsing geometry for service instance for url " + details.getURL() + ". Check data in Remote Service Register. NullPointerException = " + e.getMessage());
+            log.error("Error parsing geometry for service instance for url " + details.getURL() + ". Check data in Remote Service Register. NullPointerException = " + e.getMessage(), e);
         } catch (NullPointerException e) {
+            log.error("Error parsing geometry for service instance for url " + details.getURL() + ". Check data in Remote Service Register. NullPointerException = " + e.getMessage(), e);
         }
 
         List<Error> validationErrors = result.validate();
@@ -107,7 +108,8 @@ public class InstanceMapper {
 
     private String toGeometryCollection(ServiceInstance inst) {
         Stream<CoverageArea> coverageAreaStream = inst.getCoversAreas().getCoversArea().stream();
-        return "GEOMETRYCOLLECTION(" + coverageAreaStream.map(CoverageArea::getGeometryAsWKT).collect(joining(", ")) + ")";
+
+        return "GEOMETRYCOLLECTION(" + coverageAreaStream.map(a->a.getGeometryAsWKT() == null ? "POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))" : a.getGeometryAsWKT()).collect(joining(", ")) + ")";
     }
 
     private TechnicalDesignId createTechnicalDesignId(ServiceDesignReference ref) {

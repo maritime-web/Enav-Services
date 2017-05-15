@@ -8,10 +8,11 @@
       <module fileurl="file://$PROJECT_DIR$/map-tiles/map-tiles.iml" filepath="$PROJECT_DIR$/map-tiles/map-tiles.iml" />
       <module fileurl="file://$PROJECT_DIR$/metoc/metoc.iml" filepath="$PROJECT_DIR$/metoc/metoc.iml" />
       <module fileurl="file://$PROJECT_DIR$/msi/msi.iml" filepath="$PROJECT_DIR$/msi/msi.iml" />
-      <module fileurl="file://$PROJECT_DIR$/parent.iml" filepath="$PROJECT_DIR$/parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/reporting/reporting.iml" filepath="$PROJECT_DIR$/reporting/reporting.iml" />
       <module fileurl="file://$PROJECT_DIR$/sar/sar.iml" filepath="$PROJECT_DIR$/sar/sar.iml" />
       <module fileurl="file://$PROJECT_DIR$/service-registry/service-registry.iml" filepath="$PROJECT_DIR$/service-registry/service-registry.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service-registry-api/service-registry-api.iml" filepath="$PROJECT_DIR$/service-registry-api/service-registry-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service-registry-static/service-registry-static.iml" filepath="$PROJECT_DIR$/service-registry-static/service-registry-static.iml" />
       <module fileurl="file://$PROJECT_DIR$/test-utilities/test-utilities.iml" filepath="$PROJECT_DIR$/test-utilities/test-utilities.iml" />
       <module fileurl="file://$PROJECT_DIR$/user/user.iml" filepath="$PROJECT_DIR$/user/user.iml" />
       <module fileurl="file://$PROJECT_DIR$/vessel/vessel.iml" filepath="$PROJECT_DIR$/vessel/vessel.iml" />

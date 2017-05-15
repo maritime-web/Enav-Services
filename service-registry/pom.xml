@@ -27,6 +27,11 @@
             <artifactId>common</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>dk.dma.enav.services</groupId>
+            <artifactId>service-registry-api</artifactId>
+        </dependency>
+
         <!-- Import the CDI API. -->
         <dependency>
             <groupId>javax.enterprise</groupId>

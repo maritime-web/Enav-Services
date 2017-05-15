@@ -28,7 +28,6 @@ import org.apache.commons.lang.StringUtils;
 import org.niord.model.DataFilter;
 import org.niord.model.message.MessageVo;
 
-import javax.persistence.Access;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;

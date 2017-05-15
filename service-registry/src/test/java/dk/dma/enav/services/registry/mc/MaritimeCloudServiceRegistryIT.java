@@ -14,7 +14,9 @@
  */
 package dk.dma.enav.services.registry.mc;
 
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multimaps;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
 import dk.dma.enav.services.registry.api.NoServicesFoundException;
 import dk.dma.enav.services.registry.api.TechnicalDesignId;
@@ -24,12 +26,14 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Steen on 13-10-2016.
@@ -38,12 +42,13 @@ import static org.hamcrest.Matchers.is;
 public class MaritimeCloudServiceRegistryIT {
     private MaritimeCloudServiceRegistry cut;
     private ApiFactory apiFactory;
+    private InstanceRepository repository;
 
     @Before
     public void setUp() throws Exception {
         apiFactory = new ApiFactory("http://sr-test.maritimecloud.net:8080", 2000);
         InstanceMapper mapper = new InstanceMapper(new InstanceXmlParser());
-        InstanceRepository repository = new InstanceRepository(apiFactory, mapper, 5);
+        repository = new InstanceRepository(apiFactory, mapper, 5);
         cut = new MaritimeCloudServiceRegistry(repository);
     }
 
@@ -52,9 +57,17 @@ public class MaritimeCloudServiceRegistryIT {
         ServiceinstanceresourceApi api = apiFactory.createServiceinstanceresourceApi();
         List<String> ids = api.getAllInstancesUsingGET(null, null, null, null, Lists.newArrayList()).stream().map(Instance::getInstanceId).collect(Collectors.toList());
 
-        List<InstanceMetadata> serviceInstances = cut.getServiceInstances(ids);
+        List<InstanceMetadata> allInstances = repository.getAllInstances();
 
-        assertThat(serviceInstances.size(), is(ids.size()));
+        // use a multimap to group by instance Id, since you can have multiple services with the same instanceId
+        ImmutableListMultimap<String, InstanceMetadata> multimap = Multimaps.index(allInstances, i -> i.getInstanceId());
+        int versionWithSameInstanceId = 0;
+        for (Collection<InstanceMetadata> collection : multimap.asMap().values()) {
+            versionWithSameInstanceId += collection.size()-1;
+        }
+
+        List<InstanceMetadata> byInstanceId = cut.getServiceInstances(ids);
+        assertEquals(byInstanceId.size() , ids.size() + versionWithSameInstanceId);
     }
 
     @Test

@@ -25,6 +25,8 @@
         <module name="reporting" />
         <module name="sar" />
         <module name="service-registry" />
+        <module name="service-registry-api" />
+        <module name="service-registry-static" />
         <module name="test-utilities" />
         <module name="user" />
         <module name="vessel" />
@@ -43,6 +45,8 @@
       <module name="reporting" target="1.8" />
       <module name="sar" target="1.8" />
       <module name="service-registry" target="1.8" />
+      <module name="service-registry-api" target="1.8" />
+      <module name="service-registry-static" target="1.8" />
       <module name="test-utilities" target="1.8" />
       <module name="user" target="1.8" />
       <module name="vessel" target="1.8" />

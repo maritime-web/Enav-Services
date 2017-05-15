@@ -35,21 +35,21 @@ public class InstanceMetadataTest {
 
     @Test
     public void shouldEnsureThatWarningsListIsInitializedOnCreationWithNormalConstructor() throws Exception {
-        InstanceMetadata cut = new InstanceMetadata("some id", "0.1");
+        InstanceMetadata cut = new InstanceMetadata("some id", "0.1", 1);
 
         assertThat(cut.getWarnings(), notNullValue());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldEnsureThatAddedWarningCanNotBeNull() throws Exception {
-        InstanceMetadata cut = new InstanceMetadata("Some id", "0.1");
+        InstanceMetadata cut = new InstanceMetadata("Some id", "0.1", 1);
 
         cut.addWarning(null);
     }
 
     @Test
     public void shouldIgnoreDuplicateErrors() throws Exception {
-        InstanceMetadata cut = new InstanceMetadata("some id", "0.1");
+        InstanceMetadata cut = new InstanceMetadata("some id", "0.1", 1);
         Error e = new Error(ErrorId.MISSING_URL, ErrorType.INVALID_DATA, "message");
 
         cut.addError(e).addError(e);
@@ -58,7 +58,7 @@ public class InstanceMetadataTest {
 
     @Test
     public void shouldReportMissingDataAsErrorsOnValidation() throws Exception {
-        InstanceMetadata cut = new InstanceMetadata("some id", "0.1");
+        InstanceMetadata cut = new InstanceMetadata("some id", "0.1", 1);
 
         List<Error> validationErrors = cut.validate();
 
@@ -84,7 +84,7 @@ public class InstanceMetadataTest {
         String name = "test";
         String designId = "designtest";
         String version = "1";
-        InstanceMetadata inst = new InstanceMetadata("aa", "0.1")
+        InstanceMetadata inst = new InstanceMetadata("aa", "0.1", 1)
                 .setUrl(url)
                 .setBoundary(boundary)
                 .setName(name)
@@ -112,7 +112,7 @@ public class InstanceMetadataTest {
     public void shouldSerializeToJsonWithClassAttributeNames() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
 
-        InstanceMetadata inst = new InstanceMetadata("aa", "0.1");
+        InstanceMetadata inst = new InstanceMetadata("aa", "0.1", 1);
         String json = mapper.writeValueAsString(inst);
         //noinspection unchecked
         assertThat(json, allOf(
