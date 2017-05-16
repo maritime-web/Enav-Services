@@ -14,15 +14,24 @@
  */
 package dk.dma.enav.services.registry;
 
+import dk.dma.embryo.common.configuration.Property;
 import dk.dma.enav.services.registry.api.EnavServiceRegister;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
 import dk.dma.enav.services.registry.api.TechnicalDesignId;
 import dk.dma.enav.services.registry.api.VendorInfo;
 
+import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 
 public class StaticServiceRegistry implements EnavServiceRegister {
+    private final String url;
+
+    @Inject
+    public StaticServiceRegistry(@Property("enav-service.service-registry-static.nwnm.endpoint.url") String url) {
+        this.url = url;
+    }
+
     @Override
     public List<InstanceMetadata> getServiceInstances(TechnicalDesignId id, String wktLocationFilter) {
         throw new UnsupportedOperationException("");
@@ -36,7 +45,7 @@ public class StaticServiceRegistry implements EnavServiceRegister {
                 .setName("NWNM Service Endpoint")
                 .setProducedBy(new VendorInfo("DMA"))
                 .setProvidedBy(new VendorInfo("DMA"))
-                .setUrl("https://niord-dma.e-navigation.net/");
+                .setUrl(url);
         return Collections.singletonList(res);
     }
 }
