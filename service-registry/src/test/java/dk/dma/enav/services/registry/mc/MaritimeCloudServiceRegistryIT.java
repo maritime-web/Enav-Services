@@ -14,26 +14,21 @@
  */
 package dk.dma.enav.services.registry.mc;
 
-import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Multimaps;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
 import dk.dma.enav.services.registry.api.NoServicesFoundException;
 import dk.dma.enav.services.registry.api.TechnicalDesignId;
-import dk.dma.enav.services.registry.mc.api.ServiceinstanceresourceApi;
+import dk.dma.enav.services.registry.mc.api.InstanceResourceApi;
 import dk.dma.enav.services.registry.mc.model.Instance;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Steen on 13-10-2016.
@@ -42,49 +37,42 @@ import static org.junit.Assert.assertEquals;
 public class MaritimeCloudServiceRegistryIT {
     private MaritimeCloudServiceRegistry cut;
     private ApiFactory apiFactory;
-    private InstanceRepository repository;
 
     @Before
     public void setUp() throws Exception {
         apiFactory = new ApiFactory("https://sr.maritimecloud.net", 2000);
         InstanceMapper mapper = new InstanceMapper(new InstanceXmlParser());
-        repository = new InstanceRepository(apiFactory, mapper, 5);
+        InstanceRepository repository = new InstanceRepository(apiFactory, mapper, 5);
         cut = new MaritimeCloudServiceRegistry(repository);
     }
 
     @Test
     public void shouldBeAbleToMapAllInstancesToInstanceMetaData() throws Exception {
-        ServiceinstanceresourceApi api = apiFactory.createServiceinstanceresourceApi();
-        List<String> ids = api.getAllInstancesUsingGET(null, null, null, null, Lists.newArrayList()).stream().map(Instance::getInstanceId).collect(Collectors.toList());
+        InstanceResourceApi api = apiFactory.createInstanceResourceApi();
+        List<String> ids = api.getAll().stream().map(Instance::getInstanceId).collect(Collectors.toList());
 
-        List<InstanceMetadata> allInstances = repository.getAllInstances();
+        List<InstanceMetadata> metadataList = cut.getServiceInstances(ids);
 
-        // use a multimap to group by instance Id, since you can have multiple services with the same instanceId
-        ImmutableListMultimap<String, InstanceMetadata> multimap = Multimaps.index(allInstances, i -> i.getInstanceId());
-        int versionWithSameInstanceId = 0;
-        for (Collection<InstanceMetadata> collection : multimap.asMap().values()) {
-            versionWithSameInstanceId += collection.size()-1;
-        }
-
-        List<InstanceMetadata> byInstanceId = cut.getServiceInstances(ids);
-        assertEquals(byInstanceId.size() , ids.size() + versionWithSameInstanceId);
+        assertThat(metadataList.size(), is(ids.size()));
     }
 
     @Test
     public void shouldGetTheNwNmService() throws Exception {
-        List<InstanceMetadata> res = cut.getServiceInstances(new TechnicalDesignId("urn:mrn:mcl:service:design:dma:nw-nm-rest", "0.3"), "POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))");
+        List<InstanceMetadata> res = cut.getServiceInstances(new TechnicalDesignId("urn:mrn:mcl:service:design:dma:nw-nm-rest", "0.4"), "POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))");
+
         assertThat(res.size(), is(greaterThan(0)));
     }
     @Test
     @Ignore("Service does not exist on sr-test")
     public void shouldGetSatelitteService() throws Exception {
         List<InstanceMetadata> res = cut.getServiceInstances(new TechnicalDesignId("urn:mrn:mcl:service:technical:dma:tiles-service", "0.2"), "POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))");
+
         assertThat(res.size(), is(greaterThan(0)));
     }
 
     @Test
     public void shouldGetTheNwNmServiceWhenWKTLocationFilterIsNull() throws Exception {
-        List<InstanceMetadata> res = cut.getServiceInstances(new TechnicalDesignId("urn:mrn:mcl:service:design:dma:nw-nm-rest", "0.3"), null);
+        List<InstanceMetadata> res = cut.getServiceInstances(new TechnicalDesignId("urn:mrn:mcl:service:design:dma:nw-nm-rest", "0.4"), null);
 
         assertThat(res.size(), is(greaterThan(0)));
     }

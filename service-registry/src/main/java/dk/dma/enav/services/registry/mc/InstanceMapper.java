@@ -49,7 +49,6 @@ public class InstanceMapper {
     InstanceMetadata toMetaData(Instance instance) {
         InstanceMetadata result = new InstanceMetadata(instance.getInstanceId(), instance.getVersion(), instance.getId() )
                 .setName(instance.getName());
-
         ServiceInstance details = getDetails(instance);
 
         TechnicalDesignId technicalDesignId = createTechnicalDesignId(details.getImplementsServiceDesign());
@@ -68,7 +67,7 @@ public class InstanceMapper {
             }
         } catch (IllegalArgumentException e) {
             result.addError(new Error(e));
-            log.error("Error parsing geometry for service instance for url " + details.getURL() + ". Check data in Remote Service Register. NullPointerException = " + e.getMessage(), e);
+            log.error("Error parsing geometry for service instance for url " + details.getURL() + ". Check data in Remote Service Register. IllegalArgumentException = " + e.getMessage(), e);
         } catch (NullPointerException e) {
             log.error("Error parsing geometry for service instance for url " + details.getURL() + ". Check data in Remote Service Register. NullPointerException = " + e.getMessage(), e);
         }
