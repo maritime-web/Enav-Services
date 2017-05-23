@@ -1,4 +1,4 @@
-msi
+NW-NM
 =========
 
 ## How to include in a web-application
@@ -17,22 +17,22 @@ Download and add jar files to your WAR file:
 - 
 
 ### Configure JAX-RS endpoint
-Can be done by adding MsiRestService.class to class extending javax.ws.rs.core.Application, e.g. 
+Can be done by adding NwNmRestService.class to class extending javax.ws.rs.core.Application, e.g. 
 
     @ApplicationPath("/rest")
     public class ApplicationConfig extends Application {
         public Set<Class<?>> getClasses() {
-            return new HashSet<Class<?>>(Arrays.asList(MsiRestService.class));
+            return new HashSet<Class<?>>(Arrays.asList(NwNmRestService.class));
         }
     }
 
-Your MSI endpoint is then accessible on /rest/msi/list
+Your NwNm endpoint is then accessible on /rest//nw-nm//messages
 
 ### Application Configuration
-Add MSI properties by one (or several) of:
+Add NwNm properties by one (or several) of:
 - add the default property file '/msi-default-configuration.properties' to the WARs default-configuration.properties file.
-- add or overwrite the properties embryo.msi.endpoint and embryo.msi.country the WARs default-configuration.properties file. 
-- add or overwrite the properties embryo.msi.endpoint and embryo.msi.country the external .properties file. 
+- add or overwrite the properties in the WARs default-configuration.properties file. 
+- add or overwrite the properties in the external .properties file. 
 
 ### Security Configuration
 

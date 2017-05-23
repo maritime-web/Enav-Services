@@ -118,6 +118,7 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
         log.info(String.format("Search for language=%s, mainType=%s, wkt=%s -> returning %d messages",
                 lang, mainType, wkt, result.size()));
 
+
         return result;
 
     }
