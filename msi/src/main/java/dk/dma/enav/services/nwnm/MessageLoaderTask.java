@@ -225,7 +225,7 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
 
         try (InputStream is = con.getInputStream()) {
 
-            String json = IOUtils.toString(is);
+            String json = IOUtils.toString(is, "UTF-8");//Assuming UTF-8
 
             ObjectMapper mapper = new ObjectMapper();
             List<MessageVo> messages = mapper.readValue(json, new TypeReference<List<MessageVo>>(){});
