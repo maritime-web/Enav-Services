@@ -39,6 +39,12 @@ public abstract class Mail<T> {
         template(templateName);
     }
 
+    public Mail(String preparedHeader, String preparedBody, PropertyFileService propertyFileService) {
+        this.propertyFileService = propertyFileService;
+        this.header = preparedHeader;
+        this.body = preparedBody;
+    }
+
     public Mail(PropertyFileService propertyFileService) {
         this.propertyFileService = propertyFileService;
     }

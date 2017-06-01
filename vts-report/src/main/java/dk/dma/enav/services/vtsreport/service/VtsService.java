@@ -14,9 +14,9 @@
  */
 package dk.dma.enav.services.vtsreport.service;
 
+import dk.dma.enav.services.vtsreport.mail.VtsReportMail;
 import lombok.Getter;
 import lombok.Setter;
-
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 import dk.dma.embryo.common.configuration.PropertyFileService;
+import dk.dma.embryo.common.mail.MailSender;
 
 
 
@@ -45,14 +46,17 @@ import dk.dma.embryo.common.configuration.PropertyFileService;
 public class VtsService {
 
 
-
     @Inject
     private PropertyFileService propertyFileService;
+
+    @Inject
+    private MailSender mailSender;
 
     private String generatedEmailSubject = "";
     private String generatedEmailBody = "";
     private String emailTo = "";
     private String emailFrom = "";
+    private String userEmail = "dma.vts.test@gmail.com";
 
 
     @Setter
@@ -235,9 +239,10 @@ public class VtsService {
         generatedEmailBody = emailBody;
         emailFrom = "vessel.arcticweb@gmail.com";
 
-        emailTo = propertyFileService.getProperty("vtsservice.emailaddress.by.vtsshortname."+vtsdata.vtsShortName);
+        //gets the protected email address
+        emailTo = propertyFileService.getProperty("vtsservice.emailaddress.by.vtsshortname."+vtsdata.vtsShortName) + ";";
 
-
+        mailSender.sendEmail(new VtsReportMail("This is a prepared header 2", "this is prepared body 2", userEmail, emailTo, propertyFileService));
 
 
 
