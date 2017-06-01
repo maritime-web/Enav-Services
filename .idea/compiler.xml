@@ -31,12 +31,14 @@
         <module name="user" />
         <module name="vessel" />
         <module name="vrmt" />
+        <module name="vts-report" />
         <module name="weather" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="common" target="1.8" />
       <module name="dataformats" target="1.8" />
+      <module name="Enav-Services" target="1.8" />
       <module name="io" target="1.8" />
       <module name="map-tiles" target="1.8" />
       <module name="metoc" target="1.8" />
@@ -51,6 +53,8 @@
       <module name="user" target="1.8" />
       <module name="vessel" target="1.8" />
       <module name="vrmt" target="1.8" />
+      <module name="vts-report" target="1.8" />
+      <module name="vtsreport" target="1.8" />
       <module name="weather" target="1.8" />
     </bytecodeTargetLevel>
   </component>
