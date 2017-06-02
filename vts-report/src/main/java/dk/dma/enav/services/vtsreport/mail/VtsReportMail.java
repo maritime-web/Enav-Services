@@ -17,7 +17,6 @@ package dk.dma.enav.services.vtsreport.mail;
 
 import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.mail.Mail;
-import dk.dma.embryo.common.util.DateTimeConverter;
 
 /**
  * @author Jesper Tejlgaard
@@ -31,17 +30,12 @@ public class VtsReportMail extends Mail<VtsReportMail> {
         super(preparedHeader,preparedBody,propertyFileService);
         this.userEmail = userEmail;
         this.recipient = recipient;
-//        this.preparedHeader = preparedHeader;
-//        this.preparedBody = preparedBody;
     }
 
     public VtsReportMail build() {
-        DateTimeConverter reportTsConverter = DateTimeConverter.getDateTimeConverter("MM");
-
         setTo(recipient + ";"); //expects semicolon for split
         setFrom(propertyFileService.getProperty("embryo.notification.mail.from")); //global from sender
         setCc(userEmail); //sends copy to user
-
         return this;
     }
 }
