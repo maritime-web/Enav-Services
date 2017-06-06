@@ -30,7 +30,7 @@ public class VtsInterfacePopulationService {
 
 
     @GET
-    @Produces("text/plain")
+    @Produces("application/json")
     public String getMessage() {
         int counter = 0;
         String VtsJsObjects = "["; //start as array
@@ -59,8 +59,8 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "\"showVesselLength\":false,";
         VtsJsObjects += "\"showDeadWeightTonnage\":true,";
         VtsJsObjects += "\"showGrossTonnage\":false,";
-        VtsJsObjects += "\"deadWeightTonnageLimit\":1000,";//at which tonnage to display fueldetails - uses deadWeightTonnageMultiplier with cargoTypes
-        VtsJsObjects += "\"sendSummaryTo\":\"email\"}";//sends summary as email to the registered email, can also send as JSON to service in future version, ex: "https://beltrep.org/services/VTSservice"
+        VtsJsObjects += "\"deadWeightTonnageLimit\":1000,";//TODO: at which tonnage to display fueldetails - uses deadWeightTonnageMultiplier with cargoTypes
+        VtsJsObjects += "\"sendSummaryTo\":\"email\"}";//TODO: sends summary as email to the registered email, can also send as JSON to service in future version, ex: "https://beltrep.org/services/VTSservice"
 
         VtsJsObjects += ","; //next item
 

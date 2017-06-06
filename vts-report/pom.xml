@@ -20,6 +20,10 @@
             <artifactId>common</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>dk.dma.enav.services</groupId>
+            <artifactId>user</artifactId>
+        </dependency>
 
         <!-- Import the CDI API. -->
         <dependency>
