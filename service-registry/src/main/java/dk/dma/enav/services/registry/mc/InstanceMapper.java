@@ -67,9 +67,11 @@ public class InstanceMapper {
             }
         } catch (IllegalArgumentException e) {
             result.addError(new Error(e));
-            log.error("Error parsing geometry for service instance for url " + details.getURL() + ". Check data in Remote Service Register. IllegalArgumentException = " + e.getMessage(), e);
+            //log.error("Error parsing geometry for service instance for url " + details.getURL() + ". Check data in Remote Service Register. IllegalArgumentException = " + e.getMessage(), e);
+            log.debug("Error parsing geometry for service instance for url " + details.getURL() + ". Check data in Remote Service Register. IllegalArgumentException = " + e.getMessage(), e);
         } catch (NullPointerException e) {
-            log.error("Error parsing geometry for service instance for url " + details.getURL() + ". Check data in Remote Service Register. NullPointerException = " + e.getMessage(), e);
+            //log.error("Error parsing geometry for service instance for url " + details.getURL() + ". Check data in Remote Service Register. NullPointerException = " + e.getMessage(), e);
+            log.debug("Error parsing geometry for service instance for url " + details.getURL() + ". Check data in Remote Service Register. NullPointerException = " + e.getMessage(), e);
         }
 
         List<Error> validationErrors = result.validate();
