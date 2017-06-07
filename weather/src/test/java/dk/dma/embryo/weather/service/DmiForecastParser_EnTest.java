@@ -136,20 +136,6 @@ public class DmiForecastParser_EnTest {
         Assert.assertEquals(14, forecast.getDistricts().size());
     }
 
-    @Ignore
-    @Test
-    public void test20160225FailedInProduction() throws IOException {
-        InputStream is = getClass().getResourceAsStream("/dmi/grudseng_2016_02_25.xml");
-
-        RegionForecast forecast = parser.parse(is);
-
-        String expectedOverview = "A low, 982 hPa, over Timmiarmiut, is moving slowly towards east " +
-                "filling somewhat. A high, 1023 hPa, over northeastern " +
-                "Greenland, is almost stationary.";
-        Assert.assertEquals(expectedOverview, forecast.getDesc());
-        System.out.println(forecast.getFrom());
-    }
-
     @Test
     public void test20141209FailedInProduction() throws IOException {
         InputStream is = getClass().getResourceAsStream("/dmi/grudseng-2014-12-09.xml");
