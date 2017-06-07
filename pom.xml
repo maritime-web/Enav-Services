@@ -55,6 +55,12 @@
 
             <dependency>
                 <groupId>dk.dma.enav.services</groupId>
+                <artifactId>vts-report</artifactId>
+                <version>${enav-services.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dk.dma.enav.services</groupId>
                 <artifactId>io</artifactId>
                 <version>${enav-services.version}</version>
             </dependency>
@@ -613,6 +619,7 @@
         <module>service-registry</module>
         <module>vrmt</module>
         <module>service-registry-static</module>
+        <module>vts-report</module>
     </modules>
 
 </project>
