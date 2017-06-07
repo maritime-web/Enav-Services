@@ -1,4 +1,4 @@
-/* Copyright (c) 2017 Danish Maritime Authority.
+/* Copyright (c) 2011 Danish Maritime Authority.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ import dk.dma.embryo.user.security.Subject;
  * TODO - make a service in the maritime cloud which hosts the objects for the VTS interface.
  * TODO - security of the passed strings, injection killing etc.
  */
-
+@SuppressWarnings("all")
 @Path("/vtsemail")
 public class VtsService {
 
@@ -57,7 +57,6 @@ public class VtsService {
     private String generatedEmailBody = "";
     private String emailTo = "";
     private String userEmail = "dma.vts.test@gmail.com";
-
 
     @Setter
     @Getter
@@ -120,6 +119,7 @@ public class VtsService {
         String voyageVTSETATime;
     }
 
+
     @GET
     @Produces("text/plain")
     public String getMessage() {
@@ -157,7 +157,11 @@ public class VtsService {
         //VTS report content
         emailBody += "<br><div>";
         emailBody += "<span style='text-decoration: underline'>IMO Designator A</span><br>";
-        if(vtsdata.vesselName != null && vtsdata.vesselName != "") emailBody += "Vessel name: <strong>" + vtsdata.vesselName + "</strong><br>";
+
+        if (vtsdata.vesselName != null && !vtsdata.vesselName.equals("")) {
+            emailBody += "Vessel name: <strong>" + vtsdata.vesselName + "</strong><br>";
+        }
+
         emailBody += "Vessel name: <strong>" + vtsdata.vesselName + "</strong><br>";
         emailBody += "Vessel callsign: <strong>" + vtsdata.vesselCallSign + "</strong><br>";
         emailBody += "<br>";
@@ -346,6 +350,8 @@ public class VtsService {
 //      return Response.status(201).entity("{\"confirm\":true,\"message\":\""+emailSubject+"<br>"+emailBody+"<br>"+emailTo+"\"}").build();
 
     }
+
+
 
 
 }
