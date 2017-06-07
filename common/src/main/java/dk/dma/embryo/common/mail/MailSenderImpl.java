@@ -80,7 +80,7 @@ public class MailSenderImpl implements MailSender {
             }
 
             message.setSubject(mail.getHeader());
-            message.setText(mail.getBody());
+            message.setContent(mail.getBody(), "text/html; charset=utf-8");
             Transport.send(message);
 
             log.info("The following email to {} (cc {}) have been sent:\n{}\n{}", mail.getTo(), mail.getCc(),
