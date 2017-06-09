@@ -17,6 +17,7 @@ package dk.dma.enav.services.nwnm;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.Geometry;
+import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -28,10 +29,8 @@ import org.apache.commons.lang.StringUtils;
 import org.niord.model.DataFilter;
 import org.niord.model.message.MessageVo;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -55,19 +54,25 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
     public static final DataFilter MESSAGE_DETAILS_FILTER =
             DataFilter.get().fields("Message.details", "Message.geometry", "Area.parent", "Category.parent");
 
-    final ExpiringMap<String, NwNmServiceInstanceData> instanceMessageCache;
-    final InstanceMetadata serviceInstance;
-    final String mainType;
-    final String lang;
-    final String wkt;
+    private final EmbryoLogService embryoLogService;
+    private final HttpURLConnectionFactory httpURLConnectionFactory;
+    private final ExpiringMap<String, NwNmServiceInstanceData> instanceMessageCache;
+    private final InstanceMetadata serviceInstance;
+    private final String mainType;
+    private final String lang;
+    private final String wkt;
 
     /** Constructor */
     private MessageLoaderTask(
+            EmbryoLogService embryoLogService,
+            HttpURLConnectionFactory httpURLConnectionFactory,
             ExpiringMap<String, NwNmServiceInstanceData> instanceMessageCache,
             InstanceMetadata serviceInstance,
             String mainType,
             String lang,
             String wkt)  {
+        this.embryoLogService = embryoLogService;
+        this.httpURLConnectionFactory = httpURLConnectionFactory;
 
         this.instanceMessageCache = instanceMessageCache;
         this.serviceInstance = Objects.requireNonNull(serviceInstance);
@@ -91,11 +96,12 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
                 Map<String, List<Geometry>> geometries = computeMessageGeometries(messages);
                 data = new NwNmServiceInstanceData(messages, geometries);
                 cachedInstanceData(data);
-
+                embryoLogService.info("Loaded " + messages.size() + " messages from " + serviceInstance.getInstanceId());
             } catch (Exception e) {
                 log.error("Failed loading NW-NM messages for instance "
                         + serviceInstance.getInstanceId() + " : " + e.getMessage());
-
+                embryoLogService.error("Failed loading NW-NM messages for instance "
+                        + serviceInstance.getInstanceId(), e);
                 // If loading data causes an error, cache an empty result set for a short period of time
                 data = new NwNmServiceInstanceData(new ArrayList<>(), new HashMap<>());
                 cachedErrorInstanceData(data);
@@ -185,16 +191,6 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
     }
 
 
-    /** Creates a new connection to the given URL **/
-    private HttpURLConnection newHttpUrlConnection(String url) throws IOException {
-        HttpURLConnection con = (HttpURLConnection)(new URL(url).openConnection());
-        con.setRequestProperty("Accept", "application/json;charset=UTF-8");
-        con.setConnectTimeout(5000); //  5 seconds
-        con.setReadTimeout(10000);   // 10 seconds
-        return con;
-    }
-
-
     /**
      * Fetches NW-NM messages from the service instance
      * @return the NW-NM messages from the service instance
@@ -209,7 +205,7 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
         }
         url += NW_NM_API;
 
-        HttpURLConnection con = newHttpUrlConnection(url);
+        HttpURLConnection con = httpURLConnectionFactory.newHttpUrlConnection(url);
 
         int status = con.getResponseCode();
         if (status == HttpURLConnection.HTTP_MOVED_TEMP
@@ -220,7 +216,7 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
             String redirectUrl = con.getHeaderField("Location");
 
             // open the new connection again
-            con = newHttpUrlConnection(redirectUrl);
+            con = httpURLConnectionFactory.newHttpUrlConnection(redirectUrl);
         }
 
         try (InputStream is = con.getInputStream()) {
@@ -275,11 +271,19 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
     @Accessors(chain = true, fluent = true)
     public static class MessageLoaderTaskBuilder {
 
+        private final EmbryoLogService embryoLogService;
+        private final HttpURLConnectionFactory httpURLConnectionFactory;
         private ExpiringMap<String, NwNmServiceInstanceData> instanceMessageCache;
         private InstanceMetadata serviceInstance;
         private String mainType;
         private String lang;
         private String wkt;
+
+        public MessageLoaderTaskBuilder(EmbryoLogService embryoLogService, HttpURLConnectionFactory httpURLConnectionFactory) {
+
+            this.embryoLogService = embryoLogService;
+            this.httpURLConnectionFactory = httpURLConnectionFactory;
+        }
 
         /**
          * Constructs a new MessageLoaderTask instance
@@ -291,7 +295,7 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
                 throw new IllegalArgumentException("Cannot construct a MessageLoaderTask without a serviceInstance");
             }
 
-            return new MessageLoaderTask(instanceMessageCache, serviceInstance, mainType, lang, wkt);
+            return new MessageLoaderTask(embryoLogService, httpURLConnectionFactory, instanceMessageCache, serviceInstance, mainType, lang, wkt);
         }
     }
 }

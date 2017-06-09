@@ -14,6 +14,7 @@
  */
 package dk.dma.enav.services.nwnm;
 
+import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.enav.services.nwnm.MessageLoaderTask.MessageLoaderTaskBuilder;
 import dk.dma.enav.services.registry.api.EnavServiceRegister;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
@@ -51,6 +52,12 @@ public class NwNmService {
 
     @Inject
     private EnavServiceRegister enavServiceRegister;
+
+    @Inject
+    private EmbryoLogService embryoLogService;
+
+    @Inject
+    private HttpURLConnectionFactory httpURLConnectionFactory;
 
     private final ExecutorService executor = Executors.newFixedThreadPool(4);
 
@@ -102,7 +109,7 @@ public class NwNmService {
                 if (serviceInstance != null) {
 
                     // Construct a task for fetching messages
-                    MessageLoaderTask task = new MessageLoaderTaskBuilder()
+                    MessageLoaderTask task = new MessageLoaderTaskBuilder(embryoLogService, httpURLConnectionFactory)
                             .instanceMessageCache(instanceMessageCache)
                             .serviceInstance(serviceInstance)
                             .mainType(mainType)

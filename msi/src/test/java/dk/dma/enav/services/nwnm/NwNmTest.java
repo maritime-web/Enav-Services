@@ -14,10 +14,12 @@
  */
 package dk.dma.enav.services.nwnm;
 
+import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.enav.services.nwnm.MessageLoaderTask.MessageLoaderTaskBuilder;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Test loading NW-NM messages
@@ -28,6 +30,7 @@ public class NwNmTest {
     @Ignore
     @Test
     public void messageLoaderTest() throws Exception {
+        EmbryoLogService embryoLogService = Mockito.mock(EmbryoLogService.class);
 
         // Check the redirect works
         String url = "http://niord.e-navigation.net/rest/";
@@ -37,7 +40,7 @@ public class NwNmTest {
                     .setUrl(url);
 
             MessageLoaderTask task =
-                    new MessageLoaderTaskBuilder()
+                    new MessageLoaderTaskBuilder(embryoLogService, new HttpURLConnectionFactory())
                             .serviceInstance(instance)
                             .mainType("NW")
                             .lang("en")
