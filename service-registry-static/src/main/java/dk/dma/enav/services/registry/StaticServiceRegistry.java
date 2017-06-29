@@ -39,7 +39,14 @@ public class StaticServiceRegistry implements EnavServiceRegister {
 
     @Override
     public List<InstanceMetadata> getServiceInstances(String wktLocationFilter) {
-        throw new UnsupportedOperationException("");
+        InstanceMetadata res = new InstanceMetadata("NWNM", "1.0", 1L);
+        res
+                .setDescription("ArcticWeb specific service registry providing access to the NW-NM service")
+                .setName("NWNM Service Endpoint")
+                .setProducedBy(new VendorInfo("DMA"))
+                .setProvidedBy(new VendorInfo("DMA"))
+                .setUrl(url);
+        return Collections.singletonList(res);
     }
 
     @Override

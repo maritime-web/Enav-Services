@@ -38,7 +38,7 @@ public class StaticServiceRegistryTest {
 
     @Test
     public void shouldUseInjectedPropertyAsUrlInInstanceMetaData() throws Exception {
-        List<InstanceMetadata> instanceMetadata = cut.getServiceInstances(null);
+        List<InstanceMetadata> instanceMetadata = cut.getServiceInstances("");
 
         assertThat(instanceMetadata.get(0).getUrl(), is(not(nullValue())));
     }
