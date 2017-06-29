@@ -62,6 +62,13 @@ public class MaritimeCloudServiceRegistryIT {
 
         assertThat(res.size(), is(greaterThan(0)));
     }
+
+    @Test
+    public void shouldGetAllSerivceInstances() throws Exception {
+        List<InstanceMetadata> res = cut.getServiceInstances(null, "POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))");
+        assertThat(res.size(), is(greaterThan(0)));
+    }
+
     @Test
     @Ignore("Service does not exist on sr-test")
     public void shouldGetSatelitteService() throws Exception {
