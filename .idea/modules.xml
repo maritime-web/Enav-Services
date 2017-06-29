@@ -19,7 +19,6 @@
       <module fileurl="file://$PROJECT_DIR$/vessel/vessel.iml" filepath="$PROJECT_DIR$/vessel/vessel.iml" />
       <module fileurl="file://$PROJECT_DIR$/vrmt/vrmt.iml" filepath="$PROJECT_DIR$/vrmt/vrmt.iml" />
       <module fileurl="file://$PROJECT_DIR$/vts-report/vts-report.iml" filepath="$PROJECT_DIR$/vts-report/vts-report.iml" />
-      <module fileurl="file://C:\dev\projekter\Enav-Services\vts-report\vts-report.iml" filepath="C:\dev\projekter\Enav-Services\vts-report\vts-report.iml" />
       <module fileurl="file://$PROJECT_DIR$/weather/weather.iml" filepath="$PROJECT_DIR$/weather/weather.iml" />
     </modules>
   </component>
