@@ -38,6 +38,11 @@ public class StaticServiceRegistry implements EnavServiceRegister {
     }
 
     @Override
+    public List<InstanceMetadata> getServiceInstances(String wktLocationFilter) {
+        throw new UnsupportedOperationException("");
+    }
+
+    @Override
     public List<InstanceMetadata> getServiceInstances(List<String> instanceIds) {
         InstanceMetadata res = new InstanceMetadata("NWNM", "1.0", 1L);
         res
