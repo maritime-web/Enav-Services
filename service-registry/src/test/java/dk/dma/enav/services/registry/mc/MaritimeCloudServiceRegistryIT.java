@@ -65,7 +65,7 @@ public class MaritimeCloudServiceRegistryIT {
 
     @Test
     public void shouldGetAllSerivceInstances() throws Exception {
-        List<InstanceMetadata> res = cut.getServiceInstances(null, "POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))");
+        List<InstanceMetadata> res = cut.getServiceInstances("POLYGON((-180 -90, 180 -90, 180 90, -180 90, -180 -90))");
         assertThat(res.size(), is(greaterThan(0)));
     }
 
