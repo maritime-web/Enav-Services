@@ -18,6 +18,9 @@ package dk.dma.enav.services.vtsreport.service;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 
 /**
@@ -27,6 +30,14 @@ import javax.ws.rs.Produces;
 
 @Path("/vtsinterface")
 public class VtsInterfacePopulationService {
+
+
+    private static String TimeStamp() {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss-yyyy/MM/dd");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return sdf.format(new Date());
+    }
+    String timestamp = TimeStamp();
 
 
     @GET
@@ -54,7 +65,7 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "\"showMaxDraught\":false,";
         VtsJsObjects += "\"showAirDraught\":true,";
         VtsJsObjects += "\"showFuelQuantity\":false,";
-        VtsJsObjects += "\"showFuelDetails\":false,"; //required but disabled for testing
+        VtsJsObjects += "\"showFuelDetails\":true,";
         VtsJsObjects += "\"showVesselType\":false,";
         VtsJsObjects += "\"showVesselLength\":false,";
         VtsJsObjects += "\"showDeadWeightTonnage\":true,";
@@ -83,7 +94,7 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "\"showMaxDraught\":true,";
         VtsJsObjects += "\"showAirDraught\":true,";
         VtsJsObjects += "\"showFuelQuantity\":false,";
-        VtsJsObjects += "\"showFuelDetails\":false,"; //required but disabled for testing
+        VtsJsObjects += "\"showFuelDetails\":true,";
         VtsJsObjects += "\"showVesselType\":false,";
         VtsJsObjects += "\"showVesselLength\":false,";
         VtsJsObjects += "\"showDeadWeightTonnage\":false,";
@@ -153,7 +164,7 @@ public class VtsInterfacePopulationService {
 
         VtsJsObjects += "{\"id\": "+(counter++)+",";
         VtsJsObjects += "\"shortname\": \"GOFREP-St.Petersburg\",";
-        VtsJsObjects += "\"name\": \"Russia - GOFREP Helsinki - Gulf Of Finland Vessel Traffic Service\",";
+        VtsJsObjects += "\"name\": \"Russia - GOFREP St. Petersburg - Gulf Of Finland Vessel Traffic Service\",";
         VtsJsObjects += "\"callsign\":\"St. Peterburg Traffic\",";
         VtsJsObjects += "\"email\":\"gofrep@rsbm.ru\",";
         VtsJsObjects += "\"telephone\":\"+7 12 380 70 21\",";
@@ -178,39 +189,9 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "\"deadWeightTonnageLimit\":0,";
         VtsJsObjects += "\"sendSummaryTo\":\"email\"}";
 
-
-        VtsJsObjects += ","; //next item
-
-        VtsJsObjects += "{\"id\": "+(counter++)+",";
-        VtsJsObjects += "\"shortname\": \"TESTREP\",";
-        VtsJsObjects += "\"name\": \"Roland - TESTREP - Awesome Vessel Traffic Service\",";
-        VtsJsObjects += "\"callsign\":\"YOLO Traffic\",";
-        VtsJsObjects += "\"email\":\"dma.vts.test@gmail.com\",";
-        VtsJsObjects += "\"telephone\":\"555-no-idea\",";
-        VtsJsObjects += "\"telephone2\":\"555-still-dunno\",";
-        VtsJsObjects += "\"fax\":\"555-fax-fun\",";
-        VtsJsObjects += "\"vhfchannel1\":\"North 1\",";
-        VtsJsObjects += "\"vhfchannel2\":\"East 2\",";
-        VtsJsObjects += "\"vhfchannel3\":\"West 3\",";
-        VtsJsObjects += "\"vhfchannel4\":\"South 4\",";
-        VtsJsObjects += "\"vhfreservechannel1\":\"11\",";
-        VtsJsObjects += "\"vhfreservechannel2\":\"12\",";
-        VtsJsObjects += "\"iconImage\":\"img/OpenPortGuideLogo_32.png\",";
-        VtsJsObjects += "\"VTSGuideLink\":\"http://images.fandango.com/images/fandangoblog/minions618F1.jpg\",";
-        VtsJsObjects += "\"showMaxDraught\":true,";
-        VtsJsObjects += "\"showAirDraught\":true,";
-        VtsJsObjects += "\"showFuelQuantity\":true,";
-        VtsJsObjects += "\"showFuelDetails\":true,";
-        VtsJsObjects += "\"showVesselType\":true,";
-        VtsJsObjects += "\"showVesselLength\":true,";
-        VtsJsObjects += "\"showDeadWeightTonnage\":true,";
-        VtsJsObjects += "\"showGrossTonnage\":true,";
-        VtsJsObjects += "\"deadWeightTonnageLimit\":0,";
-        VtsJsObjects += "\"sendSummaryTo\":\"email\"}";
-
         VtsJsObjects += "]"; //end array
 
-        return "{\"VtsJsObjects\":"+VtsJsObjects+"}";
+        return "{\"timestampUTC\":\"" + timestamp + "\",\"VtsJsObjects\":"+VtsJsObjects+"}";
     }
 
 }

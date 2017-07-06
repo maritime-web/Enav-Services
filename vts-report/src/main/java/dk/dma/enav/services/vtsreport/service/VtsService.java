@@ -71,11 +71,10 @@ public class VtsService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createTrackInJSON(Reader vtsdata) {
 
-        long ts = System.currentTimeMillis();
-        Date localTime = new Date(ts);
+//        long ts = System.currentTimeMillis();
+//        Date localTime = new Date(ts);
         String format = "HH:mm:ss - yyyy/MM/dd";
         SimpleDateFormat sdf = new SimpleDateFormat(format);
-
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         String UTCtimestamp = sdf.format(new Date());
 
@@ -108,7 +107,7 @@ public class VtsService {
         emailBody += "<br>";
 
         emailBody += "<span style='text-decoration: underline'>IMO Designator B</span><br>";
-        emailBody += "ETA at reporting area: <strong>" + vtsdata.voyageVTSETATime + " - " + vtsdata.voyageVTSETADate + " UTC </strong>";
+        emailBody += "ETA at reporting area: <strong>" + vtsdata.voyageVTSETADateTime + " UTC </strong>";
         emailBody += "<br><br>";
 
         emailBody += "<span style='text-decoration: underline'>IMO Designator C</span><br>";
@@ -194,12 +193,27 @@ public class VtsService {
             emailBody += "<span style='font-weight: bold; color:BB0000;'>Dangerous cargo or pollutant lost over board:</span>";
             emailBody += "<br>" + vtsdata.cargoPollutantOrDCLostOverBoard;
         }
-        //END cargo information
 
         emailBody += "<br><br>";
 
         emailBody += "<span style='text-decoration: underline'>IMO Designator T</span><br>";
-        emailBody += "Designated Person Ashore, or communication of cargo contact information:<br><strong>" + vtsdata.cargoInformationOrOwnerContact + "</strong>";
+        if(hasValue(vtsdata.cargoDPAName)) { //not mandatory
+            emailBody += "Name of Designated Person Ashore, or Cargo Agent<br><strong>" + vtsdata.cargoDPAName + "</strong>";
+        }
+        if(hasValue(vtsdata.cargoDPATelephone)) { //mandatory
+            emailBody += "Email: " + vtsdata.cargoDPATelephone + "";
+        }
+        if(hasValue(vtsdata.cargoDPAEmail)) { //mandatory
+            emailBody += "Email: " + vtsdata.cargoDPAEmail + "";
+        }
+        if(hasValue(vtsdata.cargoDPAName)) { //not mandatory
+            emailBody += "<br>";
+            emailBody += "Additional contact information for cargo:";
+            emailBody += "<br>";
+            emailBody += vtsdata.cargoAdditionalContactInformation;
+        }
+        //END cargo information
+
         emailBody += "<br><br>";
 
         emailBody += "<span style='text-decoration: underline'>IMO Designator W</span><br>";
@@ -284,10 +298,10 @@ public class VtsService {
 
         mailSender.sendEmail(new VtsReportMail(generatedEmailSubject, generatedEmailBody, userEmail, emailTo, propertyFileService));
 
-        return Response.status(201).entity("{\"confirm\":true}").build();
+//        return Response.status(201).entity("{\"confirm\":true}").build();
 
         //For debug, returns the email header and body with POST status
-//      return Response.status(201).entity("{\"confirm\":true,\"message\":\""+emailSubject+"<br>"+emailBody+"<br>"+emailTo+"\"}").build();
+      return Response.status(201).entity("{\"confirm\":true,\"message\":\""+emailSubject+"<br>"+emailBody+"<br>"+emailTo+"\"}").build();
 
     }
 
@@ -346,15 +360,18 @@ public class VtsService {
         String cargoDangerousCargoOnBoard;
         String cargoIMOClassesOnBoard;
         String cargoPollutantOrDCLostOverBoard;
-        String cargoInformationOrOwnerContact;
+        String cargoAdditionalContactInformation;
+        String cargoDPAName;
+        String cargoDPATelephone;
+        String cargoDPAEmail;
+
 
         String voyagePositionLon;
         String voyagePositionLat;
         String voyageSpeed;
         String voyageTrueHeading;
         String voyagePortOfDestination;
-        String voyageVTSETADate;
-        String voyageVTSETATime;
+        String voyageVTSETADateTime;
     }
 
 
