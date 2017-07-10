@@ -56,4 +56,19 @@ public class ServiceLookupRestService {
 
         return res;
     }
+
+    @Path("/lookup/")
+    @Produces("application/json")
+    @GET
+    public List<InstanceMetadata> lookupAllInstances(@QueryParam("wkt") String location) {
+        List<InstanceMetadata> res;
+
+        try {
+            res = enavServiceRegister.getServiceInstances(location);
+        } catch (NoServicesFoundException e) {
+            throw new WebApplicationException(Response.status(NO_CONTENT).entity(new String[] {"Unable to find any service implementation in boundary defined by \"" + location + "\""}).build());
+        }
+
+        return res;
+    }
 }

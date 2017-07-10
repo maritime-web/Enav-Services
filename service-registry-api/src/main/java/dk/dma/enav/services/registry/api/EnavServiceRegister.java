@@ -31,6 +31,15 @@ public interface EnavServiceRegister {
      */
     List<InstanceMetadata> getServiceInstances(TechnicalDesignId id, String wktLocationFilter);
 
+
+    /**
+     * Get all service instance descriptions which are valid in the given area.
+     * @param wktLocationFilter wkt describing the area of interest
+     * @return every instance description
+     * @throws NoServicesFoundException if no service instances matching the parameters can be found
+     */
+    List<InstanceMetadata> getServiceInstances( String wktLocationFilter);
+
     /**
      * Find information for service instances identified by the given instance id's. This method will always
      * get the latest version of the required service instances.

@@ -52,6 +52,20 @@ public class MaritimeCloudServiceRegistry implements EnavServiceRegister {
     }
 
     @Override
+    public List<InstanceMetadata> getServiceInstances(String wktLocationFilter) {
+        List<InstanceMetadata> result = instanceRepository.getAllInstances().stream()
+                .filter(instance -> wktLocationFilter == null || instance.intersects(wktLocationFilter))
+                .collect(Collectors.toList());
+
+        if (result.isEmpty()) {
+            throw new NoServicesFoundException();
+        }
+
+        return result;
+    }
+
+
+    @Override
     public List<InstanceMetadata> getServiceInstances(List<String> instanceIds) {
 
         return instanceRepository.getAllInstances().stream()
