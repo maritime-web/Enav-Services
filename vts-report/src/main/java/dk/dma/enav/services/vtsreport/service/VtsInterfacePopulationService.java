@@ -70,6 +70,8 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "\"showVesselLength\":false,";
         VtsJsObjects += "\"showDeadWeightTonnage\":true,";
         VtsJsObjects += "\"showGrossTonnage\":false,";
+        VtsJsObjects += "\"showTrueCourse\":true,";
+        VtsJsObjects += "\"showVesselCurrentPosition\":true,";
         VtsJsObjects += "\"deadWeightTonnageLimit\":1000,";//TODO: at which tonnage to display fueldetails - uses deadWeightTonnageMultiplier with cargoTypes
         VtsJsObjects += "\"sendSummaryTo\":\"email\"}";//TODO: sends summary as email to the registered email, can also send as JSON to service in future version, ex: "https://beltrep.org/services/VTSservice"
 
@@ -99,6 +101,8 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "\"showVesselLength\":false,";
         VtsJsObjects += "\"showDeadWeightTonnage\":false,";
         VtsJsObjects += "\"showGrossTonnage\":false,";
+        VtsJsObjects += "\"showTrueCourse\":false,";
+        VtsJsObjects += "\"showVesselCurrentPosition\":false,";
         VtsJsObjects += "\"deadWeightTonnageLimit\":1000,";
         VtsJsObjects += "\"sendSummaryTo\":\"email\"}";
 
@@ -128,6 +132,8 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "\"showVesselLength\":true,";
         VtsJsObjects += "\"showDeadWeightTonnage\":false,";
         VtsJsObjects += "\"showGrossTonnage\":false,";
+        VtsJsObjects += "\"showTrueCourse\":true,";
+        VtsJsObjects += "\"showVesselCurrentPosition\":true,";
         VtsJsObjects += "\"deadWeightTonnageLimit\":0,";
         VtsJsObjects += "\"sendSummaryTo\":\"email\"}";
 
@@ -157,6 +163,8 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "\"showVesselLength\":true,";
         VtsJsObjects += "\"showDeadWeightTonnage\":false,";
         VtsJsObjects += "\"showGrossTonnage\":false,";
+        VtsJsObjects += "\"showTrueCourse\":true,";
+        VtsJsObjects += "\"showVesselCurrentPosition\":true,";
         VtsJsObjects += "\"deadWeightTonnageLimit\":0,";
         VtsJsObjects += "\"sendSummaryTo\":\"email\"}";
 
@@ -186,6 +194,8 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "\"showVesselLength\":true,";
         VtsJsObjects += "\"showDeadWeightTonnage\":false,";
         VtsJsObjects += "\"showGrossTonnage\":false,";
+        VtsJsObjects += "\"showTrueCourse\":true,";
+        VtsJsObjects += "\"showVesselCurrentPosition\":true,";
         VtsJsObjects += "\"deadWeightTonnageLimit\":0,";
         VtsJsObjects += "\"sendSummaryTo\":\"email\"}";
 
