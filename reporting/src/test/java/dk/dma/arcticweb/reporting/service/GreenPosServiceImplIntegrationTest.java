@@ -80,7 +80,7 @@ public class GreenPosServiceImplIntegrationTest {
         vessel = new Vessel();
         vessel.getAisData().setName("MyShip");
         vessel.getAisData().setCallsign("AA");
-        vessel.setMmsi(0L);
+        vessel.setMmsi(100000000L);
 
         entityManager.persist(vessel);
 
@@ -118,7 +118,7 @@ public class GreenPosServiceImplIntegrationTest {
 
         DateTime datetime = DateTime.now(DateTimeZone.UTC);
 
-        GreenPosSailingPlanReport spReport = new GreenPosSailingPlanReport("MyShip", 0L, "AA", new Position(
+        GreenPosSailingPlanReport spReport = new GreenPosSailingPlanReport("MyShip", 100000000L, "AA", new Position(
                 "64 10.400N", "051 43.500W"), 1, "Weather", "Ice", 12.0, 343, "Nuuk", datetime, 12,
                 "Route with no particular good description", null);
 
@@ -135,7 +135,7 @@ public class GreenPosServiceImplIntegrationTest {
         route.addWayPoint(new WayPoint("wp1", 60.0, -60.0, 1.0, 1.0));
         route.addWayPoint(new WayPoint("wp2", 62.0, -62.0, 1.0, 1.0));
         route.addWayPoint(new WayPoint("wp3", 64.0, -64.0, 1.0, 1.0));
-        Mockito.when(scheduleDao.getActiveRoute(0L)).thenReturn(route);
+        Mockito.when(scheduleDao.getActiveRoute(100000000L)).thenReturn(route);
 
         greenPosService.saveReport(spReport, null, null, Boolean.TRUE, "greenpos");
 
@@ -151,7 +151,7 @@ public class GreenPosServiceImplIntegrationTest {
         GreenPosSailingPlanReport spResult = (GreenPosSailingPlanReport) reports.get(0);
 
         Assert.assertEquals("MyShip", spResult.getVesselName());
-        Assert.assertEquals(Long.valueOf(0L), spResult.getVesselMmsi());
+        Assert.assertEquals(Long.valueOf(100000000L), spResult.getVesselMmsi());
         Assert.assertEquals("AA", spResult.getVesselCallSign());
         Assert.assertEquals("64 10.400N", spResult.getPosition().getLatitudeAsString());
         Assert.assertEquals("051 43.500W", spResult.getPosition().getLongitudeAsString());

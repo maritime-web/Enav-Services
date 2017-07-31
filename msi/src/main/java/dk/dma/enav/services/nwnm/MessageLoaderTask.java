@@ -99,7 +99,7 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
                 embryoLogService.info("Loaded " + messages.size() + " messages from " + serviceInstance.getInstanceId());
             } catch (Exception e) {
                 log.error("Failed loading NW-NM messages for instance "
-                        + serviceInstance.getInstanceId() + " : " + e.getMessage());
+                        + serviceInstance.getInstanceId() + " : " + e.getMessage(), e);
                 embryoLogService.error("Failed loading NW-NM messages for instance "
                         + serviceInstance.getInstanceId(), e);
                 // If loading data causes an error, cache an empty result set for a short period of time

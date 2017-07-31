@@ -16,6 +16,7 @@ package dk.dma.embryo.user.service;
 
 import dk.dma.embryo.user.model.AdministratorRole;
 import dk.dma.embryo.user.model.AreasOfInterest;
+import dk.dma.embryo.user.model.KnownRoles;
 import dk.dma.embryo.user.model.ReportingAuthorityRole;
 import dk.dma.embryo.user.model.Role;
 import dk.dma.embryo.user.model.SailorRole;
@@ -66,8 +67,9 @@ public class UserServiceImpl implements UserService {
             AdministratorRole administrator = new AdministratorRole();
             realmDao.saveEntity(administrator);
             return administrator;
+        default:
+            throw new IllegalArgumentException("Unknown role \""+role+"\"");
         }
-        return null;
     }
 
     private Vessel getVessel(Long mmsi) {
@@ -95,12 +97,16 @@ public class UserServiceImpl implements UserService {
     }
 
     public void edit(String login, Long mmsi, String email, String role, String aisFilterName) {
+
         SecuredUser user = realmDao.findByUsername(login);
 
-        user.setEmail(email);
+        if (email != null) {
+            user.setEmail(email);
+        }
+
         user.setAisFilterName(aisFilterName);
 
-        if (user.getRole() != null && !user.getRole().getLogicalName().equalsIgnoreCase(role)) {
+        if (role != null) {
             if (user.getRole().getClass() == SailorRole.class) {
                 Role oldRole = user.getRole();
                 Vessel oldVessel = ((SailorRole) oldRole).getVessel();
@@ -127,7 +133,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(String login) {
-        realmDao.remove(realmDao.findByUsername(login));
+        SecuredUser user = realmDao.findByUsername(login);
+        if (user.getRole().getClass() == SailorRole.class) {
+            Vessel v = ((SailorRole)user.getRole()).getVessel();
+            vesselDao.remove(v);
+        }
+        realmDao.remove(user);
     }
 
     @Override

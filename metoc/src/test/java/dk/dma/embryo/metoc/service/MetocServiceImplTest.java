@@ -69,7 +69,7 @@ public class MetocServiceImplTest {
 
 
     public Route createTestRouteWithVoyageAndVessel() {
-        Vessel vessel = new Vessel(1234L);
+        Vessel vessel = new Vessel(123400000L);
 
         Voyage voyage = new Voyage("voyageId");
         vessel.addVoyageEntry(voyage);

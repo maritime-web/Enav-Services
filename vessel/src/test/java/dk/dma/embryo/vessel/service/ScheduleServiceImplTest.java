@@ -65,7 +65,7 @@ public class ScheduleServiceImplTest {
 //        user.setRole(sailor);
 //        entityManager.persist(user);
 
-        Vessel vessel = new Vessel(10L);
+        Vessel vessel = new Vessel(100000000L);
         entityManager.persist(vessel);
 
         vessel.addVoyageEntry(new Voyage("City1", "1 1.100N", "1 2.000W", DateTime.parse("2013-06-19T12:23+00:00"),
@@ -85,7 +85,7 @@ public class ScheduleServiceImplTest {
 //        user.setRole(sailor);
 //        entityManager.persist(user);
 
-        vessel = new Vessel(20L);
+        vessel = new Vessel(200000000L);
         entityManager.persist(vessel);
 
         entityManager.getTransaction().commit();
