@@ -24,13 +24,10 @@ import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.niord.model.DataFilter;
 import org.niord.model.message.MessageVo;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -50,12 +47,12 @@ import java.util.stream.Collectors;
 @Slf4j
 final class MessageLoaderTask implements Callable<List<MessageVo>> {
 
-    public static final String NW_NM_API = "public/v1/messages";
-    public static final DataFilter MESSAGE_DETAILS_FILTER =
+    private static final String NW_NM_API = "public/v1/messages";
+    private static final DataFilter MESSAGE_DETAILS_FILTER =
             DataFilter.get().fields("Message.details", "Message.geometry", "Area.parent", "Category.parent");
 
     private final EmbryoLogService embryoLogService;
-    private final HttpURLConnectionFactory httpURLConnectionFactory;
+    private final NwNmConnectionManager connectionManager;
     private final ExpiringMap<String, NwNmServiceInstanceData> instanceMessageCache;
     private final InstanceMetadata serviceInstance;
     private final String mainType;
@@ -65,14 +62,14 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
     /** Constructor */
     private MessageLoaderTask(
             EmbryoLogService embryoLogService,
-            HttpURLConnectionFactory httpURLConnectionFactory,
+            NwNmConnectionManager connectionManager,
             ExpiringMap<String, NwNmServiceInstanceData> instanceMessageCache,
             InstanceMetadata serviceInstance,
             String mainType,
             String lang,
             String wkt)  {
         this.embryoLogService = embryoLogService;
-        this.httpURLConnectionFactory = httpURLConnectionFactory;
+        this.connectionManager = connectionManager;
 
         this.instanceMessageCache = instanceMessageCache;
         this.serviceInstance = Objects.requireNonNull(serviceInstance);
@@ -80,6 +77,7 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
         this.lang = StringUtils.defaultIfBlank(lang, "en");
         this.wkt = wkt;
     }
+
 
 
     /** Fetch the messages from the given service instance. */
@@ -205,34 +203,18 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
         }
         url += NW_NM_API;
 
-        HttpURLConnection con = httpURLConnectionFactory.newHttpUrlConnection(url);
 
-        int status = con.getResponseCode();
-        if (status == HttpURLConnection.HTTP_MOVED_TEMP
-                || status == HttpURLConnection.HTTP_MOVED_PERM
-                || status == HttpURLConnection.HTTP_SEE_OTHER) {
+        String json = connectionManager.getJson(url);
 
-            // get redirect url from "location" header field
-            String redirectUrl = con.getHeaderField("Location");
+        ObjectMapper mapper = new ObjectMapper();
+        List<MessageVo> messages = mapper.readValue(json, new TypeReference<List<MessageVo>>(){});
 
-            // open the new connection again
-            con = httpURLConnectionFactory.newHttpUrlConnection(redirectUrl);
-        }
+        log.info(String.format(
+                "Loaded %d NW-NM messages in %s ms",
+                messages.size(),
+                System.currentTimeMillis() - t0));
 
-        try (InputStream is = con.getInputStream()) {
-
-            String json = IOUtils.toString(is, "UTF-8");//Assuming UTF-8
-
-            ObjectMapper mapper = new ObjectMapper();
-            List<MessageVo> messages = mapper.readValue(json, new TypeReference<List<MessageVo>>(){});
-
-            log.info(String.format(
-                    "Loaded %d NW-NM messages in %s ms",
-                    messages.size(),
-                    System.currentTimeMillis() - t0));
-
-            return messages;
-        }
+        return messages;
     }
 
 
@@ -272,17 +254,17 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
     public static class MessageLoaderTaskBuilder {
 
         private final EmbryoLogService embryoLogService;
-        private final HttpURLConnectionFactory httpURLConnectionFactory;
+        private final NwNmConnectionManager connectionManager;
         private ExpiringMap<String, NwNmServiceInstanceData> instanceMessageCache;
         private InstanceMetadata serviceInstance;
         private String mainType;
         private String lang;
         private String wkt;
 
-        public MessageLoaderTaskBuilder(EmbryoLogService embryoLogService, HttpURLConnectionFactory httpURLConnectionFactory) {
+        MessageLoaderTaskBuilder(EmbryoLogService embryoLogService, NwNmConnectionManager connectionManager) {
 
             this.embryoLogService = embryoLogService;
-            this.httpURLConnectionFactory = httpURLConnectionFactory;
+            this.connectionManager = connectionManager;
         }
 
         /**
@@ -295,7 +277,7 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
                 throw new IllegalArgumentException("Cannot construct a MessageLoaderTask without a serviceInstance");
             }
 
-            return new MessageLoaderTask(embryoLogService, httpURLConnectionFactory, instanceMessageCache, serviceInstance, mainType, lang, wkt);
+            return new MessageLoaderTask(embryoLogService, connectionManager, instanceMessageCache, serviceInstance, mainType, lang, wkt);
         }
     }
 }

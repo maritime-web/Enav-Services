@@ -23,9 +23,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.ByteArrayInputStream;
-import java.net.HttpURLConnection;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -146,25 +143,21 @@ public class MessageLoaderTaskTest {
     @Mock
     private EmbryoLogService embryoLogService;
     @Mock
-    private HttpURLConnectionFactory httpURLConnectionFactory;
+    private NwNmConnectionManager connectionManager;
     @Mock
     private InstanceMetadata serviceInstance;
 
     @InjectMocks
     private MessageLoaderTask cut;
 
-    @Mock
-    private HttpURLConnection httpURLConnection;
-
     @Before
     public void setUp() throws Exception {
         when(serviceInstance.getUrl()).thenReturn("an url");
-        when(httpURLConnectionFactory.newHttpUrlConnection(anyString())).thenReturn(httpURLConnection);
     }
 
     @Test
     public void shouldLogSuccessToLogService() throws Exception {
-        when(httpURLConnection.getInputStream()).thenReturn(new ByteArrayInputStream(message.getBytes()));
+        when(connectionManager.getJson(anyString())).thenReturn(message);
 
         cut.call();
 
@@ -173,7 +166,7 @@ public class MessageLoaderTaskTest {
 
     @Test
     public void shouldLogErrorToLogService() throws Exception {
-        when(httpURLConnection.getInputStream()).thenReturn(new ByteArrayInputStream("Bad data".getBytes()));
+        when(connectionManager.getJson(anyString())).thenReturn("Bad data");
 
         cut.call();
 

@@ -2,13 +2,13 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Enav-Services.iml" filepath="$PROJECT_DIR$/.idea/Enav-Services.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/dataformats/dataformats.iml" filepath="$PROJECT_DIR$/dataformats/dataformats.iml" />
       <module fileurl="file://$PROJECT_DIR$/io/io.iml" filepath="$PROJECT_DIR$/io/io.iml" />
       <module fileurl="file://$PROJECT_DIR$/map-tiles/map-tiles.iml" filepath="$PROJECT_DIR$/map-tiles/map-tiles.iml" />
       <module fileurl="file://$PROJECT_DIR$/metoc/metoc.iml" filepath="$PROJECT_DIR$/metoc/metoc.iml" />
       <module fileurl="file://$PROJECT_DIR$/msi/msi.iml" filepath="$PROJECT_DIR$/msi/msi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/parent.iml" filepath="$PROJECT_DIR$/parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/reporting/reporting.iml" filepath="$PROJECT_DIR$/reporting/reporting.iml" />
       <module fileurl="file://$PROJECT_DIR$/sar/sar.iml" filepath="$PROJECT_DIR$/sar/sar.iml" />
       <module fileurl="file://$PROJECT_DIR$/service-registry/service-registry.iml" filepath="$PROJECT_DIR$/service-registry/service-registry.iml" />
