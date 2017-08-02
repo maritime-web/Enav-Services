@@ -2,7 +2,6 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -20,6 +19,7 @@
         <module name="service-registry-static" />
         <module name="test-utilities" />
         <module name="user" />
+        <module name="version" />
         <module name="vessel" />
         <module name="vrmt" />
         <module name="vts-report" />
@@ -41,6 +41,7 @@
       <module name="service-registry-static" target="1.8" />
       <module name="test-utilities" target="1.8" />
       <module name="user" target="1.8" />
+      <module name="version" target="1.8" />
       <module name="vessel" target="1.8" />
       <module name="vrmt" target="1.8" />
       <module name="vts-report" target="1.8" />

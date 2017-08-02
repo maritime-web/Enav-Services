@@ -15,10 +15,10 @@
     <file url="file://$PROJECT_DIR$/service-registry-static" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/test-utilities" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/user" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/version" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vessel" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vrmt" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vts-report" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/weather" charset="UTF-8" />
-    <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

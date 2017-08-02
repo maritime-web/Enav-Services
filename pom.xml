@@ -620,6 +620,7 @@
         <module>vrmt</module>
         <module>service-registry-static</module>
         <module>vts-report</module>
+        <module>version</module>
     </modules>
 
 </project>

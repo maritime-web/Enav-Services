@@ -16,6 +16,7 @@
       <module fileurl="file://$PROJECT_DIR$/service-registry-static/service-registry-static.iml" filepath="$PROJECT_DIR$/service-registry-static/service-registry-static.iml" />
       <module fileurl="file://$PROJECT_DIR$/test-utilities/test-utilities.iml" filepath="$PROJECT_DIR$/test-utilities/test-utilities.iml" />
       <module fileurl="file://$PROJECT_DIR$/user/user.iml" filepath="$PROJECT_DIR$/user/user.iml" />
+      <module fileurl="file://$PROJECT_DIR$/version/version.iml" filepath="$PROJECT_DIR$/version/version.iml" />
       <module fileurl="file://$PROJECT_DIR$/vessel/vessel.iml" filepath="$PROJECT_DIR$/vessel/vessel.iml" />
       <module fileurl="file://$PROJECT_DIR$/vrmt/vrmt.iml" filepath="$PROJECT_DIR$/vrmt/vrmt.iml" />
       <module fileurl="file://$PROJECT_DIR$/vts-report/vts-report.iml" filepath="$PROJECT_DIR$/vts-report/vts-report.iml" />
