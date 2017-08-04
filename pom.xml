@@ -5,7 +5,8 @@
     <groupId>dk.dma.enav.services</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.5-SNAPSHOT</version>
+    <!-- static version number. Release versions don't get pushed to VCS -->
+    <version>1.0-Developer-SNAPSHOT</version>
     <name>e-Navigation Services parent</name>
     <description>Parent project for all the e-nav services</description>
 
@@ -28,7 +29,7 @@
 
 
     <properties>
-        <enav-services.version>1.0.5-SNAPSHOT</enav-services.version>
+        <enav-services.version>1.0-Developer-SNAPSHOT</enav-services.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <shiro.version>1.2.2</shiro.version>
         <version.org.jboss.spec.javaee7>1.0.3.Final</version.org.jboss.spec.javaee7>
