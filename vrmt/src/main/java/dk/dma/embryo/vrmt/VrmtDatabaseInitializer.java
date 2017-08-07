@@ -66,7 +66,7 @@ public class VrmtDatabaseInitializer {
 
     @PostConstruct
     public void initialize() {
-        log.info("Initializing VRMT databases");
+        log.info("Initializing VRMT databases {host: " + host + ", port: " + port + ", user: " + user + ", password: " + password);
         userService.list().stream().filter(this::onlySailors).forEach(this::createDb);
     }
 
@@ -74,15 +74,21 @@ public class VrmtDatabaseInitializer {
         return securedUser.getRole() instanceof SailorRole;
     }
 
+    /**
+     * Creates a Voyage Risk Management Tool data base unique for user.
+     */
     private void createDb(SecuredUser securedUser) {
-        String dbUrl = "http://" + host + ":" + port + "/" + securedUser.getUserName();
+        String dbName = "vrmt_" + ((SailorRole)securedUser.getRole()).getVessel().getMmsi();
+        String dbUrl = "http://" + host + ":" + port + "/" + dbName;
         try {
             Request request = Request.Put(dbUrl).connectTimeout(30000).socketTimeout(30000);
             HttpResponse httpResponse =  createExecutor().execute(request).returnResponse();
             int statusCode = httpResponse.getStatusLine().getStatusCode();
             if (!(statusCode == 412 || statusCode < 300)) {
-                throw new EmbryonicException("Unable to create CouchDb from url: " + dbUrl + " Status code: " + statusCode);
+                String reason = httpResponse.getStatusLine().getReasonPhrase();
+                throw new EmbryonicException("Unable to create CouchDb from url: " + dbUrl + " Status code: " + statusCode + " Reason: " + reason);
             }
+            log.info("Created database '"+dbName+"' with statuscode '"+statusCode+"'" + (statusCode == 412 ? " already exists" : " created"));
         } catch (IOException e) {
             throw new EmbryonicException("Unable to create CouchDb from url: " + dbUrl, e);
         }
