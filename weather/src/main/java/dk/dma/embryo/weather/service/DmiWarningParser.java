@@ -41,20 +41,14 @@ import org.xml.sax.SAXException;
 
 import dk.dma.embryo.weather.model.Warnings;
 
-/**
- * Parser for reading routes in RT3 format. RT3 format is among others used by
- * Transas ECDIS.
- * 
- * @author Jesper Tejlgaard
- */
-public class DmiWarningParser {
+class DmiWarningParser {
 
-    public static final Locale DEFAULT_LOCALE = new Locale("da", "DK");
+    private static final Locale DEFAULT_LOCALE = new Locale("da", "DK");
 
     private boolean closeReader;
     private BufferedInputStream is;
 
-    public DmiWarningParser(InputStream is) {
+    DmiWarningParser(InputStream is) {
         if (is instanceof BufferedInputStream) {
             this.is = (BufferedInputStream) is;
         } else {
@@ -62,11 +56,12 @@ public class DmiWarningParser {
         }
     }
 
-    public DmiWarningParser(File file) throws FileNotFoundException {
+    DmiWarningParser(File file) throws FileNotFoundException {
         this(new FileInputStream(file));
+        closeReader = true;
     }
 
-    public Warnings parse() throws IOException {
+    Warnings parse() throws IOException {
         try {
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -74,7 +69,7 @@ public class DmiWarningParser {
 
             // Normalize text representation
             doc.getDocumentElement().normalize();
-            String text = extractElementText(doc.getDocumentElement(), "danskvarsel");
+            String text = extractWarningText(doc.getDocumentElement());
             return parseGaleWarnings(text);
         } catch (RuntimeException | ParserConfigurationException | SAXException e) {
             throw new IOException("Error parsing gale warning", e);
@@ -101,19 +96,19 @@ public class DmiWarningParser {
         boolean useMetersPerSecond = false;
         while ((line = reader.readLine()) != null) {
             if (line.trim().length() != 0) {
-                if (line.indexOf("Varsel nummer") == 0 && line.indexOf("ophører") < 0) {
+                if (line.indexOf("Varsel nummer") == 0 && !line.contains("ophører")) {
                     result.setNumber(Integer.valueOf(line.substring(14)));
-                } else if (line.indexOf("Kulingvarsel") >= 0 || line.indexOf("kulingvarsel") >= 0) {
+                } else if (line.contains("Kulingvarsel") || line.contains("kulingvarsel")) {
                     warnings = result.getGale();
                     useMetersPerSecond = true;
-                } else if (line.indexOf("Stormvarsel") >= 0 || line.indexOf("stormvarsel") >= 0) {
+                } else if (line.contains("Stormvarsel") || line.contains("stormvarsel")) {
                     warnings = result.getStorm();
                     useMetersPerSecond = false;
-                } else if (line.indexOf("Overisningsvarsel") >= 0 || line.indexOf("overisningsvarsel") >= 0) {
+                } else if (line.contains("Overisningsvarsel") || line.contains("overisningsvarsel")) {
                     warnings = result.getIcing();
                     useMetersPerSecond = false;
                 } else if (warnings != null) {
-                    String value = null;
+                    String value;
                     StringBuilder sb = new StringBuilder();
                     while (((value = reader.readLine()) != null) && !value.trim().equals("")) {
                         // String value = reader.readLine();
@@ -122,7 +117,7 @@ public class DmiWarningParser {
                             value = value.replace("m/s.", ".");
                             value = value.replace(".", " m/s.");
                         }
-                        sb.append(value + " ");
+                        sb.append(value).append(" ");
                     }
                     String name = line.replace(":", "");
                     warnings.put(name, sb.toString().trim());
@@ -142,16 +137,16 @@ public class DmiWarningParser {
         return text;
     }
 
-    public String extractElementText(Element root, String elementName) throws IOException {
-        NodeList uniqueList = root.getElementsByTagName(elementName);
+    private String extractWarningText(Element root) throws IOException {
+        NodeList uniqueList = root.getElementsByTagName("danskvarsel");
         if (uniqueList.getLength() != 1) {
-            throw new IOException("Expected exactly one <" + elementName + "> element within <" + root.getNodeName() + "> element");
+            throw new IOException("Expected exactly one <danskvarsel> element within <" + root.getNodeName() + "> element");
         }
 
         return extractElementText((Element) uniqueList.item(0));
     }
 
-    public String extractElementText(Element element) throws IOException {
+    private String extractElementText(Element element) throws IOException {
         NodeList uniquetextList = element.getElementsByTagName("text");
         if (uniquetextList.getLength() != 1) {
             throw new IOException("Expected exactly one <text> element within <" + element.getNodeName() + "> element");

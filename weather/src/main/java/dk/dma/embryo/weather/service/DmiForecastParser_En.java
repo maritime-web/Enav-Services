@@ -17,10 +17,6 @@ package dk.dma.embryo.weather.service;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.embryo.weather.model.DistrictForecast;
 import dk.dma.embryo.weather.model.RegionForecast;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -42,34 +38,25 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
-
-/**
- * Parser for reading routes in RT3 format. RT3 format is among others used by Transas ECDIS.
- *
- * @author Jesper Tejlgaard
- */
 
 @Named
 public class DmiForecastParser_En {
 
-    public static final Locale DEFAULT_LOCALE = new Locale("en", "UK");
-
     @Property("embryo.weather.dmi.parser.districts.en")
     @Inject
-    public Set<String> districts;
+    private Set<String> districts;
 
     private boolean closeReader;
 
-    public RegionForecast parse(InputStream is) throws IOException {
+    RegionForecast parse(InputStream is) throws IOException {
         if (is instanceof BufferedInputStream) {
             return parse((BufferedInputStream) is);
         }
         return parse(new BufferedInputStream(is));
     }
 
-    public RegionForecast parse(File file) throws IOException {
+    RegionForecast parse(File file) throws IOException {
         closeReader = true;
         return parse(new FileInputStream(file));
     }
@@ -86,16 +73,14 @@ public class DmiForecastParser_En {
             doc.getDocumentElement().normalize();
 
             NodeList children = doc.getDocumentElement().getChildNodes();
-            DateTime from = null;
-            DateTime to;
+            String fromText = null;
 
             for (int i = 0; i < children.getLength(); i++) {
                 if (children.item(i) instanceof Element) {
                     Element elem = (Element) children.item(i);
 
                     if (elem.getNodeName().equalsIgnoreCase("dato")) {
-                        from = extractFrom(elem);
-                        result.setFrom(from.toDate());
+                        fromText = extractElementText(elem);
                     } else if (elem.getNodeName().equalsIgnoreCase("oversigttidspunkt")) {
                         String time = extractElementText(elem);
                         time = time.replace("UTC.", "UTC");
@@ -103,8 +88,9 @@ public class DmiForecastParser_En {
                         time = time.replace("synopsis", "");
                         result.setTime(time.trim());
                     } else if (elem.getNodeName().equalsIgnoreCase("gyldighed")) {
-                        to = extractTo(elem, from);
-                        result.setTo(to.toDate());
+                        DateParser parser = new DateParser(fromText, extractElementText(elem));
+                        result.setFrom(parser.getFrom().toDate());
+                        result.setTo(parser.getTo().toDate());
                     } else if (elem.getNodeName().equalsIgnoreCase("synoptic")) {
                         String text = extractElementText(elem, "oversigt");
                         result.setDesc(text);
@@ -124,47 +110,7 @@ public class DmiForecastParser_En {
         return result;
     }
 
-    private String prettifyDateText(String text) {
-        text = text.replace(" the", "");
-//        text = text.replace(" d.", "");
-        text = text.replace("utc.", "");
-        text = text.replace("UTC.", "");
-        text = text.replace(":", "");
-        text = text.replace(".", "");
-        text = text.replace(",", "");
-        text = text.trim();
-        text = text.substring(0, 1).toLowerCase() + text.substring(1);
-        return text;
-    }
-
-    public DateTime extractFrom(Element dato) throws IOException {
-        String text = extractElementText(dato);
-        text = prettifyDateText(text);
-
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("EEEE dd MMMM YYYY HHmm").withZone(DateTimeZone.UTC)
-                .withLocale(DEFAULT_LOCALE);
-        return formatter.parseDateTime(text);
-    }
-
-    public DateTime extractTo(Element gyldighed, DateTime from) throws IOException {
-        String text = extractElementText(gyldighed);
-        text = text.replace("Forecast, valid to ", "");
-        text = text.replace("Forecast valid to ", "");
-        text = text.replace(",", " " + from.getYear());
-        text = prettifyDateText(text);
-
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("EEEE dd MMMM yyyy HH").withZone(DateTimeZone.UTC)
-                .withLocale(DEFAULT_LOCALE);
-        DateTime to = formatter.parseDateTime(text);
-
-        if (from.getMonthOfYear() == 12 && to.getDayOfMonth() < from.getDayOfMonth()) {
-            text = text.replace("" + from.getYear(), "" + (1 + from.getYear()));
-            to = formatter.parseDateTime(text);
-        }
-        return to;
-    }
-
-    public DistrictForecast extractDistrikt(Element distrikt) throws IOException {
+    private DistrictForecast extractDistrikt(Element distrikt) throws IOException {
         DistrictForecast forecast = new DistrictForecast();
 
         String name = distrikt.getNodeName();
@@ -190,12 +136,12 @@ public class DmiForecastParser_En {
         return forecast;
     }
 
-    public boolean isElementAvailable(Element root, String elementName) {
+    private boolean isElementAvailable(Element root, String elementName) {
         NodeList uniqueList = root.getElementsByTagName(elementName);
         return uniqueList.getLength() > 0;
     }
 
-    public String extractElementText(Element root, String elementName) throws IOException {
+    private String extractElementText(Element root, String elementName) throws IOException {
         NodeList uniqueList = root.getElementsByTagName(elementName);
         if (uniqueList.getLength() != 1) {
             throw new IOException("Expected exactly one <" + elementName + "> element within <" + root.getNodeName()
@@ -205,7 +151,7 @@ public class DmiForecastParser_En {
         return extractElementText((Element) uniqueList.item(0));
     }
 
-    public String extractElementText(Element element) throws IOException {
+    private String extractElementText(Element element) throws IOException {
         List<Node> textList = new ArrayList<>();
         NodeList children = element.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
@@ -221,7 +167,7 @@ public class DmiForecastParser_En {
         return trim(textList.get(0).getTextContent());
     }
 
-    public static String trim(String input) throws IOException {
+    private static String trim(String input) throws IOException {
         BufferedReader reader = new BufferedReader(new StringReader(input));
         StringBuilder result = new StringBuilder();
         String line;
