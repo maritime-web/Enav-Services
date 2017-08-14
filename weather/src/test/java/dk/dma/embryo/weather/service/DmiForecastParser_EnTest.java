@@ -36,7 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNot.not;
 
 /**
  * @author Jesper Tejlgaard
@@ -194,5 +197,12 @@ public class DmiForecastParser_EnTest {
         RegionForecast forecast = parser.parse(is);
 
         assertThat(forecast.getFrom(), equalTo(new DateTime(2017, 8, 7, 11, 35, DateTimeZone.UTC).toDate()));
+    }
+    @Test
+    public void shouldParse20170811() throws Exception {
+        InputStream is = getClass().getResourceAsStream("/dmi/grudseng2017-08-11.xml");
+        RegionForecast forecast = parser.parse(is);
+
+        assertThat(forecast.getFrom(), is(not(nullValue())));
     }
 }
