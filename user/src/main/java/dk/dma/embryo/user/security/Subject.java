@@ -58,4 +58,6 @@ public interface Subject extends Serializable {
     SecuredUser getUserForEmail(String email);
 
     SecuredUser findUserWithUuid(String uuid);
+
+    boolean authorizedToChangePassword(String username);
 }
