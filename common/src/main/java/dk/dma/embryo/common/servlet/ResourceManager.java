@@ -26,8 +26,6 @@ public class ResourceManager {
     public Resource getRequestedResource(String basePath, String requestedFileURL) throws UnsupportedEncodingException {
         Objects.requireNonNull(basePath, "basePath value required");
 
-        System.out.println(new File(basePath).getAbsolutePath());
-
         // Check if file is actually supplied to the request URL.
         if (requestedFileURL == null) {
             return new Resource(null);

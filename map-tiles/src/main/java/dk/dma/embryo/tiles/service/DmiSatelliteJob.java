@@ -106,16 +106,6 @@ public class DmiSatelliteJob {
     @Inject
     @Property("embryo.tiles.providers.dmi.ftp.daysToKeepFiles")
     private Integer daysToKeepFiles;
-/*
-
-    @Inject
-    @Property("embryo.inshoreIceReport.dmi.notification.silenceperiod")
-    private Integer silencePeriod;
-
-    @Inject
-    @Property("embryo.inshoreIceReport.dmi.notification.email")
-    private String mailTo;
-*/
 
     @Inject
     @Property(value = "embryo.tiles.providers.dmi.types.satellite-ice.localDirectory", substituteSystemProperties = true)
@@ -147,7 +137,6 @@ public class DmiSatelliteJob {
 
     @Timeout
     public void timeout() {
-        //notifications.clearOldThanMinutes(silencePeriod);
 
         try {
             log.info("Making directories if necessary ...");
@@ -228,7 +217,6 @@ public class DmiSatelliteJob {
                     }
                 }
 
-//                sendEmails(rejected);
             } finally {
                 ftp.logout();
             }
@@ -299,26 +287,6 @@ public class DmiSatelliteJob {
 
         return true;
     }
-
-    /*
-    private void sendEmail(String fileName, Exception cause) {
-        String key = fileName + cause.getMessage();
-        if (mailTo != null && mailTo.trim().length() > 0 && !notifications.contains(key)) {
-            new InshoreIceReportFileNotReadMail("dmi", fileName, cause, propertyFileService)
-                    .send(mailSender);
-            notifications.add(key, DateTime.now(DateTimeZone.UTC));
-        }
-    }
-
-    private void sendEmails(Collection<FTPFile> rejected) {
-        for (FTPFile file : rejected) {
-            if (mailTo != null && mailTo.trim().length() > 0 && !notifications.contains(file.getName())) {
-                new InshoreIceReportNameNotAcceptedMail("dmi", file.getName(), propertyFileService)
-                        .send(mailSender);
-                notifications.add(file.getName(), DateTime.now(DateTimeZone.UTC));
-            }
-        }      
-    }*/
 
     Set<String> alreadyDownloadedFiles() {
         Set<String> existingFiles = new HashSet<>();
