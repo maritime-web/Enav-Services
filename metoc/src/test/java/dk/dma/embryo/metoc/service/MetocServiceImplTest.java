@@ -43,6 +43,8 @@ import javax.inject.Inject;
 
 import static dk.dma.embryo.metoc.json.client.DmiSejlRuteService.SejlRuteRequest;
 import static dk.dma.embryo.metoc.json.client.DmiSejlRuteService.SejlRuteResponse;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author Jesper Tejlgaard
@@ -154,7 +156,7 @@ public class MetocServiceImplTest {
             metocService.getMetoc(routeId);
             Assert.fail("Exception expected!");
         } catch (EmbryonicException e) {
-            Assert.assertEquals("METOC response contains error with code 1 and message 'Too few waypoints'", e.getMessage());
+            assertThat(e.getMessage(), containsString("METOC response contains error with code 1 and message 'Too few waypoints'"));
             Mockito.verify(logService).error("Error requesting METOC from http://sejlrute.dmi.dk/SejlRute", e);
         }
     }
@@ -174,7 +176,7 @@ public class MetocServiceImplTest {
             metocService.getMetoc(routeId);
             Assert.fail("Exception expected!");
         } catch (EmbryonicException e) {
-            Assert.assertEquals("METOC response contains error with code 2 and message 'Invalid parameter'", e.getMessage());
+            assertThat(e.getMessage(), containsString("METOC response contains error with code 2 and message 'Invalid parameter'"));
             Mockito.verify(logService).error("Error requesting METOC from http://sejlrute.dmi.dk/SejlRute", e);
         }
     }
@@ -194,7 +196,7 @@ public class MetocServiceImplTest {
             metocService.getMetoc(routeId);
             Assert.fail("Exception expected!");
         } catch (EmbryonicException e) {
-            Assert.assertEquals("METOC response contains error with code 3 and message 'Invalid direction'", e.getMessage());
+            assertThat(e.getMessage(), containsString("METOC response contains error with code 3 and message 'Invalid direction'"));
             Mockito.verify(logService).error("Error requesting METOC from http://sejlrute.dmi.dk/SejlRute", e);
         }
     }
@@ -214,7 +216,7 @@ public class MetocServiceImplTest {
             metocService.getMetoc(routeId);
             Assert.fail("Exception expected!");
         } catch (EmbryonicException e) {
-            Assert.assertEquals("METOC response contains error with code 5 and message 'Missing or invalid dates'", e.getMessage());
+            assertThat(e.getMessage(), containsString("METOC response contains error with code 5 and message 'Missing or invalid dates'"));
             Mockito.verify(logService).error("Error requesting METOC from http://sejlrute.dmi.dk/SejlRute", e);
         }
     }
@@ -234,7 +236,7 @@ public class MetocServiceImplTest {
             metocService.getMetoc(routeId);
             Assert.fail("Exception expected!");
         } catch (EmbryonicException e) {
-            Assert.assertEquals("METOC response contains error with code 6 and message 'Invalid path'", e.getMessage());
+            assertThat(e.getMessage(), containsString("METOC response contains error with code 6 and message 'Invalid path'"));
             Mockito.verify(logService).error("Error requesting METOC from http://sejlrute.dmi.dk/SejlRute", e);
         }
     }
@@ -254,7 +256,7 @@ public class MetocServiceImplTest {
             metocService.getMetoc(routeId);
             Assert.fail("Exception expected!");
         } catch (EmbryonicException e) {
-            Assert.assertEquals("METOC response contains error with code 7 and message 'Invalid dates'", e.getMessage());
+            assertThat(e.getMessage(), containsString("METOC response contains error with code 7 and message 'Invalid dates'"));
             Mockito.verify(logService).error("Error requesting METOC from http://sejlrute.dmi.dk/SejlRute", e);
         }
     }
@@ -274,7 +276,7 @@ public class MetocServiceImplTest {
             metocService.getMetoc(routeId);
             Assert.fail("Exception expected!");
         } catch (EmbryonicException e) {
-            Assert.assertEquals("METOC response contains error with code 8 and message 'Missing or invalid datatypes'", e.getMessage());
+            assertThat(e.getMessage(), containsString("METOC response contains error with code 8 and message 'Missing or invalid datatypes'"));
             Mockito.verify(logService).error("Error requesting METOC from http://sejlrute.dmi.dk/SejlRute", e);
         }
     }
@@ -294,7 +296,7 @@ public class MetocServiceImplTest {
             metocService.getMetoc(routeId);
             Assert.fail("Exception expected!");
         } catch (EmbryonicException e) {
-            Assert.assertEquals("METOC response contains error with code 9 and message 'Error. Sorry!'", e.getMessage());
+            assertThat(e.getMessage(), containsString("METOC response contains error with code 9 and message 'Error. Sorry!'"));
             Mockito.verify(logService).error("Error requesting METOC from http://sejlrute.dmi.dk/SejlRute", e);
         }
     }
@@ -314,7 +316,7 @@ public class MetocServiceImplTest {
             metocService.getMetoc(routeId);
             Assert.fail("Exception expected!");
         } catch (EmbryonicException e) {
-            Assert.assertEquals("METOC response contains error with code 10 and message 'Problem with delta-T (dt)'", e.getMessage());
+            assertThat(e.getMessage(), containsString("METOC response contains error with code 10 and message 'Problem with delta-T (dt)'"));
             Mockito.verify(logService).error("Error requesting METOC from http://sejlrute.dmi.dk/SejlRute", e);
         }
     }
