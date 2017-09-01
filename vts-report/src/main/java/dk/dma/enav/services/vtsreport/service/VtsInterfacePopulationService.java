@@ -49,6 +49,7 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "{\"id\": "+(counter++)+",";
         VtsJsObjects += "\"shortname\": \"BELTREP\",";
         VtsJsObjects += "\"name\": \"Denmark - BELTREP - The Great Belt Vessel Traffic Service\",";
+        VtsJsObjects += "\"areaWKT\":\"\",";
         VtsJsObjects += "\"callsign\":\"Great Belt Traffic\",";
         VtsJsObjects += "\"email\":\"vts@beltrep.org\",";
         VtsJsObjects += "\"telephone\":\"+45 58 37 68 68\",";
@@ -80,6 +81,7 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "{\"id\": "+(counter++)+",";
         VtsJsObjects += "\"shortname\": \"SOUNDREP\",";
         VtsJsObjects += "\"name\": \"Sweden - SOUNDREP - Sound Vessel Traffic Service\",";
+        VtsJsObjects += "\"areaWKT\":\"POLYGON((12.18333 56.11611, 12.18333 56.23333, 12.29417 56.30222, 12.45778 56.30222,12.8 56.13333, 13.13333 55.68333, 13.0425 55.39139, 12.91389 55.16667,12.45778 55.16667,12.45778 55.29556, 12.59806 55.55778))\",";
         VtsJsObjects += "\"callsign\":\"Sound VTS\",";
         VtsJsObjects += "\"email\":\"contact@soundvts.org\",";
         VtsJsObjects += "\"telephone\":\"+46 771-630600\",";
@@ -111,6 +113,7 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "{\"id\": "+(counter++)+",";
         VtsJsObjects += "\"shortname\": \"GOFREP-Helsinki\",";
         VtsJsObjects += "\"name\": \"Finland - GOFREP - Gulf Of Finland Vessel Traffic Service\",";
+        VtsJsObjects += "\"areaWKT\":\"\",";
         VtsJsObjects += "\"callsign\":\"Helsinki Traffic\",";
         VtsJsObjects += "\"email\":\"gofrep@fta.fi\",";
         VtsJsObjects += "\"telephone\":\"+358 (0)204 48 5387\",";
@@ -142,6 +145,7 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "{\"id\": "+(counter++)+",";
         VtsJsObjects += "\"shortname\": \"GOFREP-Tallinn\",";
         VtsJsObjects += "\"name\": \"Estonia - GOFREP Tallinn - Gulf Of Finland Vessel Traffic Service\",";
+        VtsJsObjects += "\"areaWKT\":\"\",";
         VtsJsObjects += "\"callsign\":\"Tallinn Traffic\",";
         VtsJsObjects += "\"email\":\"gofrep@vta.ee\",";
         VtsJsObjects += "\"telephone\":\"+372 6 205 764\",";
@@ -173,6 +177,7 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "{\"id\": "+(counter++)+",";
         VtsJsObjects += "\"shortname\": \"GOFREP-St.Petersburg\",";
         VtsJsObjects += "\"name\": \"Russia - GOFREP St. Petersburg - Gulf Of Finland Vessel Traffic Service\",";
+        VtsJsObjects += "\"areaWKT\":\"\",";
         VtsJsObjects += "\"callsign\":\"St. Peterburg Traffic\",";
         VtsJsObjects += "\"email\":\"gofrep@rsbm.ru\",";
         VtsJsObjects += "\"telephone\":\"+7 12 380 70 21\",";

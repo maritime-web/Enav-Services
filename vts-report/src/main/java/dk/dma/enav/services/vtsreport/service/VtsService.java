@@ -21,8 +21,6 @@ import dk.dma.embryo.common.configuration.PropertyFileService;
 import dk.dma.embryo.common.mail.MailSender;
 import dk.dma.embryo.user.security.Subject;
 import dk.dma.enav.services.vtsreport.mail.VtsReportMail;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -71,7 +69,7 @@ public class VtsService {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createTrackInJSON(Reader vtsdata) {
+    public Response createTrackInJSON(JsonReader vtsdata) {
 
 //        long ts = System.currentTimeMillis();
 //        Date localTime = new Date(ts);
@@ -178,37 +176,29 @@ public class VtsService {
             emailBody += "Total tonnage of dangerous cargo: <strong>" + vtsdata.cargoDangerousCargoTotalTonnage + "</strong><br>"; //always displayed
         }
 
-        if (hasValue(vtsdata.cargoIMOClassesOnBoard)) {
-            emailBody += "IMO classes of dangerous cargo: <strong>" + vtsdata.cargoIMOClassesOnBoard + "</strong><br>"; //always displayed
-        }
 
         //Different classes of dangerous cargo
-        if (hasValue(vtsdata.cargoIMOClass01)) {
-            emailBody += "IMO class 1 cargo tonnage: <strong>" + vtsdata.cargoIMOClass01 + "</strong><br>";
-        }
-        if (hasValue(vtsdata.cargoIMOClass02)) {
-            emailBody += "IMO class 2 cargo tonnage: <strong>" + vtsdata.cargoIMOClass02 + "</strong><br>";
-        }
-        if (hasValue(vtsdata.cargoIMOClass03)) {
-            emailBody += "IMO class 3 cargo tonnage: <strong>" + vtsdata.cargoIMOClass03 + "</strong><br>";
-        }
-        if (hasValue(vtsdata.cargoIMOClass04)) {
-            emailBody += "IMO class 4 cargo tonnage: <strong>" + vtsdata.cargoIMOClass04 + "</strong><br>";
-        }
-        if (hasValue(vtsdata.cargoIMOClass05)) {
-            emailBody += "IMO class 5 cargo tonnage: <strong>" + vtsdata.cargoIMOClass05 + "</strong><br>";
-        }
-        if (hasValue(vtsdata.cargoIMOClass06)) {
-            emailBody += "IMO class 6 cargo tonnage: <strong>" + vtsdata.cargoIMOClass06 + "</strong><br>";
-        }
-        if (hasValue(vtsdata.cargoIMOClass07)) {
-            emailBody += "IMO class 7 cargo tonnage: <strong>" + vtsdata.cargoIMOClass07 + "</strong><br>";
-        }
-        if (hasValue(vtsdata.cargoIMOClass08)) {
-            emailBody += "IMO class 8 cargo tonnage: <strong>" + vtsdata.cargoIMOClass08 + "</strong><br>";
-        }
-        if (hasValue(vtsdata.cargoIMOClass09)) {
-            emailBody += "IMO class 9 cargo tonnage: <strong>" + vtsdata.cargoIMOClass09 + "</strong><br>";
+        if(vtsdata.cargoEntries.length > 0 ){
+            if (hasValue(vtsdata.cargoIMOClassesOnBoard)) {
+                emailBody += "IMO classes of dangerous cargo: <strong>" + vtsdata.cargoIMOClassesOnBoard + "</strong><br>"; //always displayed
+            }
+
+            for(int i=0;i!=vtsdata.cargoEntries.length;i++){
+                if(hasValue(vtsdata.cargoEntries[i].getImoClass())){
+                    if(vtsdata.cargoEntries[i].getImoClass().equals("9")){ //highlight if radioactive
+                        emailBody += "<span style='color:#BB0000;'>";
+                    }else{
+                        emailBody += "<span>";
+                    }
+                }
+                emailBody += "<strong>Class " + vtsdata.cargoEntries[i].getImoClass() + "</strong>";
+                emailBody += ": " + vtsdata.cargoEntries[i].getTonnage() + " Metric Tonnes";
+                if(hasValue(vtsdata.cargoEntries[i].getNote())) {
+                    emailBody += " - " + vtsdata.cargoEntries[i].getNote();
+                }
+                emailBody += "</span>";
+                emailBody += "<br>";
+            }
         }
         emailBody += "<br>";
 
@@ -346,74 +336,6 @@ public class VtsService {
 
     private boolean hasValue(String aString) {
         return !Strings.isNullOrEmpty(aString) && !aString.equals("0");
-    }
-
-    @Setter
-    @Getter
-    private static class Reader {
-        String vtsShortName;
-        String vtsCallSign;
-        String vtsEmail;
-
-        String vesselName;
-        String vesselCallSign;
-        String vesselMMSI;
-        String vesselIMO;
-        String vesselDraught;
-        String vesselAirDraught;
-        String vesselPersonsOnboard;
-        String vesselLength;
-        String vesselDeadWeight;
-        String vesselGRT;
-        String vesselDefects;
-        String vesselType;
-
-        String fuelTotalFuel;
-        String fuelTypeHFORegular;
-        String fuelTypeHFOLowSulphur;
-        String fuelTypeHFOUltraLowSulphur;
-        String fuelTypeIFORegular;
-        String fuelTypeIFOLowSulphur;
-        String fuelTypeIFOUltraLowSulphur;
-        String fuelTypeMDORegular;
-        String fuelTypeMDOLowSulphur;
-        String fuelTypeMDOUltraLowSulphur;
-        String fuelTypeMGORegular;
-        String fuelTypeMGOLowSulphur;
-        String fuelTypeMGOUltraLowSulphur;
-        String fuelTypeLPG;
-        String fuelTypeLNG;
-
-        String cargoType;
-        String cargoIMOClass01;
-        String cargoIMOClass02;
-        String cargoIMOClass03;
-        String cargoIMOClass04;
-        String cargoIMOClass05;
-        String cargoIMOClass06;
-        String cargoIMOClass07;
-        String cargoIMOClass08;
-        String cargoIMOClass09;
-        String cargoDangerousCargoTotalTonnage;
-        String cargoDangerousCargoOnBoard;
-        String cargoIMOClassesOnBoard;
-        String cargoPollutantOrDCLostOverBoard;
-        String cargoAdditionalContactInformation;
-        String cargoDPAName;
-        String cargoDPATelephone;
-        String cargoDPAEmail;
-
-
-        String voyagePositionLon;
-        String voyagePositionLat;
-        String voyageSpeed;
-        String voyageTrueCourse;
-        String voyageCourseOverGround;
-        String voyagePortOfDestination;
-        String voyagePortOfDestinationEta;
-        String voyageVTSETADateTime;
-
-
     }
 
 
