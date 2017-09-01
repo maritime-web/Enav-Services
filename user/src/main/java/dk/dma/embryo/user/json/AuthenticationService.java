@@ -20,12 +20,12 @@ import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.embryo.user.couchdb.CouchToken;
 import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
+import dk.dma.embryo.user.model.UsernamePassword;
 import dk.dma.embryo.user.persistence.RealmDao;
 import dk.dma.embryo.user.security.Subject;
 import dk.dma.embryo.user.service.UserService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.annotations.cache.NoCache;
 
@@ -42,7 +42,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import java.util.Arrays;
 
 @Path("/authentication")
 @Slf4j
@@ -174,6 +173,22 @@ public class AuthenticationService extends AbstractRestService {
         }
     }
     
+    @POST
+    @Path("/change-password-direct")
+    @Consumes("application/json")
+    @GZIP
+    public void changePasswordDirect(UsernamePassword newPassword) {
+        if (newPassword == null) {
+            throw new ParameterMissing("Must supply Username and Password.");
+        }
+
+        try {
+            userService.changePassword(newPassword);
+        } catch (FinderException e) {
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity(e.getMessage()).build());
+        }
+    }
+
     @GET
     @Path("/isloggedin")
     @Produces("application/json")

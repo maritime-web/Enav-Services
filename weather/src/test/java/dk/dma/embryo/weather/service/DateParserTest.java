@@ -55,6 +55,17 @@ public class DateParserTest {
     }
 
     @Test
+    public void shouldParseFromWhenhoursIsSingleDigit() throws Exception {
+        DateTime expectedFrom = new DateTime(2017, 8, 11, 6, 45, DateTimeZone.UTC);
+        String fromText = "Friday the 11. August 2017.";
+        String toText = "Forecast, valid to the 12. August 06 UTC.. Issued at 6.45 UTC..\n";
+
+        DateParser parser = new DateParser(fromText, toText);
+
+        assertThat(parser.getFrom(), equalTo(expectedFrom));
+    }
+
+    @Test
     public void shouldParseToWhithExtraDotsAfterUTC() throws Exception {
         DateTime expectedTo = new DateTime(2017, 8, 9, 0, 0, DateTimeZone.UTC);
         String fromText = "Monday the 7. August 2017.";

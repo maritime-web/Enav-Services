@@ -14,6 +14,7 @@
  */
 package dk.dma.embryo.user.security;
 
+import dk.dma.embryo.user.model.AdministratorRole;
 import dk.dma.embryo.user.model.Role;
 import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
@@ -126,7 +127,12 @@ public class SubjectImpl implements Subject {
             return false;
         }
     }
-    
+
+    @Override
+    public boolean authorizedToChangePassword(String username) {
+        return getUser().getUserName().equals(username) || hasRole(AdministratorRole.class);
+    }
+
     public SecuredUser getUserForEmail(String email) {
         return realmDao.findByEmail(email);
     }

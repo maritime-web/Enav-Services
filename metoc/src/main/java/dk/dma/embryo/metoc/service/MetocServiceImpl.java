@@ -97,7 +97,8 @@ public class MetocServiceImpl implements MetocService {
             DmiSejlRuteService.SejlRuteResponse sejlRuteResponse = dmiSejlRuteService.sejlRute(request);
 
             if (sejlRuteResponse.getError() != 0) {
-                throw new EmbryonicException("METOC response contains error with code " + sejlRuteResponse.getError() + " and message '" + sejlRuteResponse.getErrorMsg() + "'");
+                String requestAsString = sejlRuteRequestAsString(request);
+                throw new EmbryonicException("METOC response contains error with code " + sejlRuteResponse.getError() + " and message '" + sejlRuteResponse.getErrorMsg() + "'. Request was '" + requestAsString + "'");
             } else {
                 log.debug("Received METOC response: {}", sejlRuteResponse);
                 int number = sejlRuteResponse.getMetocForecast() != null
@@ -138,6 +139,14 @@ public class MetocServiceImpl implements MetocService {
             throw e;
         }
 
+    }
+
+    private String sejlRuteRequestAsString(DmiSejlRuteService.SejlRuteRequest request) {
+        try {
+            return request.toString();
+        } catch (Exception e) {
+            return "Unable to display request";
+        }
     }
 
     public DmiSejlRuteService.SejlRuteResponse[] listMetocs(String[] routeIds) {

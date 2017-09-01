@@ -23,6 +23,7 @@ import dk.dma.embryo.user.model.SailorRole;
 import dk.dma.embryo.user.model.SecuredUser;
 import dk.dma.embryo.user.model.ShoreRole;
 import dk.dma.embryo.user.model.User;
+import dk.dma.embryo.user.model.UsernamePassword;
 import dk.dma.embryo.user.persistence.RealmDao;
 import dk.dma.embryo.user.security.SecurityUtil;
 import dk.dma.embryo.user.security.SecurityUtil.HashedPassword;
@@ -164,6 +165,20 @@ public class UserServiceImpl implements UserService {
         user.setHashedPassword(hashedPassword.getPassword());
         user.setSalt(hashedPassword.getSalt());
         user.setForgotUuid(null);
+
+        realmDao.saveEntity(user);
+    }
+
+    @Override
+    public void changePassword(UsernamePassword newPassword) throws FinderException {
+        SecuredUser user = realmDao.findByUsername(newPassword.getUsername());
+        if (user == null) {
+            throw new FinderException("No user for given username '" + newPassword.getUsername() + "'");
+        }
+        HashedPassword hashedPassword = SecurityUtil.hashPassword(newPassword.getPassword());
+
+        user.setHashedPassword(hashedPassword.getPassword());
+        user.setSalt(hashedPassword.getSalt());
 
         realmDao.saveEntity(user);
     }
