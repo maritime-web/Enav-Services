@@ -21,8 +21,17 @@ import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import javax.inject.Inject;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+import java.io.BufferedReader;
+import java.io.File;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -47,4 +56,5 @@ public class StaticServiceRegistryTest {
     public void shouldNotAcceptDesignIdAndWkt() throws Exception {
         cut.getServiceInstances(new TechnicalDesignId("", ""), "");
     }
+
 }

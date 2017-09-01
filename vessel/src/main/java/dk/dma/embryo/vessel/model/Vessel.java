@@ -148,7 +148,7 @@ public class Vessel extends BaseEntity<Long> {
 
     public Vessel(Long mmsi) {
         this();
-        this.mmsi = mmsi;
+        setMmsi(mmsi);
     }
 
 
@@ -175,6 +175,10 @@ public class Vessel extends BaseEntity<Long> {
     }
 
     public void setMmsi(Long mmsi) {
+        if (mmsi == null || mmsi < 0 || mmsi.toString().length() != 9) {
+            throw new IllegalArgumentException("The MMSI must be a positive 9 digit number.");
+        }
+
         this.mmsi = mmsi;
     }
 

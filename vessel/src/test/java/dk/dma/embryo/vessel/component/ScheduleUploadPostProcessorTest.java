@@ -141,7 +141,7 @@ public class ScheduleUploadPostProcessorTest {
 
     @Test
     public void locationFinder_testVoyageIdByOtherVessel() throws IOException {
-        Vessel vessel = new Vessel(1111L);
+        Vessel vessel = new Vessel(111100000L);
         dk.dma.embryo.vessel.model.Voyage voyage1 = new dk.dma.embryo.vessel.model.Voyage("Nuuk", "64 10.400N", "051 43.500W", null, null);
         voyage1.setEnavId("2014-32-1");
         vessel.addVoyageEntry(voyage1);
@@ -149,7 +149,7 @@ public class ScheduleUploadPostProcessorTest {
         voyage2.setEnavId("2014-32-2");
         vessel.addVoyageEntry(voyage2);
 
-        Vessel myVessel = new Vessel(2222L);
+        Vessel myVessel = new Vessel(222200000L);
         dk.dma.embryo.vessel.model.Voyage voyage3 = new dk.dma.embryo.vessel.model.Voyage("Ilulissat", "64 10.400N", "051 43.500W", null, null);
         voyage3.setEnavId("OWDD-2014-32-3");
         myVessel.addVoyageEntry(voyage3);
@@ -159,7 +159,7 @@ public class ScheduleUploadPostProcessorTest {
         Mockito.when(scheduleDao.getVoyageByEnavId("2014-32-2")).thenReturn(voyage2);
         Mockito.when(scheduleDao.getVoyageByEnavId("OWDD-2014-32-3")).thenReturn(voyage3);
 
-        ScheduleUploadPostProcessor.VoyageFilter voyageFinder = new ScheduleUploadPostProcessor.VoyageFilter(scheduleDao, 2222L);
+        ScheduleUploadPostProcessor.VoyageFilter voyageFinder = new ScheduleUploadPostProcessor.VoyageFilter(scheduleDao, 222200000L);
 
         Assert.assertFalse(voyageFinder.test(new Voyage("2014-32-1", "Nuuk", null, null, null, null, null, null, null)));
         Assert.assertFalse(voyageFinder.test(new Voyage("2014-32-2", "Upernavik", null, null, null, null, null, null, null)));

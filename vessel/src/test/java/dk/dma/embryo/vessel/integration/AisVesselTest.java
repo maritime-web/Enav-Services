@@ -31,7 +31,7 @@ public class AisVesselTest {
     @Test
     public void testToVesselOverview_LatLonIsNull() {
         // SETUP INPUT DATA
-        AisVessel aisVessel = createAisVessel(1L, "ET", "ETC");
+        AisVessel aisVessel = createAisVessel(100000000L, "ET", "ETC");
         aisVessel.setLon(null);
         aisVessel.setLat(null);
 
@@ -40,7 +40,7 @@ public class AisVesselTest {
 
         // EXPECTED RESULT
         VesselOverview expected = new VesselOverview();
-        expected.setMmsi(1L);
+        expected.setMmsi(100000000L);
         expected.setCallSign("ETC");
         expected.setName("ET");
         expected.setAngle(aisVessel.getCog());
@@ -57,13 +57,13 @@ public class AisVesselTest {
     @Test
     public void testAddMissingVessels() {
         // SETUP INPUT DATA
-        AisVessel aisVessel1 = createAisVessel(1L, "ET", "ETC");
-        AisVessel aisVessel2 = createAisVessel(2L, "TO", "TOC");
+        AisVessel aisVessel1 = createAisVessel(100000000L, "ET", "ETC");
+        AisVessel aisVessel2 = createAisVessel(200000000L, "TO", "TOC");
 
         List<AisVessel> aisVessels = Arrays.asList(aisVessel1, aisVessel2);
 
-        Vessel vessel1 = createArcticWebVessel(11L, "ETET", "ETETC", 11L);
-        Vessel vessel2 = createArcticWebVessel(22L, "TOTO", "TOTOC", 33L);
+        Vessel vessel1 = createArcticWebVessel(110000000L, "ETET", "ETETC", 11L);
+        Vessel vessel2 = createArcticWebVessel(220000000L, "TOTO", "TOTOC", 33L);
 
         List<Vessel> arcticWebVessels = Arrays.asList(vessel1, vessel2);
 

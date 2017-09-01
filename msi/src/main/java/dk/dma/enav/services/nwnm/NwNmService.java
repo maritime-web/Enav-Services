@@ -57,7 +57,7 @@ public class NwNmService {
     private EmbryoLogService embryoLogService;
 
     @Inject
-    private HttpURLConnectionFactory httpURLConnectionFactory;
+    private NwNmConnectionManager connectionManager;
 
     private final ExecutorService executor = Executors.newFixedThreadPool(4);
 
@@ -72,6 +72,9 @@ public class NwNmService {
     @PreDestroy
     void destroy() {
         executor.shutdown();
+        if (connectionManager != null) {
+            connectionManager.shutdown();
+        }
     }
 
 
@@ -109,7 +112,7 @@ public class NwNmService {
                 if (serviceInstance != null) {
 
                     // Construct a task for fetching messages
-                    MessageLoaderTask task = new MessageLoaderTaskBuilder(embryoLogService, httpURLConnectionFactory)
+                    MessageLoaderTask task = new MessageLoaderTaskBuilder(embryoLogService, connectionManager)
                             .instanceMessageCache(instanceMessageCache)
                             .serviceInstance(serviceInstance)
                             .mainType(mainType)

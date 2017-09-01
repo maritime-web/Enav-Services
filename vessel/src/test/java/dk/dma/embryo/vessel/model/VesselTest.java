@@ -26,15 +26,12 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
-/**
- * Created by Jesper Tejlgaard on 6/16/15.
- */
 public class VesselTest {
 
     @Test
     public void testAsMap() {
-        Vessel vessel1 = createArcticWebVessel(1L, "ET", "ETC", 11L);
-        Vessel vessel2 = createArcticWebVessel(2L, "TO", "TOC", 22L);
+        Vessel vessel1 = createArcticWebVessel(100000000L, "ET", "ETC", 11L);
+        Vessel vessel2 = createArcticWebVessel(200000000L, "TO", "TOC", 22L);
 
         List<Vessel> vessels = Arrays.asList(vessel1, vessel2);
 
@@ -49,12 +46,12 @@ public class VesselTest {
     @Test
     public void testExtractMmsiNumbers() {
         // TEST DATA
-        Vessel vessel1 = createArcticWebVessel(1L, "ET", "ETC", 11L);
-        Vessel vessel2 = createArcticWebVessel(2L, "TO", "TOC", 22L);
+        Vessel vessel1 = createArcticWebVessel(100000000L, "ET", "ETC", 11L);
+        Vessel vessel2 = createArcticWebVessel(200000000L, "TO", "TOC", 22L);
         List<Vessel> vessels = Arrays.asList(vessel1, vessel2);
 
         // EXPECTATION
-        List<Long> expected = Arrays.asList(1L, 2L);
+        List<Long> expected = Arrays.asList(100000000L, 200000000L);
 
         // ASSERT
         ReflectionAssert.assertReflectionEquals(expected, Vessel.extractMmsiNumbers(vessels));
@@ -62,7 +59,7 @@ public class VesselTest {
 
     @Test
     public void testIsUpToDate() {
-        Vessel vessel1 = createArcticWebVessel(1L, "ET", "ETC", 11L);
+        Vessel vessel1 = createArcticWebVessel(100000000L, "ET", "ETC", 11L);
 
         Assert.assertTrue(vessel1.isUpToDate("ET", "ETC", 11L));
         Assert.assertFalse(vessel1.isUpToDate("T", "ETC", 11L));
@@ -72,7 +69,7 @@ public class VesselTest {
 
     @Test
     public void testIsUpToDate_AisDataIsNull() {
-        Vessel vessel1 = new Vessel(1L);
+        Vessel vessel1 = new Vessel(100000000L);
 
         Assert.assertFalse(vessel1.isUpToDate("ET", "ETC", 11L));
         Assert.assertTrue(vessel1.isUpToDate(null, null, null));
@@ -87,7 +84,7 @@ public class VesselTest {
         DateTime twoDaysAg = oneDayAgo.minusDays(2);
 
         Vessel vessel1 = new Vessel();
-        vessel1.setMmsi(1L);
+        vessel1.setMmsi(100000000L);
         vessel1.setGrossTonnage(2000);
         vessel1.setCommCapabilities("Phone");
         vessel1.setPersons(21);
@@ -98,7 +95,7 @@ public class VesselTest {
         vessel1.setActiveVoyage(new Voyage("DreamIsland", "45 456.00N", "067 453.34W", twoDaysAg, oneDayAgo));
 
         Vessel vessel2 = new Vessel();
-        vessel2.setMmsi(1L);
+        vessel2.setMmsi(100000000L);
         vessel2.setGrossTonnage(3000);
         vessel2.setCommCapabilities("Email");
         vessel2.setPersons(25);
@@ -110,7 +107,7 @@ public class VesselTest {
 
         // EXPECTATION
         Vessel expected = new Vessel();
-        expected.setMmsi(1L);
+        expected.setMmsi(100000000L);
         expected.setGrossTonnage(3000);
         expected.setCommCapabilities("Email");
         expected.setPersons(25);
@@ -129,6 +126,23 @@ public class VesselTest {
         ReflectionAssert.assertReflectionEquals(expected, result);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldNotAcceptNegativeMmsi() throws Exception {
+        Vessel vessel = new Vessel();
+        vessel.setMmsi(-111111111L);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldNotAcceptEightDigitMmsi() throws Exception {
+        Vessel vessel = new Vessel();
+        vessel.setMmsi(11111111L);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldNotAcceptThatMmsiIsNull() throws Exception {
+        Vessel vessel = new Vessel();
+        vessel.setMmsi(null);
+    }
 
     public static Vessel createArcticWebVessel(Long mmsi, String name, String callSign, Long imo) {
         Vessel vessel = new Vessel();

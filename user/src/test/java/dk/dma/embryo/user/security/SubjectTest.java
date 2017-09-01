@@ -114,7 +114,7 @@ public class SubjectTest extends AbstractShiroTest {
     public void testAuthorizedToModifyVessel() {
         String user = "Ole";
         String pw = "pw";
-        Long mmsi = 2L;
+        Long mmsi = 200000000L;
         
         //contextController.openRequest().getSession();
         

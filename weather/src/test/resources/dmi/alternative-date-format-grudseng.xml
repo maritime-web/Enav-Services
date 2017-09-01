@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<dmi>
+    <dato name='Date'>
+        <text>Monday the 7. August 2017.
+        </text>
+    </dato>
+    <varselforgroenland name='Warning for Greenlandic seaareas'>
+        <text></text>
+    </varselforgroenland>
+    <oversigttidspunkt name='Synoptic time'>
+        <text>Synopsis 12.00 UTC.</text>
+    </oversigttidspunkt>
+    <gyldighed name='Validhoures'>
+        <text>Forecast, valid to the 8. August 12 UTC. Issued at 11.35 UTC.
+        </text>
+    </gyldighed>
+    <synoptic name='Synoptic situation:'>
+        <oversigt name='Synoptic situation'>
+            <text>A low, 1008 hPa, over Narsalik and another low, 1010 hPa, east
+                of Narsalik, are both slowly moving towards northeast while
+                filling. Associated fronts give rain to the southern,
+                southwestern and southeastern waters. Otherwise high pressure
+                weather. A new low, about 1000 hPa, over New Foundland, is
+                moving towards northeast and an associated front with rain
+                reaches the southwestern waters during the night. Over all
+                waters locally fog and patches of fog.
+            </text>
+        </oversigt>
+    </synoptic>
+    <daneborg name='Daneborg:'>
+        <text>Daneborg:</text>
+        <udsigtfordaneborg name='Forecast for Daneborg'>
+            <text>South 6 to 11 m/s. Very poor visibility.
+
+            </text>
+        </udsigtfordaneborg>
+        <wavesdaneborg name='Waves Daneborg'>
+            <text>Significant wave height: 1,5 m. Swells: 1 m.
+
+            </text>
+        </wavesdaneborg>
+        <icedaneborg name='Ice_Daneborg'>
+            <text>Old ice and thick first-year ice in the western and northern
+                part, but open water in the southeastern part. Few icebergs and
+                growlers throughout the area.
+            </text>
+        </icedaneborg>
+    </daneborg>
+    <kangikajik name='Kangikajik:'>
+        <text>Kangikajik:</text>
+        <udsigtforkangikajik name='Forecast for Kangikajik'>
+            <text>Southwest 8 to 13 m/s. Very poor visibility.
+
+            </text>
+        </udsigtforkangikajik>
+        <waveskangikajik name='Waves Kangikajik'>
+            <text>Significant wave height: 1,5 m. Swells: 1 m.
+            </text>
+        </waveskangikajik>
+        <icekangikajik name='Ice_Kangikajik'>
+            <text>Old ice and thick first-year ice in the western and southern
+                part. Scattered icebergs and growlers in the western part along
+                the coast, otherwise few icebergs and growlers.
+            </text>
+        </icekangikajik>
+    </kangikajik>
+    <aputiteeq name='Aputiteeq:'>
+        <text>Aputiteeq:</text>
+        <udsigtforaputiteeq name='Forecast for Aputiteeq'>
+            <text>Southwest 8 to 13 m/s. Very poor visibility.
+
+            </text>
+        </udsigtforaputiteeq>
+        <wavesaputiteeq name='Waves Aputiteeq'>
+            <text>Significant wave height: 1,5 m. Swells: 1 m.
+            </text>
+        </wavesaputiteeq>
+        <iceaputiteeq name='Ice_Aputiteeq'>
+            <text>Old ice and thick first-year ice in the northern part and in
+                the western part along the coast. Scattered icebergs and
+                growlers in the western part along the coast, otherwise few
+                icebergs and growlers.
+            </text>
+        </iceaputiteeq>
+    </aputiteeq>
+    <kulusuk name='Kulusuk:'>
+        <text>Kulusuk:</text>
+        <udsigtforkulusuk name='Forecast for Kulusuk'>
+            <text>South 3 to 8 m/s. Good visibility.
+                This night south 3 to 8 m/s. And in southwestern part north 3
+                to 8 m/s. Good visibility.
+                Tomorrow early north 1 to 6 m/s. And in northeastern part south
+                2 to 7 m/s. Good visibility.
+
+            </text>
+        </udsigtforkulusuk>
+        <waveskulusuk name='Waves Kulusuk'>
+            <text>Significant wave height: 1 m. Swells: 1 m.
+            </text>
+        </waveskulusuk>
+        <icekulusuk name='Ice_Kulusuk'>
+            <text>Strips of old ice in the northwestern part along the coast.
+                Scattered icebergs and growlers in the western part, otherwise
+                few icebergs and growlers.
+            </text>
+        </icekulusuk>
+    </kulusuk>
+    <timmiarmiut name='Timmiarmiut:'>
+        <text>Timmiarmiut:</text>
+        <udsigtfortimmiarmiut name='Forecast for Timmiarmiut'>
+            <text>South 2 to 7 m/s. And in southwestern part variable below 5
+                m/s. Poor to good visibility.
+                This evening south 2 to 7 m/s. Very poor visibility.
+                This night and tomorrow early southwest 6 to 11 m/s. And in
+                northwestern part north 2 to 7 m/s. Very poor to poor
+                visibility.
+
+            </text>
+        </udsigtfortimmiarmiut>
+        <wavestimmiarmiut name='Waves Timmiarmiut'>
+            <text>Significant wave height: 2 m. Swells: 1,5 m.
+            </text>
+        </wavestimmiarmiut>
+        <icetimmiarmiut name='Ice_Timmiarmiut'>
+            <text>Few areas with old ice in the westernmost part along the coast.
+                Scattered icebergs and growlers in the western part along the
+                coast, otherwise few icebergs and growlers.
+            </text>
+        </icetimmiarmiut>
+    </timmiarmiut>
+    <nunapisuateakangia name='Nunap Isuata Kangia:'>
+        <text>Nunap Isuata Kangia:</text>
+        <udsigtfornunapisuatakangia name='Forecast for Nunap Isuata Kangia'>
+            <text>Southwest 2 to 7 m/s. And in northwestern part northeast 1 to 6
+                m/s. Very poor visibility.
+                This evening, this night and tomorrow early southwest 5 to 10
+                m/s. Very poor visibility.
+
+            </text>
+        </udsigtfornunapisuatakangia>
+        <waveskangia name='Waves Nunap Isuata Kangia'>
+            <text>Significant wave height: 1,5 m. Swells: 1,5 m.
+            </text>
+        </waveskangia>
+        <icenunapisuatakangia name='Ice_Nunapisuatakangia'>
+            <text>Scattered icebergs and growlers in the northwestern part,
+                otherwise few icebergs and growlers.
+
+
+            </text>
+        </icenunapisuatakangia>
+    </nunapisuateakangia>
+    <nunapisuatakitaa name='Nunap Isuata Kitaa:'>
+        <text>Nunap Isuata Kitaa:</text>
+        <udsigtfornunapisuatakitaa name='Forecast for Nunap Isuata Kitaa'>
+            <text>South 4 to 9 m/s. And in northeastern part east 3 to 8 m/s.
+                Very poor visibility.
+                This evening, this night and tomorrow early southeast 5 to 10
+                m/s. Very poor visibility.
+
+            </text>
+        </udsigtfornunapisuatakitaa>
+        <waveskitaa name='Waves Isuata Kitaa'>
+            <text>Significant wave height: 1,5 m. Swells: 1,5 m.
+            </text>
+        </waveskitaa>
+        <icenunapisuatakitaa name='Ice_Nunapisuatakitaa'>
+            <text>Many icebergs and growlers in the northern part, otherwise few
+                icebergs and growlers.
+
+
+            </text>
+        </icenunapisuatakitaa>
+    </nunapisuatakitaa>
+    <nunarsuit name='Nunarsuit:'>
+        <text>Nunarsuit:</text>
+        <udsigtfornunarsuit name='Forecast for Nunarsuit'>
+            <text>Southeast 7 to 12 m/s. Very poor visibility.
+
+            </text>
+        </udsigtfornunarsuit>
+        <wavesnunarsuit name='Waves Nunarsuit'>
+            <text>Significant wave height: 2 m. Swells: 1,5 m.
+            </text>
+        </wavesnunarsuit>
+        <icenunarsuit name='Ice_Nunarsuit'>
+            <text>Many icebergs and growlers in the eastern part, otherwise few
+                icebergs and growlers.
+            </text>
+        </icenunarsuit>
+    </nunarsuit>
+    <narsalik name='Narsalik:'>
+        <text>Narsalik:</text>
+        <udsigtfornarsalik name='Forecast for Narsalik'>
+            <text>Southeast 8 to 13 m/s. Very poor visibility.
+
+            </text>
+        </udsigtfornarsalik>
+        <wavesnarsalik name='Waves Narsalik'>
+            <text>Significant wave height: 2,5 m. Swells: 1,5 m.
+            </text>
+        </wavesnarsalik>
+        <icenarsalik name='Ice_Narsalik'>
+            <text>Few icebergs and growlers.
+            </text>
+        </icenarsalik>
+    </narsalik>
+    <meqquitsoq name='Meqquitsoq:'>
+        <text>Meqquitsoq:</text>
+        <udsigtformeqquitsoq name='Forecast for Meqquitsoq'>
+            <text>North 4 to 9 m/s. And in southeastern part southeast 2 to 7
+                m/s. Good visibility.
+                This evening and this night north 5 to 10 m/s. Good visibility.
+                Tomorrow early northeast 5 to 10 m/s. And in southeastern part
+                southeast 3 to 8 m/s. Moderate visibility.
+
+            </text>
+        </udsigtformeqquitsoq>
+        <wavesmeqquitsoq name='Waves Meqquitsoq'>
+            <text>Significant wave height: 1,5 m. Swells: 1,5 m.
+            </text>
+        </wavesmeqquitsoq>
+        <icemeqqitsoq name='Ice_Meqqitsoq'>
+            <text>Few icebergs and growlers.
+
+
+            </text>
+        </icemeqqitsoq>
+    </meqquitsoq>
+    <attu name='Attu:'>
+        <text>Attu:</text>
+        <udsigtforattu name='Forecast for Attu'>
+            <text>North 2 to 7 m/s. Poor visibility.
+
+            </text>
+        </udsigtforattu>
+        <wavesattu name='Waves Attu'>
+            <text>Significant wave height: 1 m. Swells: 1 m.
+            </text>
+        </wavesattu>
+        <iceattu name='Ice_Attu'>
+            <text>Few icebergs and growlers.
+            </text>
+        </iceattu>
+    </attu>
+    <uiffaq name='Uiffaq:'>
+        <text>Uiffaq:</text>
+        <udsigtforuiffaq name='Forecast for Uiffaq'>
+            <text>Northwest 2 to 7 m/s. Very poor visibility.
+
+            </text>
+        </udsigtforuiffaq>
+        <wavesuiffaq name='Waves Uiffaq'>
+            <text>Significant wave height: 1 m. Swells: 0,5 m.
+            </text>
+        </wavesuiffaq>
+        <iceuiffaq name='Ice_Uiffaq'>
+            <text>Many icebergs and growlers in the eastern part, otherwise few
+                icebergs and growlers.
+            </text>
+        </iceuiffaq>
+    </uiffaq>
+    <qimusseriarsuaq name='Qimusseriarsuaq:'>
+        <text>Qimusseriarsuaq:</text>
+        <udsigtforqimusseriarsuaq name='Forecast for Qimusseriarsuaq'>
+            <text>Variable below 5 m/s. Very poor visibility.
+                This night in western part south 2 to 7 m/s. And in eastern
+                part variable below 5 m/s. Very poor to good visibility.
+                Tomorrow early southeast 4 to 9 m/s. Very poor visibility.
+
+            </text>
+        </udsigtforqimusseriarsuaq>
+        <wavesqimusseriarsuaq name='Waves Qimusseriarsuaq'>
+            <text>Significant wave height: 1 m. Swells: 0,5 m.
+            </text>
+        </wavesqimusseriarsuaq>
+        <iceqimusseriarsuaq name='Ice_Qimusseriarsuaq'>
+            <text>Strips of thick first-year ice in the northeasternmost part
+                along the coast. Many icebergs and growlers in the eastern part
+                along the coast, otherwise few icebergs and growlers.
+            </text>
+        </iceqimusseriarsuaq>
+    </qimusseriarsuaq>
+    <kiatak name='Kiatak:'>
+        <text>Kiatak:</text>
+        <udsigtforkiatak name='Forecast for Kiatak'>
+            <text>Southeast 6 to 11 m/s. Good visibility.
+
+            </text>
+        </udsigtforkiatak>
+        <waveskiatak name='Waves Kiatak'>
+            <text>Significant wave height: 0,5 m. Swells: 0,5 m.
+            </text>
+        </waveskiatak>
+        <icekiatak name='Ice_Kiatak'>
+            <text>Old ice and thick first-year ice in the northernmost part.
+                Scattered icebergs and growlers throughout the area.
+            </text>
+        </icekiatak>
+    </kiatak>
+</dmi>

@@ -21,6 +21,8 @@ import dk.dma.embryo.weather.model.RegionForecast;
 import dk.dma.embryo.weather.model.Warnings;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.CdiRunner;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -33,6 +35,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
@@ -161,16 +164,9 @@ public class DmiForecastParser_EnTest {
     @Test
     public void test201508061600FailedInProduction() throws IOException {
         InputStream is = getClass().getResourceAsStream("/dmi/grudseng_2015_08_05-08_16_00.xml");
-        try {
             RegionForecast forecast = parser.parse(is);
-            Assert.fail("Parser error expected");
-        } catch (Exception e) {
-            // Should fail because of bad date format
-            Assert.assertTrue(e.getClass() == IOException.class);
-            Assert.assertEquals("Error parsing weather forecast", e.getMessage());
-            Assert.assertTrue(e.getCause().getClass() == IllegalArgumentException.class);
-            Assert.assertEquals("Invalid format: \"thursday d 6 August 2015 06\" is malformed at \"d 6 August 2015 06\"", e.getCause().getMessage());
-        }
+            assertThat(forecast.getFrom(), equalTo(new DateTime(2015, 8, 5, 7, 10, DateTimeZone.UTC).toDate()));
+            assertThat(forecast.getTo(), equalTo(new DateTime(2015, 8, 6, 6, 0, DateTimeZone.UTC).toDate()));
     }
 
     @Test
@@ -192,5 +188,11 @@ public class DmiForecastParser_EnTest {
         RegionForecast forecast = parser.parse(is);
     }
 
+    @Test
+    public void shouldParseGrudsengContainingDatoElementWithoutTimePart() throws Exception {
+        InputStream is = getClass().getResourceAsStream("/dmi/alternative-date-format-grudseng.xml");
+        RegionForecast forecast = parser.parse(is);
 
+        assertThat(forecast.getFrom(), equalTo(new DateTime(2017, 8, 7, 11, 35, DateTimeZone.UTC).toDate()));
+    }
 }
