@@ -18,6 +18,9 @@ package dk.dma.enav.services.vtsreport.service;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 
 /**
@@ -29,6 +32,14 @@ import javax.ws.rs.Produces;
 public class VtsInterfacePopulationService {
 
 
+    private static String TimeStamp() {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss-yyyy/MM/dd");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return sdf.format(new Date());
+    }
+    String timestamp = TimeStamp();
+
+
     @GET
     @Produces("application/json")
     public String getMessage() {
@@ -38,6 +49,7 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "{\"id\": "+(counter++)+",";
         VtsJsObjects += "\"shortname\": \"BELTREP\",";
         VtsJsObjects += "\"name\": \"Denmark - BELTREP - The Great Belt Vessel Traffic Service\",";
+        VtsJsObjects += "\"areaWKT\":\"\",";
         VtsJsObjects += "\"callsign\":\"Great Belt Traffic\",";
         VtsJsObjects += "\"email\":\"vts@beltrep.org\",";
         VtsJsObjects += "\"telephone\":\"+45 58 37 68 68\",";
@@ -54,11 +66,13 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "\"showMaxDraught\":false,";
         VtsJsObjects += "\"showAirDraught\":true,";
         VtsJsObjects += "\"showFuelQuantity\":false,";
-        VtsJsObjects += "\"showFuelDetails\":false,"; //required but disabled for testing
+        VtsJsObjects += "\"showFuelDetails\":true,";
         VtsJsObjects += "\"showVesselType\":false,";
         VtsJsObjects += "\"showVesselLength\":false,";
         VtsJsObjects += "\"showDeadWeightTonnage\":true,";
         VtsJsObjects += "\"showGrossTonnage\":false,";
+        VtsJsObjects += "\"showTrueCourse\":true,";
+        VtsJsObjects += "\"showVesselCurrentPosition\":true,";
         VtsJsObjects += "\"deadWeightTonnageLimit\":1000,";//TODO: at which tonnage to display fueldetails - uses deadWeightTonnageMultiplier with cargoTypes
         VtsJsObjects += "\"sendSummaryTo\":\"email\"}";//TODO: sends summary as email to the registered email, can also send as JSON to service in future version, ex: "https://beltrep.org/services/VTSservice"
 
@@ -67,6 +81,7 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "{\"id\": "+(counter++)+",";
         VtsJsObjects += "\"shortname\": \"SOUNDREP\",";
         VtsJsObjects += "\"name\": \"Sweden - SOUNDREP - Sound Vessel Traffic Service\",";
+        VtsJsObjects += "\"areaWKT\":\"POLYGON((12.18333 56.11611, 12.18333 56.23333, 12.29417 56.30222, 12.45778 56.30222,12.8 56.13333, 13.13333 55.68333, 13.0425 55.39139, 12.91389 55.16667,12.45778 55.16667,12.45778 55.29556, 12.59806 55.55778))\",";
         VtsJsObjects += "\"callsign\":\"Sound VTS\",";
         VtsJsObjects += "\"email\":\"contact@soundvts.org\",";
         VtsJsObjects += "\"telephone\":\"+46 771-630600\",";
@@ -83,11 +98,13 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "\"showMaxDraught\":true,";
         VtsJsObjects += "\"showAirDraught\":true,";
         VtsJsObjects += "\"showFuelQuantity\":false,";
-        VtsJsObjects += "\"showFuelDetails\":false,"; //required but disabled for testing
+        VtsJsObjects += "\"showFuelDetails\":true,";
         VtsJsObjects += "\"showVesselType\":false,";
         VtsJsObjects += "\"showVesselLength\":false,";
         VtsJsObjects += "\"showDeadWeightTonnage\":false,";
         VtsJsObjects += "\"showGrossTonnage\":false,";
+        VtsJsObjects += "\"showTrueCourse\":false,";
+        VtsJsObjects += "\"showVesselCurrentPosition\":false,";
         VtsJsObjects += "\"deadWeightTonnageLimit\":1000,";
         VtsJsObjects += "\"sendSummaryTo\":\"email\"}";
 
@@ -96,6 +113,7 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "{\"id\": "+(counter++)+",";
         VtsJsObjects += "\"shortname\": \"GOFREP-Helsinki\",";
         VtsJsObjects += "\"name\": \"Finland - GOFREP - Gulf Of Finland Vessel Traffic Service\",";
+        VtsJsObjects += "\"areaWKT\":\"\",";
         VtsJsObjects += "\"callsign\":\"Helsinki Traffic\",";
         VtsJsObjects += "\"email\":\"gofrep@fta.fi\",";
         VtsJsObjects += "\"telephone\":\"+358 (0)204 48 5387\",";
@@ -117,6 +135,8 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "\"showVesselLength\":true,";
         VtsJsObjects += "\"showDeadWeightTonnage\":false,";
         VtsJsObjects += "\"showGrossTonnage\":false,";
+        VtsJsObjects += "\"showTrueCourse\":true,";
+        VtsJsObjects += "\"showVesselCurrentPosition\":true,";
         VtsJsObjects += "\"deadWeightTonnageLimit\":0,";
         VtsJsObjects += "\"sendSummaryTo\":\"email\"}";
 
@@ -125,6 +145,7 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "{\"id\": "+(counter++)+",";
         VtsJsObjects += "\"shortname\": \"GOFREP-Tallinn\",";
         VtsJsObjects += "\"name\": \"Estonia - GOFREP Tallinn - Gulf Of Finland Vessel Traffic Service\",";
+        VtsJsObjects += "\"areaWKT\":\"\",";
         VtsJsObjects += "\"callsign\":\"Tallinn Traffic\",";
         VtsJsObjects += "\"email\":\"gofrep@vta.ee\",";
         VtsJsObjects += "\"telephone\":\"+372 6 205 764\",";
@@ -146,6 +167,8 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "\"showVesselLength\":true,";
         VtsJsObjects += "\"showDeadWeightTonnage\":false,";
         VtsJsObjects += "\"showGrossTonnage\":false,";
+        VtsJsObjects += "\"showTrueCourse\":true,";
+        VtsJsObjects += "\"showVesselCurrentPosition\":true,";
         VtsJsObjects += "\"deadWeightTonnageLimit\":0,";
         VtsJsObjects += "\"sendSummaryTo\":\"email\"}";
 
@@ -153,7 +176,8 @@ public class VtsInterfacePopulationService {
 
         VtsJsObjects += "{\"id\": "+(counter++)+",";
         VtsJsObjects += "\"shortname\": \"GOFREP-St.Petersburg\",";
-        VtsJsObjects += "\"name\": \"Russia - GOFREP Helsinki - Gulf Of Finland Vessel Traffic Service\",";
+        VtsJsObjects += "\"name\": \"Russia - GOFREP St. Petersburg - Gulf Of Finland Vessel Traffic Service\",";
+        VtsJsObjects += "\"areaWKT\":\"\",";
         VtsJsObjects += "\"callsign\":\"St. Peterburg Traffic\",";
         VtsJsObjects += "\"email\":\"gofrep@rsbm.ru\",";
         VtsJsObjects += "\"telephone\":\"+7 12 380 70 21\",";
@@ -175,42 +199,14 @@ public class VtsInterfacePopulationService {
         VtsJsObjects += "\"showVesselLength\":true,";
         VtsJsObjects += "\"showDeadWeightTonnage\":false,";
         VtsJsObjects += "\"showGrossTonnage\":false,";
-        VtsJsObjects += "\"deadWeightTonnageLimit\":0,";
-        VtsJsObjects += "\"sendSummaryTo\":\"email\"}";
-
-
-        VtsJsObjects += ","; //next item
-
-        VtsJsObjects += "{\"id\": "+(counter++)+",";
-        VtsJsObjects += "\"shortname\": \"TESTREP\",";
-        VtsJsObjects += "\"name\": \"Roland - TESTREP - Awesome Vessel Traffic Service\",";
-        VtsJsObjects += "\"callsign\":\"YOLO Traffic\",";
-        VtsJsObjects += "\"email\":\"dma.vts.test@gmail.com\",";
-        VtsJsObjects += "\"telephone\":\"555-no-idea\",";
-        VtsJsObjects += "\"telephone2\":\"555-still-dunno\",";
-        VtsJsObjects += "\"fax\":\"555-fax-fun\",";
-        VtsJsObjects += "\"vhfchannel1\":\"North 1\",";
-        VtsJsObjects += "\"vhfchannel2\":\"East 2\",";
-        VtsJsObjects += "\"vhfchannel3\":\"West 3\",";
-        VtsJsObjects += "\"vhfchannel4\":\"South 4\",";
-        VtsJsObjects += "\"vhfreservechannel1\":\"11\",";
-        VtsJsObjects += "\"vhfreservechannel2\":\"12\",";
-        VtsJsObjects += "\"iconImage\":\"img/OpenPortGuideLogo_32.png\",";
-        VtsJsObjects += "\"VTSGuideLink\":\"http://images.fandango.com/images/fandangoblog/minions618F1.jpg\",";
-        VtsJsObjects += "\"showMaxDraught\":true,";
-        VtsJsObjects += "\"showAirDraught\":true,";
-        VtsJsObjects += "\"showFuelQuantity\":true,";
-        VtsJsObjects += "\"showFuelDetails\":true,";
-        VtsJsObjects += "\"showVesselType\":true,";
-        VtsJsObjects += "\"showVesselLength\":true,";
-        VtsJsObjects += "\"showDeadWeightTonnage\":true,";
-        VtsJsObjects += "\"showGrossTonnage\":true,";
+        VtsJsObjects += "\"showTrueCourse\":true,";
+        VtsJsObjects += "\"showVesselCurrentPosition\":true,";
         VtsJsObjects += "\"deadWeightTonnageLimit\":0,";
         VtsJsObjects += "\"sendSummaryTo\":\"email\"}";
 
         VtsJsObjects += "]"; //end array
 
-        return "{\"VtsJsObjects\":"+VtsJsObjects+"}";
+        return "{\"timestampUTC\":\"" + timestamp + "\",\"VtsJsObjects\":"+VtsJsObjects+"}";
     }
 
 }
