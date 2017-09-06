@@ -66,7 +66,7 @@ public class InstanceXmlParserTest {
     }
 
     @Test
-    @Ignore("This tests fails because Jaxb default value substitution only works if the field is missing or nil, not if the field is empty (clasical empty vs null problem with xml).")
+    @Ignore("This tests fails because Jaxb default value substitution only works if the field is missing or nil, not if the field is empty (classical empty vs null problem with xml).")
     public void shouldSetDefaultCoverageWhenXmlHasEmptyGeometryAsWKTTag() throws Exception {
         checkDefaultGeomety(getXmlForFile("/mc/instanceWithEmptyGeometryAsWKTTag.xml"));
     }

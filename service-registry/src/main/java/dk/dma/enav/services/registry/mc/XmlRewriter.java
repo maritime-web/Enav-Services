@@ -59,11 +59,11 @@ public class XmlRewriter {
             Document document = reader.read(new StringReader(xml));
 
             Element rootElement = document.getRootElement();
-            if (!rootElement.getQualifiedName().equals("ServiceInstanceSchema:serviceInstance") && !rootElement.getQualifiedName().equals("serviceInstance")) {
+            if (!rootElement.getQualifiedName().equals("ServiceInstanceSchema:serviceInstance")) {
                 // if the document changes we do not modify it, instead we log an error the first time it happens
                 if (!documentChangeLogged) {
                     documentChangeLogged = true;
-                    log.error("Document format changed " + xml);
+                    log.warn("Root element of XML was not 'ServiceInstanceSchema:serviceInstance' as expected: " + rootElement.selectSingleNode("./name/text()"));
                 }
                 return xml;
             }

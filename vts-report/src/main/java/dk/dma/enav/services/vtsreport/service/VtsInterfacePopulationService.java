@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package dk.dma.enav.services.vtsreport.service;
 
 import javax.ws.rs.GET;
@@ -25,7 +24,8 @@ import java.util.TimeZone;
 
 /**
  * Created by rob on 6/1/17.
- * Services the frontend questionaire interface with JS objects
+ * Temporarily services the BalticWeb frontend questionaire interface with JS objects - possibly redundant when the
+ * Swedish Maritime Authority launch their VTS service which should produce somewhat the same output.
  */
 
 @Path("/vtsinterface")
@@ -37,7 +37,7 @@ public class VtsInterfacePopulationService {
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         return sdf.format(new Date());
     }
-    String timestamp = TimeStamp();
+    private String timestamp = TimeStamp();
 
 
     @GET
