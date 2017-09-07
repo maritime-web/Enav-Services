@@ -171,6 +171,7 @@ public class VesselRestService extends AbstractRestService {
                 details = new VesselDetails();
             }
             details.setAisVessel(aisVessel);
+            details.setOverview(aisVessel.toVesselOverview());
 
             AdditionalInformationBuilder builder = new AdditionalInformationBuilder();
             builder.addHistoricalTrackInformation(aisDataService.isHistoricalTrackAllowed(aisVessel));

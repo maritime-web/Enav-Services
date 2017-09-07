@@ -77,7 +77,7 @@ public class AisVesselTest {
         ReflectionAssert.assertReflectionEquals(expected, result);
     }
 
-    public static AisVessel createAisVessel(Long mmsi, String name, String callSign) {
+    private static AisVessel createAisVessel(Long mmsi, String name, String callSign) {
         AisVessel aisVessel = new AisVessel();
         aisVessel.setMmsi(mmsi);
         aisVessel.setName(name);
@@ -105,7 +105,7 @@ public class AisVesselTest {
         return aisVessel;
     }
 
-    public static AisVessel toAisVessel(Vessel vessel) {
+    private static AisVessel toAisVessel(Vessel vessel) {
         AisVessel aisVessel = new AisVessel();
         aisVessel.setMmsi(vessel.getMmsi());
         aisVessel.setCallsign(vessel.getAisData().getCallsign());
@@ -115,22 +115,21 @@ public class AisVesselTest {
     }
 
 
-    public static Vessel createArcticWebVessel(Long mmsi, String name, String callSign, Long imo) {
+    private static Vessel createArcticWebVessel(Long mmsi, String name, String callSign, Long imo) {
         Vessel vessel = new Vessel();
         vessel.setMmsi(mmsi);
         vessel.setAisData(new AisData(name, callSign, imo));
         return vessel;
     }
 
-    public static double randomDouble() {
+    private static double randomDouble() {
         double start = 0;
         double end = 50;
         double random = new Random().nextDouble();
-        double result = start + (random * (end - start));
-        return result;
+        return start + (random * (end - start));
     }
 
-    public static String randomString() {
+    private static String randomString() {
         return UUID.randomUUID().toString();
     }
 

@@ -16,6 +16,7 @@ package dk.dma.embryo.vessel.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dk.dma.embryo.vessel.integration.AisVessel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -31,6 +32,7 @@ import java.util.Map;
 @ToString
 @Getter
 @Setter
+@EqualsAndHashCode
 public class VesselDetails {
     
     /** Ship name */
@@ -57,6 +59,7 @@ public class VesselDetails {
     
     private AisVessel aisVessel;
     
+    private VesselOverview overview;
 
     // //////////////////////////////////////////////////////////////////////
     // Constructors
@@ -79,28 +82,5 @@ public class VesselDetails {
         }
 
         return getAisVessel().getMmsi();
-    }
-
-    /**
-     * Can't be replaced by lombok because of suspicious call  to aisVessel.hashCodeAllFields()
-     *
-     */
-    @Override
-    public int hashCode() {
-
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((mmsi == null)                   ? 0 : mmsi.hashCode());
-        result = prime * result + ((maritimeId == null)             ? 0 : maritimeId.hashCode());
-        result = prime * result + ((commCapabilities == null)       ? 0 : commCapabilities.hashCode());
-        result = prime * result + ((maxSpeed == null)               ? 0 : maxSpeed.hashCode());
-        result = prime * result + ((grossTon == null)               ? 0 : grossTon.hashCode());
-        result = prime * result + ((maxPersons == null)             ? 0 : maxPersons.hashCode());
-        result = prime * result + ((iceClass == null)               ? 0 : iceClass.hashCode());
-        result = prime * result + ((helipad == null)                ? 0 : helipad.hashCode());
-        result = prime * result + ((additionalInformation == null)  ? 0 : additionalInformation.hashCode());
-        result = prime * result + ((aisVessel == null)              ? 0 : aisVessel.hashCodeAllFields());
-        
-        return result;
     }
 }

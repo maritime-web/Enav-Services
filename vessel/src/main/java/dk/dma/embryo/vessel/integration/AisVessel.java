@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -74,28 +75,28 @@ public class AisVessel {
     // //////////////////////////////////////////////////////////////////////
     // Business Logic
     // //////////////////////////////////////////////////////////////////////
-    public static Function<AisVessel, AisVessel> addMaxSpeedFn(Map<Long, Vessel> arcticWebVesselAsMap){
+    public static Function<AisVessel, AisVessel> addMaxSpeedFn(Map<Long, Vessel> arcticWebVesselAsMap) {
         return vessel -> {
             vessel.deduceAndSetMaxSpeed(arcticWebVesselAsMap.get(vessel.getMmsi()));
             return vessel;
         };
     }
 
-    public void deduceAndSetMaxSpeed(Vessel awVesselFromDatabase) {
+    private void deduceAndSetMaxSpeed(Vessel awVesselFromDatabase) {
 
         boolean isMaxSpeedSetOnAisVessel = false;
 
         // If exists set Max Speed from ArcticWeb vessel in the database
-        if(awVesselFromDatabase != null && awVesselFromDatabase.getMaxSpeed() != null && awVesselFromDatabase.getMaxSpeed().doubleValue() > 0) {
+        if (awVesselFromDatabase != null && awVesselFromDatabase.getMaxSpeed() != null && awVesselFromDatabase.getMaxSpeed().doubleValue() > 0) {
             this.setMaxSpeed(awVesselFromDatabase.getMaxSpeed().doubleValue());
             this.setMaxSpeedOrigin(AisVessel.MaxSpeedOrigin.AW);
             isMaxSpeedSetOnAisVessel = true;
         }
 
         // If not already set from ArcticWeb vessel in database -> set it vessel type
-        if(!isMaxSpeedSetOnAisVessel && this.getVesselType() != null) {
+        if (!isMaxSpeedSetOnAisVessel && this.getVesselType() != null) {
             Double maxSpeedByVesselType = ServiceSpeedByShipTypeMapper.lookupSpeed(this.getType());
-            if(maxSpeedByVesselType > 0.0) {
+            if (maxSpeedByVesselType > 0.0) {
                 this.setMaxSpeed(maxSpeedByVesselType);
                 this.setMaxSpeedOrigin(AisVessel.MaxSpeedOrigin.TABLE);
                 isMaxSpeedSetOnAisVessel = true;
@@ -103,14 +104,14 @@ public class AisVessel {
         }
 
         // If not already set from ArcticWeb vessel in database or from vessel type -> set sog
-        if(!isMaxSpeedSetOnAisVessel && this.getSog() != null) {
+        if (!isMaxSpeedSetOnAisVessel && this.getSog() != null) {
             this.setMaxSpeed(this.getSog());
             this.setMaxSpeedOrigin(AisVessel.MaxSpeedOrigin.SOG);
             isMaxSpeedSetOnAisVessel = true;
         }
 
         // Fallback - set 0.0
-        if(!isMaxSpeedSetOnAisVessel) {
+        if (!isMaxSpeedSetOnAisVessel) {
             this.setMaxSpeed(0.0);
             this.setMaxSpeedOrigin(AisVessel.MaxSpeedOrigin.DEFAULT);
         }
@@ -119,7 +120,7 @@ public class AisVessel {
     // //////////////////////////////////////////////////////////////////////
     // Utility methods
     // //////////////////////////////////////////////////////////////////////
-    public static Map<Long, AisVessel> asMap(List<AisVessel> vessels){
+    public static Map<Long, AisVessel> asMap(List<AisVessel> vessels) {
         return vessels.stream().collect(Collectors.toMap(AisVessel::getMmsi, Function.identity()));
     }
 
@@ -145,9 +146,10 @@ public class AisVessel {
 
     /**
      * method that returns a simplified vessel overview  object consisting only of the lat,lon and type (colour in the ui).
+     *
      * @return list of {lat,lon, type}
      */
-    public VesselSimplifiedOverview toVesselSimplifiedOverview() {
+    private VesselSimplifiedOverview toVesselSimplifiedOverview() {
         VesselSimplifiedOverview vesselSimplifiedOverview = new VesselSimplifiedOverview();
         vesselSimplifiedOverview.setX(getLon());
         vesselSimplifiedOverview.setY(getLat());
@@ -160,7 +162,7 @@ public class AisVessel {
     }
 
     private static void mapMaxSpeed(VesselOverview vesselOverview, Double maxSpeed, MaxSpeedOrigin maxSpeedOrigin) {
-        if(maxSpeedOrigin == MaxSpeedOrigin.AW) {
+        if (maxSpeedOrigin == MaxSpeedOrigin.AW) {
             vesselOverview.setAwsog(maxSpeed);
         } else if (maxSpeedOrigin == MaxSpeedOrigin.TABLE) {
             vesselOverview.setSsog(maxSpeed);
@@ -186,7 +188,7 @@ public class AisVessel {
         return vessels.stream().map(vessel -> vessel.toVesselSimplifiedOverview());
     }
 
-    public static AisVessel create(Vessel vessel){
+    public static AisVessel create(Vessel vessel) {
         AisVessel aisVessel = new AisVessel();
         aisVessel.setCallsign(vessel.getAisData().getCallsign());
         aisVessel.setImoNo(vessel.getAisData().getImoNo());
@@ -198,15 +200,15 @@ public class AisVessel {
     /**
      * This will match the list of aisVessels and vessels on MMSI number, and if any vessels are not in the aisVessels, they are automatically transformed and added.
      */
-    public static List<AisVessel> addMissingVessels(List<AisVessel> aisVessels, List<Vessel> vessels){
+    public static List<AisVessel> addMissingVessels(List<AisVessel> aisVessels, List<Vessel> vessels) {
         List<AisVessel> result = new ArrayList<>(aisVessels.size() + vessels.size());
-        Set<Long> mmsiNumbers = aisVessels.stream().map(aisVessel -> aisVessel.getMmsi()).collect(Collectors.toSet());
-        for(Vessel vessel : vessels){
-            if(!mmsiNumbers.contains(vessel.getMmsi())){
+        Set<Long> mmsiNumbers = aisVessels.stream().map(AisVessel::getMmsi).collect(Collectors.toSet());
+        for (Vessel vessel : vessels) {
+            if (!mmsiNumbers.contains(vessel.getMmsi())) {
                 result.add(AisVessel.create(vessel));
             }
         }
-        if(result.size() > 0){
+        if (result.size() > 0) {
             result.addAll(aisVessels);
             return result;
         }
@@ -216,22 +218,19 @@ public class AisVessel {
     // //////////////////////////////////////////////////////////////////////
     // Object methods
     // //////////////////////////////////////////////////////////////////////
-    // todo this looks wrong, why would a Json DTO have hashCode and Equals which does not use all fields ?
+
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((mmsi == null) ? 0 : mmsi.hashCode());
-        return result;
+        return Objects.hash(country, sourceRegion, lastReport, mmsi, sourceCountry, sourceType, targetType, callsign, cog, destination, draught, eta, heading, imoNo, lat, length, lon, moored, name, navStatus, rot, sog, type, vesselType, width, maxSpeed, maxSpeedOrigin);
     }
 
     /*
-     * Introduced because usage in VesselDetails of hashCode yielded wrong result for Rest Service
-     * (304 were sent even though data were updated)
-     * Am however not sure wether hashCode and equals are used in Collections and the like
-     * Therefore introducing this method as a temporary fix.
-     * hashCode and equals should be rewritten if not breaking existing functionality
-     */
+         * Introduced because usage in VesselDetails of hashCode yielded wrong result for Rest Service
+         * (304 were sent even though data were updated)
+         * Am however not sure wether hashCode and equals are used in Collections and the like
+         * Therefore introducing this method as a temporary fix.
+         * hashCode and equals should be rewritten if not breaking existing functionality
+         */
     public int hashCodeAllFields() {
         int result = country != null ? country.hashCode() : 0;
         result = 31 * result + (sourceRegion != null ? sourceRegion.hashCode() : 0);
@@ -280,7 +279,7 @@ public class AisVessel {
             if (otherVessel.mmsi != null) {
                 return false;
             }
-        } else if (!mmsi.equals(otherVessel.mmsi)){
+        } else if (!mmsi.equals(otherVessel.mmsi)) {
             return false;
         }
 
