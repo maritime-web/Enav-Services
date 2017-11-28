@@ -77,6 +77,19 @@ public class DateParserTest {
     }
 
     @Test
+    public void shouldParseToWhithoutAtAfterIssued() throws Exception {
+        DateTime expectedTo = new DateTime(2017, 11, 29, 6, 0, DateTimeZone.UTC);
+        DateTime expectedFrom = new DateTime(2017, 8, 7, 8, 10, DateTimeZone.UTC);
+        String fromText = "Monday the 7. August 2017.";
+        String toText = "Forecast, valid to the 29. November 06 UTC. Issued 8.10 UTC.";
+
+        DateParser parser = new DateParser(fromText, toText);
+
+        assertThat(parser.getFrom(), equalTo(expectedFrom));
+        assertThat(parser.getTo(), equalTo(expectedTo));
+    }
+
+    @Test
     public void shouldParseToWhithTimeAndUtc() throws Exception {
         DateTime expectedTo = new DateTime(2014, 12, 10, 6, 0, DateTimeZone.UTC);
         String fromText = "Monday the 7. July 2014, 17.45 UTC.";

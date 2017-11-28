@@ -30,7 +30,7 @@ public class DateParser {
     private Pattern DATE_MONTH_YEAR = Pattern.compile("(?<date>\\d{1,2})\\.\\s(?<month>\\p{Alpha}{4,9})\\s(?<year>\\d{4})");
     private Pattern TIME = Pattern.compile("(?<hours>\\d{2})[.:](?<minutes>\\d{2}) UTC");
     private static final Pattern TO_DATE_MONTH_HOUR = Pattern.compile("(?<date>\\d{1,2})\\.\\s(?<month>\\p{Alpha}{4,9})(,)?\\s(?<hour>\\d{1,2})(\\s)?(UTC|utc)");
-    private static final Pattern TO_FROM_TIME = Pattern.compile("Issued at (?<hours>\\d{1,2})\\.(?<minutes>\\d{2})(\\s)?(UTC|utc)");
+    private static final Pattern TO_FROM_TIME = Pattern.compile("Issued( at)? (?<hours>\\d{1,2})\\.(?<minutes>\\d{2})(\\s)?(UTC|utc)");
 
     private String fromText;
     private String toText;
