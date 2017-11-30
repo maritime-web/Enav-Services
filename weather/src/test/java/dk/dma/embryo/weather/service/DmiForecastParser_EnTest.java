@@ -198,9 +198,18 @@ public class DmiForecastParser_EnTest {
 
         assertThat(forecast.getFrom(), equalTo(new DateTime(2017, 8, 7, 11, 35, DateTimeZone.UTC).toDate()));
     }
+
     @Test
     public void shouldParse20170811() throws Exception {
         InputStream is = getClass().getResourceAsStream("/dmi/grudseng2017-08-11.xml");
+        RegionForecast forecast = parser.parse(is);
+
+        assertThat(forecast.getFrom(), is(not(nullValue())));
+    }
+
+    @Test
+    public void shouldParse20171128() throws Exception {
+        InputStream is = getClass().getResourceAsStream("/dmi/grudseng_2017-11-28.xml");
         RegionForecast forecast = parser.parse(is);
 
         assertThat(forecast.getFrom(), is(not(nullValue())));

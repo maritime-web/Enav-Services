@@ -14,7 +14,7 @@
     </parent>
 
     <properties>
-        <keycloak.version>1.9.1.Final</keycloak.version>
+        <keycloak.version>3.2.1.Final</keycloak.version>
     </properties>
 
     <dependencies>
