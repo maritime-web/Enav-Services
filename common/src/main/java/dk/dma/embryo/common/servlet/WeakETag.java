@@ -14,28 +14,20 @@
  */
 package dk.dma.embryo.common.servlet;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 public class WeakETag implements ETag {
-    private String value;
+    private ETag delegate;
 
     WeakETag(String value) {
-        this.value = "W/\"".concat(Objects.requireNonNull(value)).concat("\"");
+        this.delegate = new StrongETag("W/\"".concat(Objects.requireNonNull(value)).concat("\""));
     }
 
     public String getValue() {
-        return value;
+        return delegate.getValue();
     }
 
     public boolean matches(String matchingValue) {
-        return !Objects.isNull(matchingValue) && matches(this.value, matchingValue);
-    }
-
-    private boolean matches(String matchHeader, String toMatch) {
-        String[] matchValues = matchHeader.split("\\s*,\\s*");
-        Arrays.sort(matchValues);
-        return Arrays.binarySearch(matchValues, toMatch) > -1
-                || Arrays.binarySearch(matchValues, "*") > -1;
+        return delegate.matches(matchingValue);
     }
 }
