@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "description": "Maritime Cloud Service Registry, developed under the Horizon 2020 Project EfficienSea2, cofunded by the European Union.",
-    "version": "1.0",
+    "version": "0.7",
     "title": "Maritime Cloud Service Registry API",
     "contact": {
       "name": "Frequentis AG",
@@ -66,6 +66,13 @@
         ],
         "parameters": [
           {
+            "name": "query",
+            "in": "query",
+            "description": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "page",
             "in": "query",
             "description": "Page number of the requested page",
@@ -80,13 +87,6 @@
             "required": false,
             "type": "integer",
             "format": "int32"
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "description": "query",
-            "required": true,
-            "type": "string"
           },
           {
             "name": "sort",
@@ -137,22 +137,6 @@
         ],
         "parameters": [
           {
-            "name": "page",
-            "in": "query",
-            "description": "Page number of the requested page",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "size",
-            "in": "query",
-            "description": "Size of a page",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
             "name": "query",
             "in": "query",
             "description": "query",
@@ -168,11 +152,36 @@
             "default": "false"
           },
           {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization",
+            "name": "includeNonCompliant",
+            "in": "query",
+            "description": "includeNonCompliant",
             "required": false,
-            "type": "string"
+            "type": "string",
+            "default": "false"
+          },
+          {
+            "name": "displaySimulated",
+            "in": "query",
+            "description": "displaySimulated",
+            "required": false,
+            "type": "string",
+            "default": "false"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number of the requested page",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "Size of a page",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "sort",
@@ -223,6 +232,13 @@
         ],
         "parameters": [
           {
+            "name": "query",
+            "in": "query",
+            "description": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "page",
             "in": "query",
             "description": "Page number of the requested page",
@@ -237,13 +253,6 @@
             "required": false,
             "type": "integer",
             "format": "int32"
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "description": "query",
-            "required": true,
-            "type": "string"
           },
           {
             "name": "sort",
@@ -294,6 +303,13 @@
         ],
         "parameters": [
           {
+            "name": "query",
+            "in": "query",
+            "description": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "page",
             "in": "query",
             "description": "Page number of the requested page",
@@ -308,13 +324,6 @@
             "required": false,
             "type": "integer",
             "format": "int32"
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "description": "query",
-            "required": true,
-            "type": "string"
           },
           {
             "name": "sort",
@@ -365,6 +374,13 @@
         ],
         "parameters": [
           {
+            "name": "query",
+            "in": "query",
+            "description": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "page",
             "in": "query",
             "description": "Page number of the requested page",
@@ -379,13 +395,6 @@
             "required": false,
             "type": "integer",
             "format": "int32"
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "description": "query",
-            "required": true,
-            "type": "string"
           },
           {
             "name": "sort",
@@ -436,6 +445,13 @@
         ],
         "parameters": [
           {
+            "name": "query",
+            "in": "query",
+            "description": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "page",
             "in": "query",
             "description": "Page number of the requested page",
@@ -450,13 +466,6 @@
             "required": false,
             "type": "integer",
             "format": "int32"
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "description": "query",
-            "required": true,
-            "type": "string"
           },
           {
             "name": "sort",
@@ -507,6 +516,13 @@
         ],
         "parameters": [
           {
+            "name": "query",
+            "in": "query",
+            "description": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "page",
             "in": "query",
             "description": "Page number of the requested page",
@@ -521,13 +537,6 @@
             "required": false,
             "type": "integer",
             "format": "int32"
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "description": "query",
-            "required": true,
-            "type": "string"
           },
           {
             "name": "sort",
@@ -579,22 +588,6 @@
         ],
         "parameters": [
           {
-            "name": "page",
-            "in": "query",
-            "description": "Page number of the requested page",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "size",
-            "in": "query",
-            "description": "Size of a page",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
             "name": "geometry",
             "in": "query",
             "description": "geometry",
@@ -613,15 +606,40 @@
             "name": "query",
             "in": "query",
             "description": "query",
-            "required": true,
+            "required": false,
             "type": "string"
           },
           {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization",
+            "name": "includeNonCompliant",
+            "in": "query",
+            "description": "includeNonCompliant",
             "required": false,
-            "type": "string"
+            "type": "string",
+            "default": "false"
+          },
+          {
+            "name": "displaySimulated",
+            "in": "query",
+            "description": "displaySimulated",
+            "required": false,
+            "type": "string",
+            "default": "false"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number of the requested page",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "Size of a page",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "sort",
@@ -639,10 +657,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Instance"
-              }
+              "type": "object"
             }
           },
           "401": {
@@ -673,6 +688,44 @@
         ],
         "parameters": [
           {
+            "name": "geometry",
+            "in": "query",
+            "description": "geometry",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "description": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "includeDoc",
+            "in": "query",
+            "description": "includeDoc",
+            "required": false,
+            "type": "string",
+            "default": "false"
+          },
+          {
+            "name": "includeNonCompliant",
+            "in": "query",
+            "description": "includeNonCompliant",
+            "required": false,
+            "type": "string",
+            "default": "false"
+          },
+          {
+            "name": "displaySimulated",
+            "in": "query",
+            "description": "displaySimulated",
+            "required": false,
+            "type": "string",
+            "default": "false"
+          },
+          {
             "name": "page",
             "in": "query",
             "description": "Page number of the requested page",
@@ -687,35 +740,6 @@
             "required": false,
             "type": "integer",
             "format": "int32"
-          },
-          {
-            "name": "geometry",
-            "in": "query",
-            "description": "geometry",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "description": "query",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "includeDoc",
-            "in": "query",
-            "description": "includeDoc",
-            "required": false,
-            "type": "string",
-            "default": "false"
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization",
-            "required": false,
-            "type": "string"
           },
           {
             "name": "sort",
@@ -733,10 +757,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Instance"
-              }
+              "type": "object"
             }
           },
           "401": {
@@ -766,22 +787,6 @@
         ],
         "parameters": [
           {
-            "name": "page",
-            "in": "query",
-            "description": "Page number of the requested page",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "size",
-            "in": "query",
-            "description": "Size of a page",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
             "name": "query",
             "in": "query",
             "description": "query",
@@ -797,11 +802,36 @@
             "default": "false"
           },
           {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization",
+            "name": "includeNonCompliant",
+            "in": "query",
+            "description": "includeNonCompliant",
             "required": false,
-            "type": "string"
+            "type": "string",
+            "default": "false"
+          },
+          {
+            "name": "displaySimulated",
+            "in": "query",
+            "description": "displaySimulated",
+            "required": false,
+            "type": "string",
+            "default": "false"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number of the requested page",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "Size of a page",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "sort",
@@ -853,22 +883,6 @@
         ],
         "parameters": [
           {
-            "name": "page",
-            "in": "query",
-            "description": "Page number of the requested page",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "size",
-            "in": "query",
-            "description": "Size of a page",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
             "name": "latitude",
             "in": "query",
             "description": "latitude",
@@ -894,15 +908,40 @@
             "name": "query",
             "in": "query",
             "description": "query",
-            "required": true,
+            "required": false,
             "type": "string"
           },
           {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization",
+            "name": "includeNonCompliant",
+            "in": "query",
+            "description": "includeNonCompliant",
             "required": false,
-            "type": "string"
+            "type": "string",
+            "default": "false"
+          },
+          {
+            "name": "displaySimulated",
+            "in": "query",
+            "description": "displaySimulated",
+            "required": false,
+            "type": "string",
+            "default": "false"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number of the requested page",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "Size of a page",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "sort",
@@ -920,10 +959,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Instance"
-              }
+              "type": "object"
             }
           },
           "401": {
@@ -953,6 +989,13 @@
         ],
         "parameters": [
           {
+            "name": "id",
+            "in": "query",
+            "description": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "page",
             "in": "query",
             "description": "Page number of the requested page",
@@ -967,13 +1010,6 @@
             "required": false,
             "type": "integer",
             "format": "int32"
-          },
-          {
-            "name": "id",
-            "in": "query",
-            "description": "id",
-            "required": true,
-            "type": "string"
           },
           {
             "name": "sort",
@@ -1025,22 +1061,6 @@
         ],
         "parameters": [
           {
-            "name": "page",
-            "in": "query",
-            "description": "Page number of the requested page",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "size",
-            "in": "query",
-            "description": "Size of a page",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
             "name": "query",
             "in": "query",
             "description": "query",
@@ -1056,11 +1076,36 @@
             "default": "false"
           },
           {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization",
+            "name": "includeNonCompliant",
+            "in": "query",
+            "description": "includeNonCompliant",
             "required": false,
-            "type": "string"
+            "type": "string",
+            "default": "false"
+          },
+          {
+            "name": "displaySimulated",
+            "in": "query",
+            "description": "displaySimulated",
+            "required": false,
+            "type": "string",
+            "default": "false"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number of the requested page",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "Size of a page",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "sort",
@@ -1315,11 +1360,11 @@
           "200": {
             "description": "OK"
           },
-          "401": {
-            "description": "Unauthorized"
-          },
           "204": {
             "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "403": {
             "description": "Forbidden"
@@ -1338,7 +1383,7 @@
           "application/json"
         ],
         "produces": [
-          "text/plain"
+          "application/json;charset=UTF-8"
         ],
         "responses": {
           "200": {
@@ -1377,6 +1422,14 @@
         ],
         "parameters": [
           {
+            "name": "includeDoc",
+            "in": "query",
+            "description": "includeDoc",
+            "required": false,
+            "type": "string",
+            "default": "false"
+          },
+          {
             "name": "page",
             "in": "query",
             "description": "Page number of the requested page",
@@ -1391,21 +1444,6 @@
             "required": false,
             "type": "integer",
             "format": "int32"
-          },
-          {
-            "name": "includeDoc",
-            "in": "query",
-            "description": "includeDoc",
-            "required": false,
-            "type": "string",
-            "default": "false"
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization",
-            "required": false,
-            "type": "string"
           },
           {
             "name": "sort",
@@ -1474,7 +1512,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/Instance"
+              "type": "object"
             }
           },
           "201": {
@@ -1525,7 +1563,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/Instance"
+              "type": "object"
             }
           },
           "201": {
@@ -1558,22 +1596,6 @@
         ],
         "parameters": [
           {
-            "name": "page",
-            "in": "query",
-            "description": "Page number of the requested page",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "size",
-            "in": "query",
-            "description": "Size of a page",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
             "name": "id",
             "in": "path",
             "description": "id",
@@ -1589,11 +1611,36 @@
             "default": "false"
           },
           {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization",
+            "name": "includeNonCompliant",
+            "in": "query",
+            "description": "includeNonCompliant",
             "required": false,
-            "type": "string"
+            "type": "string",
+            "default": "false"
+          },
+          {
+            "name": "displaySimulated",
+            "in": "query",
+            "description": "displaySimulated",
+            "required": false,
+            "type": "string",
+            "default": "false"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number of the requested page",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "Size of a page",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "sort",
@@ -1667,11 +1714,20 @@
             "default": "false"
           },
           {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization",
+            "name": "includeNonCompliant",
+            "in": "query",
+            "description": "includeNonCompliant",
             "required": false,
-            "type": "string"
+            "type": "string",
+            "default": "false"
+          },
+          {
+            "name": "displaySimulated",
+            "in": "query",
+            "description": "displaySimulated",
+            "required": false,
+            "type": "string",
+            "default": "false"
           }
         ],
         "responses": {
@@ -1731,11 +1787,11 @@
           "200": {
             "description": "OK"
           },
-          "401": {
-            "description": "Unauthorized"
-          },
           "204": {
             "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "403": {
             "description": "Forbidden"
@@ -1986,6 +2042,13 @@
         ],
         "parameters": [
           {
+            "name": "id",
+            "in": "path",
+            "description": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "page",
             "in": "query",
             "description": "Page number of the requested page",
@@ -2000,13 +2063,6 @@
             "required": false,
             "type": "integer",
             "format": "int32"
-          },
-          {
-            "name": "id",
-            "in": "path",
-            "description": "id",
-            "required": true,
-            "type": "string"
           },
           {
             "name": "sort",
@@ -2129,11 +2185,11 @@
           "200": {
             "description": "OK"
           },
-          "401": {
-            "description": "Unauthorized"
-          },
           "204": {
             "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "403": {
             "description": "Forbidden"
@@ -2422,11 +2478,11 @@
           "200": {
             "description": "OK"
           },
-          "401": {
-            "description": "Unauthorized"
-          },
           "204": {
             "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "403": {
             "description": "Forbidden"
@@ -2615,6 +2671,13 @@
         ],
         "parameters": [
           {
+            "name": "id",
+            "in": "path",
+            "description": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "page",
             "in": "query",
             "description": "Page number of the requested page",
@@ -2629,13 +2692,6 @@
             "required": false,
             "type": "integer",
             "format": "int32"
-          },
-          {
-            "name": "id",
-            "in": "path",
-            "description": "id",
-            "required": true,
-            "type": "string"
           },
           {
             "name": "sort",
@@ -2758,11 +2814,11 @@
           "200": {
             "description": "OK"
           },
-          "401": {
-            "description": "Unauthorized"
-          },
           "204": {
             "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "403": {
             "description": "Forbidden"
@@ -3051,11 +3107,11 @@
           "200": {
             "description": "OK"
           },
-          "401": {
-            "description": "Unauthorized"
-          },
           "204": {
             "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "403": {
             "description": "Forbidden"
@@ -3282,11 +3338,11 @@
           "200": {
             "description": "OK"
           },
-          "401": {
-            "description": "Unauthorized"
-          },
           "204": {
             "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "403": {
             "description": "Forbidden"
@@ -3296,51 +3352,6 @@
     }
   },
   "definitions": {
-    "SpecificationTemplate": {
-      "type": "object",
-      "properties": {
-        "comment": {
-          "type": "string"
-        },
-        "docs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Doc"
-          }
-        },
-        "guidelineDoc": {
-          "$ref": "#/definitions/Doc"
-        },
-        "id": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "name": {
-          "type": "string"
-        },
-        "templateDoc": {
-          "$ref": "#/definitions/Doc"
-        },
-        "type": {
-          "type": "string",
-          "enum": [
-            "SPECIFICATION",
-            "DESIGN",
-            "INSTANCE"
-          ]
-        },
-        "version": {
-          "type": "string"
-        },
-        "xsds": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Xsd"
-          }
-        }
-      },
-      "description": "A SpecificationTemplate contains information on how to define a aspects ofa service.It has a type do differentiate between e.g. logical definitions andconcrete service instances.Templates will evolve, that's why they have a version."
-    },
     "Design": {
       "type": "object",
       "properties": {
@@ -3390,11 +3401,40 @@
       },
       "description": "Holds a description of a technical design.A design can be compatible to one or morespecification templates.It has at least a technical representation of thedescriptiion in form of an XML and a filled out templateas e.g. word document."
     },
+    "Doc": {
+      "type": "object",
+      "properties": {
+        "comment": {
+          "type": "string"
+        },
+        "filecontent": {
+          "type": "string",
+          "format": "byte"
+        },
+        "filecontentContentType": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "mimetype": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "description": "A doc represents a human readable document that can be attached to various objects.This could be an office document containing guidelines linked,to a service specification, or a Getting Started PDF attached toan service instance."
+    },
     "Instance": {
       "type": "object",
       "properties": {
         "comment": {
           "type": "string"
+        },
+        "compliant": {
+          "type": "boolean"
         },
         "designId": {
           "type": "string"
@@ -3466,83 +3506,6 @@
       },
       "description": "Holds a description of an service instance.An instance can be compatible to one or morespecification templates.It has at least a technical representation of thedescriptiion in form of an XML and a filled out templateas e.g. word document."
     },
-    "Xml": {
-      "type": "object",
-      "properties": {
-        "comment": {
-          "type": "string"
-        },
-        "content": {
-          "type": "string"
-        },
-        "contentContentType": {
-          "type": "string"
-        },
-        "id": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "description": "A technical way to describe aspects if a service.The Xml should validate against a XSD from a SpecificationTemplate."
-    },
-    "Xsd": {
-      "type": "object",
-      "properties": {
-        "comment": {
-          "type": "string"
-        },
-        "content": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "format": "byte"
-          }
-        },
-        "contentContentType": {
-          "type": "string"
-        },
-        "id": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "description": "A schema for describing aspects of a service in a XML document.        "
-    },
-    "Doc": {
-      "type": "object",
-      "properties": {
-        "comment": {
-          "type": "string"
-        },
-        "filecontent": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "format": "byte"
-          }
-        },
-        "filecontentContentType": {
-          "type": "string"
-        },
-        "id": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "mimetype": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "description": "A doc represents a human readable document that can be attached to various objects.This could be an office document containing guidelines linked,to a service specification, or a Getting Started PDF attached toan service instance."
-    },
     "JsonNode": {
       "type": "object",
       "properties": {
@@ -3592,11 +3555,15 @@
             "BINARY",
             "BOOLEAN",
             "MISSING",
+            "NULL",
             "NUMBER",
             "OBJECT",
             "POJO",
             "STRING"
           ]
+        },
+        "null": {
+          "type": "boolean"
         },
         "number": {
           "type": "boolean"
@@ -3662,7 +3629,97 @@
           "type": "string"
         }
       },
-      "description": "Holds a logical description of a service.A specification can be compatible to one or morespecification templates.It has at least a technical representation of the servicedescriptiion in form of an XML and a filled out service templateas e.g. word document."
+      "description": "Holds a logical description of a service. A specification can be compatible to one or morespecification templates.It has at least a technical representation of the servicedescriptiion in form of an XML and a filled out service templateas e.g. word document."
+    },
+    "SpecificationTemplate": {
+      "type": "object",
+      "properties": {
+        "comment": {
+          "type": "string"
+        },
+        "docs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Doc"
+          }
+        },
+        "guidelineDoc": {
+          "$ref": "#/definitions/Doc"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "templateDoc": {
+          "$ref": "#/definitions/Doc"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "SPECIFICATION",
+            "DESIGN",
+            "INSTANCE"
+          ]
+        },
+        "version": {
+          "type": "string"
+        },
+        "xsds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Xsd"
+          }
+        }
+      },
+      "description": "A SpecificationTemplate contains information on how to define a aspects ofa service.It has a type do differentiate between e.g. logical definitions andconcrete service instances.Templates will evolve, that's why they have a version."
+    },
+    "Xml": {
+      "type": "object",
+      "properties": {
+        "comment": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "contentContentType": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "description": "A technical way to describe aspects if a service.The Xml should validate against a XSD from a SpecificationTemplate."
+    },
+    "Xsd": {
+      "type": "object",
+      "properties": {
+        "comment": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string",
+          "format": "byte"
+        },
+        "contentContentType": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "description": "A schema for describing aspects of a service in a XML document.        "
     }
   }
 }
