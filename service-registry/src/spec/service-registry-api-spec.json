@@ -3555,14 +3555,14 @@
             "BINARY",
             "BOOLEAN",
             "MISSING",
-            "NULL",
+            "NNULL",
             "NUMBER",
             "OBJECT",
             "POJO",
             "STRING"
           ]
         },
-        "null": {
+        "nnull": {
           "type": "boolean"
         },
         "number": {
