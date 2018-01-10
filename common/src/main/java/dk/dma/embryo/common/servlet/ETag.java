@@ -14,34 +14,8 @@
  */
 package dk.dma.embryo.common.servlet;
 
-import java.util.Arrays;
-import java.util.Objects;
+public interface ETag {
+    String getValue();
 
-/**
- * Created by Jesper Tejlgaard on 4/19/16.
- */
-public class ETag {
-    private String value;
-
-    public ETag(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    boolean matches(String matchingValue){
-        if(Objects.isNull(matchingValue)){
-            return false;
-        }
-        return matches(this.value, matchingValue);
-    }
-
-    private boolean matches(String matchHeader, String toMatch) {
-        String[] matchValues = matchHeader.split("\\s*,\\s*");
-        Arrays.sort(matchValues);
-        return Arrays.binarySearch(matchValues, toMatch) > -1
-                || Arrays.binarySearch(matchValues, "*") > -1;
-    }
+    boolean matches(String matchingValue);
 }

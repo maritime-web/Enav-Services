@@ -24,25 +24,25 @@ public class ETagTest {
 
     @Test
     public void testMatchesWithNull(){
-        ETag etag = new ETag("etagValue");
+        ETag etag = new StrongETag("etagValue");
         Assert.assertFalse(etag.matches(null));
     }
 
     @Test
     public void testMatchesDifferentArgument(){
-        ETag etag = new ETag("etagValue");
+        ETag etag = new StrongETag("etagValue");
         Assert.assertFalse(etag.matches("different"));
     }
 
     @Test
     public void testMatchesSameArgument(){
-        ETag etag = new ETag("etagValue");
+        ETag etag = new StrongETag("etagValue");
         Assert.assertTrue(etag.matches("etagValue"));
     }
 
     @Test
     public void testIfStartMatchesEverything(){
-        ETag etag = new ETag("*");
+        ETag etag = new StrongETag("*");
         Assert.assertTrue(etag.matches("etagValue"));
         Assert.assertTrue(etag.matches("1"));
         Assert.assertTrue(etag.matches("hep"));

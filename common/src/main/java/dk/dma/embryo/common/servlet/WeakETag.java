@@ -14,35 +14,20 @@
  */
 package dk.dma.embryo.common.servlet;
 
-import java.io.File;
+import java.util.Objects;
 
-/**
- * Created by Jesper Tejlgaard on 4/19/16.
- */
-public class Resource {
+public class WeakETag implements ETag {
+    private ETag delegate;
 
-    private final File file;
-
-    private ETag eTag;
-
-    Resource(File file){
-        this.file = file;
+    WeakETag(String value) {
+        this.delegate = new StrongETag("W/\"".concat(Objects.requireNonNull(value)).concat("\""));
     }
 
-    public boolean exists() {
-        return file != null && file.exists();
+    public String getValue() {
+        return delegate.getValue();
     }
 
-    public ETag getETag() {
-        if(!exists()) {
-            return null;
-        }
-        if(eTag == null) {
-            long length = file.length();
-            long lastModified = file.lastModified();
-            eTag = new WeakETag(length + "_" + lastModified);
-        }
-        return eTag;
+    public boolean matches(String matchingValue) {
+        return delegate.matches(matchingValue);
     }
-
 }

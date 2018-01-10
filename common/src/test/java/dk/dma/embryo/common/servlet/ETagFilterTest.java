@@ -31,6 +31,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.mockito.Matchers.contains;
+
 /**
  * Created by Jesper Tejlgaard on 4/19/16.
  */
@@ -118,7 +121,7 @@ public class ETagFilterTest {
         ETagFilter filter = new ETagFilter(resourceManager);
         filter.doFilter(request, response, filterChain);
 
-        Mockito.verify(response).setHeader("ETag", file.length() + "_" + file.lastModified());
+        Mockito.verify(response).setHeader(contains("ETag"), contains("W/\"" +file.length() + "_" + file.lastModified() + "\""));
     }
 
     @Test
@@ -135,7 +138,7 @@ public class ETagFilterTest {
         ETagFilter filter = new ETagFilter(resourceManager);
         filter.doFilter(request, response, filterChain);
 
-        Mockito.verify(response).setHeader("ETag", file.length() + "_" + file.lastModified());
+        Mockito.verify(response).setHeader(contains("ETag"), contains("W/\"" +file.length() + "_" + file.lastModified() + "\""));
     }
 
     @Test
@@ -146,12 +149,12 @@ public class ETagFilterTest {
         Mockito.when(request.getServletPath()).thenReturn(path);
         Mockito.when(resourceManager.getRequestedResource(null, path)).thenReturn(new Resource(file));
 
-        Mockito.when(request.getHeader("If-None-Match")).thenReturn(file.length() + "_" + file.lastModified());
+        Mockito.when(request.getHeader("If-None-Match")).thenReturn("W/\"" +file.length() + "_" + file.lastModified()+"\"");
 
         ETagFilter filter = new ETagFilter(resourceManager);
         filter.doFilter(request, response, filterChain);
 
-        Mockito.verify(response).setHeader("ETag", file.length() + "_" + file.lastModified());
+        Mockito.verify(response).setHeader(contains("ETag"), contains("W/\"" +file.length() + "_" + file.lastModified()) + "\"");
         Mockito.verify(response).setStatus(304);
     }
 }

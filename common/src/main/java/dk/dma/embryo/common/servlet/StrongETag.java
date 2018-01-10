@@ -14,35 +14,36 @@
  */
 package dk.dma.embryo.common.servlet;
 
-import java.io.File;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Created by Jesper Tejlgaard on 4/19/16.
  */
-public class Resource {
+public class StrongETag implements ETag {
+    private String value;
 
-    private final File file;
-
-    private ETag eTag;
-
-    Resource(File file){
-        this.file = file;
+    public StrongETag(String value) {
+        this.value = value;
     }
 
-    public boolean exists() {
-        return file != null && file.exists();
+    @Override
+    public String getValue() {
+        return value;
     }
 
-    public ETag getETag() {
-        if(!exists()) {
-            return null;
+    @Override
+    public boolean matches(String matchingValue){
+        if(Objects.isNull(matchingValue)){
+            return false;
         }
-        if(eTag == null) {
-            long length = file.length();
-            long lastModified = file.lastModified();
-            eTag = new WeakETag(length + "_" + lastModified);
-        }
-        return eTag;
+        return matches(this.value, matchingValue);
     }
 
+    private boolean matches(String matchHeader, String toMatch) {
+        String[] matchValues = matchHeader.split("\\s*,\\s*");
+        Arrays.sort(matchValues);
+        return Arrays.binarySearch(matchValues, toMatch) > -1
+                || Arrays.binarySearch(matchValues, "*") > -1;
+    }
 }

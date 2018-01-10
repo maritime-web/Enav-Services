@@ -14,35 +14,17 @@
  */
 package dk.dma.embryo.common.servlet;
 
-import java.io.File;
+import org.junit.Test;
 
-/**
- * Created by Jesper Tejlgaard on 4/19/16.
- */
-public class Resource {
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-    private final File file;
+public class WeakETagTest {
+    @Test
+    public void shouldAddWeakPrefix() {
+        WeakETag cut = new WeakETag("etag");
 
-    private ETag eTag;
-
-    Resource(File file){
-        this.file = file;
+        assertThat(cut.getValue(), is(equalTo("W/\"etag\"")));
     }
-
-    public boolean exists() {
-        return file != null && file.exists();
-    }
-
-    public ETag getETag() {
-        if(!exists()) {
-            return null;
-        }
-        if(eTag == null) {
-            long length = file.length();
-            long lastModified = file.lastModified();
-            eTag = new WeakETag(length + "_" + lastModified);
-        }
-        return eTag;
-    }
-
 }

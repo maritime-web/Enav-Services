@@ -19,6 +19,9 @@ import org.junit.Test;
 
 import java.io.File;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 /**
  * Created by Jesper Tejlgaard on 4/19/16.
  */
@@ -65,6 +68,6 @@ public class ResourceTest {
         Assert.assertNotNull(resource.getETag().getValue());
 
         String expected = file.length() + "_" + file.lastModified();
-        Assert.assertEquals(expected, resource.getETag().getValue());
+        assertThat(resource.getETag().getValue(), containsString(expected));
     }
 }
