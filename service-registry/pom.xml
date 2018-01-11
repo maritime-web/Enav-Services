@@ -155,7 +155,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${basedir}/src/spec/service-registry-api-spec.json</inputSpec>
+                            <inputSpec>${basedir}/src/spec/service-registry-api-spec.yaml</inputSpec>
                             <language>java</language>
                             <modelPackage>dk.dma.enav.services.registry.mc.model</modelPackage>
                             <apiPackage>dk.dma.enav.services.registry.mc.api</apiPackage>

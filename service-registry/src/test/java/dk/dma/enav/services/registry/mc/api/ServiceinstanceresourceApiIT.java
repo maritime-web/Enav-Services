@@ -20,15 +20,14 @@ import dk.dma.enav.services.registry.mc.ApiException;
 import dk.dma.enav.services.registry.mc.ApiFactory;
 import dk.dma.enav.services.registry.mc.ApiResponse;
 import dk.dma.enav.services.registry.mc.model.Instance;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.Iterator;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * API tests for ServiceinstanceresourceApi
@@ -40,32 +39,17 @@ public class ServiceinstanceresourceApiIT {
 
     @Test
     public void getAllInstancesUsingGETTest() throws ApiException {
-        Integer page = null;
-        Integer size = null;
-        String includeDoc = null;
-        String authentication = null;
-        List<String> sort = null;
-        List<Instance> response = api.getAllInstancesUsingGET(page, size, includeDoc, authentication, sort);
-        System.out.println("Services = " + response.size());
-        for (Iterator<Instance> i = response.iterator( ); i.hasNext(); ) {
-            Instance instance = i.next();
-            System.out.println("Id = " + instance.getInstanceId() + " ver. "  + instance.getVersion());
-            
-        }
-        Iterator<Instance> iterator = response.iterator();
-        System.out.println(response);
+        String includeDoc = "false";
+        List<Instance> response = api.getAllInstancesUsingGET(includeDoc, null, null, null);
         assertThat(response.size(), is(greaterThan(0)));
     }
     
     @Test
-    // The service's Id are not visible on test-management.maritimecloud.net, so you have to call the getAllServices API to get the id
-    @Ignore("sr-test has a service with 8, but for some reason it is not returned.")
     public void getInstanceByIdAndVersion() throws ApiException {
-        int id = 8;
-        String version = "0.1";
-        ApiResponse<Instance> response = api.getInstanceUsingGETWithHttpInfo(String.valueOf(id), version, null, null);
-        System.out.println(response.getData());
-        //assertThat(response.getData().getStatus()!= null);
+        String id = "urn:mrn:mcl:service:instance:dma:nw-nm-test";
+        String version = "0.4";
+        ApiResponse<Instance> response = api.getInstanceUsingGETWithHttpInfo(id, version, null, null, null);
+        assertThat(response.getData().getStatus(), notNullValue());
     }
 
 }

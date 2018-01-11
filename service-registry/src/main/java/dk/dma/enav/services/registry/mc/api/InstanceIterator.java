@@ -15,6 +15,7 @@
 package dk.dma.enav.services.registry.mc.api;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -22,7 +23,6 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.collect.Lists;
 import dk.dma.enav.services.registry.mc.ApiClient;
 import dk.dma.enav.services.registry.mc.ApiException;
 import dk.dma.enav.services.registry.mc.ApiResponse;
@@ -36,32 +36,23 @@ import lombok.AllArgsConstructor;
  */
 class InstanceIterator implements Iterator<List<Instance>> {
 
-    public static final DataLoader ALL_DATA_LOADER =  new DataLoader() {
-        @Override
-        public ApiResponse<List<Instance>> fetchData(ServiceinstanceresourceApi api, int pageNumber, int pageSize) throws ApiException {
-            return api.getAllInstancesUsingGETWithHttpInfo(pageNumber, pageSize, null, null, Lists.newArrayList());
-        }
-    };
+    private static final DataLoader ALL_DATA_LOADER = (api, pageNumber, pageSize) -> api.getAllInstancesUsingGETWithHttpInfo("false", pageNumber, pageSize, Collections.emptyList());
 
     public static DataLoader createSearchDataLoader(String query, String wktLocation) {
-        return new DataLoader() {
-            @Override
-            public ApiResponse<List<Instance>> fetchData(ServiceinstanceresourceApi api, int pageNumber, int pageSize) throws ApiException {
-                return api.searchInstancesByGeometryWKTUsingGETWithHttpInfo(wktLocation, query, pageNumber, pageSize, null, null, Lists.newArrayList());
-            }
-        };
+        return (api, pageNumber, pageSize) -> api.searchInstancesByGeometryWKTUsingGETWithHttpInfo(wktLocation, query, "false", "false", "false", pageNumber, pageSize, Collections.emptyList());
     }
 
     private static final Pattern LINK_PATTERN = Pattern.compile(".*page=(?<page>\\d+).*size=(?<size>\\d+)");
     private final ServiceinstanceresourceApi api;
     private final DataLoader dataLoader;
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private Optional<Link> next;
 
-    public InstanceIterator(ApiClient apiClient, int pageSize) {
+    InstanceIterator(ApiClient apiClient, int pageSize) {
         this(apiClient, pageSize, ALL_DATA_LOADER);
     }
 
-    public InstanceIterator(ApiClient apiClient, int pageSize, DataLoader dataLoader) {
+    InstanceIterator(ApiClient apiClient, int pageSize, DataLoader dataLoader) {
         api = new ServiceinstanceresourceApi(apiClient);
         next = Optional.of(new Link(0, pageSize));
         this.dataLoader = dataLoader;

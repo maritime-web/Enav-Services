@@ -3,7 +3,7 @@ info:
   description: >-
     Maritime Cloud Service Registry, developed under the Horizon 2020 Project
     EfficienSea2, cofunded by the European Union.
-  version: '1.0'
+  version: '0.7'
   title: Maritime Cloud Service Registry API
   contact:
     name: Frequentis AG
@@ -12,10 +12,8 @@ info:
   license:
     name: AGPLv3
     url: 'https:/www.gnu.org/licenses/agpl-3.0.en.html'
-host: 'sr.maritimecloud.net'
+host: sr.maritimecloud.net
 basePath: /
-schemes:
-  - http
 tags:
   - name: technical-design-resource
     description: Technical Design Resource
@@ -45,6 +43,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: query
+          in: query
+          description: query
+          required: true
+          type: string
         - name: page
           in: query
           description: Page number of the requested page
@@ -57,11 +60,6 @@ paths:
           required: false
           type: integer
           format: int32
-        - name: query
-          in: query
-          description: query
-          required: true
-          type: string
         - name: sort
           in: query
           description: >-
@@ -96,6 +94,29 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: query
+          in: query
+          description: query
+          required: true
+          type: string
+        - name: includeDoc
+          in: query
+          description: includeDoc
+          required: false
+          type: string
+          default: 'false'
+        - name: includeNonCompliant
+          in: query
+          description: includeNonCompliant
+          required: false
+          type: string
+          default: 'false'
+        - name: displaySimulated
+          in: query
+          description: displaySimulated
+          required: false
+          type: string
+          default: 'false'
         - name: page
           in: query
           description: Page number of the requested page
@@ -108,11 +129,6 @@ paths:
           required: false
           type: integer
           format: int32
-        - name: query
-          in: query
-          description: query
-          required: true
-          type: string
         - name: sort
           in: query
           description: >-
@@ -147,6 +163,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: query
+          in: query
+          description: query
+          required: true
+          type: string
         - name: page
           in: query
           description: Page number of the requested page
@@ -159,11 +180,6 @@ paths:
           required: false
           type: integer
           format: int32
-        - name: query
-          in: query
-          description: query
-          required: true
-          type: string
         - name: sort
           in: query
           description: >-
@@ -198,6 +214,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: query
+          in: query
+          description: query
+          required: true
+          type: string
         - name: page
           in: query
           description: Page number of the requested page
@@ -210,11 +231,6 @@ paths:
           required: false
           type: integer
           format: int32
-        - name: query
-          in: query
-          description: query
-          required: true
-          type: string
         - name: sort
           in: query
           description: >-
@@ -249,6 +265,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: query
+          in: query
+          description: query
+          required: true
+          type: string
         - name: page
           in: query
           description: Page number of the requested page
@@ -261,11 +282,6 @@ paths:
           required: false
           type: integer
           format: int32
-        - name: query
-          in: query
-          description: query
-          required: true
-          type: string
         - name: sort
           in: query
           description: >-
@@ -300,6 +316,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: query
+          in: query
+          description: query
+          required: true
+          type: string
         - name: page
           in: query
           description: Page number of the requested page
@@ -312,11 +333,6 @@ paths:
           required: false
           type: integer
           format: int32
-        - name: query
-          in: query
-          description: query
-          required: true
-          type: string
         - name: sort
           in: query
           description: >-
@@ -351,6 +367,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: query
+          in: query
+          description: query
+          required: true
+          type: string
         - name: page
           in: query
           description: Page number of the requested page
@@ -363,11 +384,6 @@ paths:
           required: false
           type: integer
           format: int32
-        - name: query
-          in: query
-          description: query
-          required: true
-          type: string
         - name: sort
           in: query
           description: >-
@@ -403,6 +419,34 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: geometry
+          in: query
+          description: geometry
+          required: true
+          type: string
+        - name: includeDoc
+          in: query
+          description: includeDoc
+          required: false
+          type: string
+          default: 'false'
+        - name: query
+          in: query
+          description: query
+          required: false
+          type: string
+        - name: includeNonCompliant
+          in: query
+          description: includeNonCompliant
+          required: false
+          type: string
+          default: 'false'
+        - name: displaySimulated
+          in: query
+          description: displaySimulated
+          required: false
+          type: string
+          default: 'false'
         - name: page
           in: query
           description: Page number of the requested page
@@ -415,11 +459,6 @@ paths:
           required: false
           type: integer
           format: int32
-        - name: geometry
-          in: query
-          description: geometry
-          required: true
-          type: string
         - name: sort
           in: query
           description: >-
@@ -434,9 +473,7 @@ paths:
         '200':
           description: OK
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/Instance'
+            type: object
         '401':
           description: Unauthorized
         '403':
@@ -455,6 +492,34 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: geometry
+          in: query
+          description: geometry
+          required: true
+          type: string
+        - name: query
+          in: query
+          description: query
+          required: false
+          type: string
+        - name: includeDoc
+          in: query
+          description: includeDoc
+          required: false
+          type: string
+          default: 'false'
+        - name: includeNonCompliant
+          in: query
+          description: includeNonCompliant
+          required: false
+          type: string
+          default: 'false'
+        - name: displaySimulated
+          in: query
+          description: displaySimulated
+          required: false
+          type: string
+          default: 'false'
         - name: page
           in: query
           description: Page number of the requested page
@@ -467,11 +532,6 @@ paths:
           required: false
           type: integer
           format: int32
-        - name: geometry
-          in: query
-          description: geometry
-          required: true
-          type: string
         - name: sort
           in: query
           description: >-
@@ -506,6 +566,29 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: query
+          in: query
+          description: query
+          required: true
+          type: string
+        - name: includeDoc
+          in: query
+          description: includeDoc
+          required: false
+          type: string
+          default: 'false'
+        - name: includeNonCompliant
+          in: query
+          description: includeNonCompliant
+          required: false
+          type: string
+          default: 'false'
+        - name: displaySimulated
+          in: query
+          description: displaySimulated
+          required: false
+          type: string
+          default: 'false'
         - name: page
           in: query
           description: Page number of the requested page
@@ -518,11 +601,6 @@ paths:
           required: false
           type: integer
           format: int32
-        - name: query
-          in: query
-          description: query
-          required: true
-          type: string
         - name: sort
           in: query
           description: >-
@@ -560,6 +638,39 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: latitude
+          in: query
+          description: latitude
+          required: true
+          type: string
+        - name: includeDoc
+          in: query
+          description: includeDoc
+          required: false
+          type: string
+          default: 'false'
+        - name: longitude
+          in: query
+          description: longitude
+          required: true
+          type: string
+        - name: query
+          in: query
+          description: query
+          required: false
+          type: string
+        - name: includeNonCompliant
+          in: query
+          description: includeNonCompliant
+          required: false
+          type: string
+          default: 'false'
+        - name: displaySimulated
+          in: query
+          description: displaySimulated
+          required: false
+          type: string
+          default: 'false'
         - name: page
           in: query
           description: Page number of the requested page
@@ -572,16 +683,55 @@ paths:
           required: false
           type: integer
           format: int32
-        - name: latitude
+        - name: sort
           in: query
-          description: latitude
+          description: >-
+            Sorting criteria in the format: property(,asc|desc). Default sort
+            order is ascending. Multiple sort criteria are supported.
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /api/_searchSpecificationId/technicalDesign:
+    get:
+      tags:
+        - technical-design-resource
+      summary: getAllDesignsBySpecificationId
+      operationId: getAllDesignsBySpecificationIdUsingGET
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: query
+          description: id
           required: true
           type: string
-        - name: longitude
+        - name: page
           in: query
-          description: longitude
-          required: true
-          type: string
+          description: Page number of the requested page
+          required: false
+          type: integer
+          format: int32
+        - name: size
+          in: query
+          description: Size of a page
+          required: false
+          type: integer
+          format: int32
         - name: sort
           in: query
           description: >-
@@ -598,7 +748,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Instance'
+              $ref: '#/definitions/Design'
         '401':
           description: Unauthorized
         '403':
@@ -617,6 +767,29 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: query
+          in: query
+          description: query
+          required: true
+          type: string
+        - name: includeDoc
+          in: query
+          description: includeDoc
+          required: false
+          type: string
+          default: 'false'
+        - name: includeNonCompliant
+          in: query
+          description: includeNonCompliant
+          required: false
+          type: string
+          default: 'false'
+        - name: displaySimulated
+          in: query
+          description: displaySimulated
+          required: false
+          type: string
+          default: 'false'
         - name: page
           in: query
           description: Page number of the requested page
@@ -629,11 +802,6 @@ paths:
           required: false
           type: integer
           format: int32
-        - name: query
-          in: query
-          description: query
-          required: true
-          type: string
         - name: sort
           in: query
           description: >-
@@ -823,7 +991,7 @@ paths:
       consumes:
         - application/json
       produces:
-        - text/plain
+        - application/json;charset=UTF-8
       responses:
         '200':
           description: OK
@@ -848,6 +1016,12 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: includeDoc
+          in: query
+          description: includeDoc
+          required: false
+          type: string
+          default: 'false'
         - name: page
           in: query
           description: Page number of the requested page
@@ -902,13 +1076,13 @@ paths:
         - name: Authorization
           in: header
           description: Authorization
-          required: true
+          required: false
           type: string
       responses:
         '200':
           description: OK
           schema:
-            $ref: '#/definitions/Instance'
+            type: object
         '201':
           description: Created
         '401':
@@ -936,13 +1110,13 @@ paths:
         - name: Authorization
           in: header
           description: Authorization
-          required: true
+          required: false
           type: string
       responses:
         '200':
           description: OK
           schema:
-            $ref: '#/definitions/Instance'
+            type: object
         '201':
           description: Created
         '401':
@@ -962,6 +1136,29 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+        - name: includeDoc
+          in: query
+          description: includeDoc
+          required: false
+          type: string
+          default: 'false'
+        - name: includeNonCompliant
+          in: query
+          description: includeNonCompliant
+          required: false
+          type: string
+          default: 'false'
+        - name: displaySimulated
+          in: query
+          description: displaySimulated
+          required: false
+          type: string
+          default: 'false'
         - name: page
           in: query
           description: Page number of the requested page
@@ -974,11 +1171,6 @@ paths:
           required: false
           type: integer
           format: int32
-        - name: id
-          in: path
-          description: id
-          required: true
-          type: string
         - name: sort
           in: query
           description: >-
@@ -1002,7 +1194,7 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-  '/api/serviceInstance/{id}/{version}':
+  '/api/serviceInstance/{id}/{version}/':
     get:
       tags:
         - service-instance-resource
@@ -1026,6 +1218,24 @@ paths:
           description: version
           required: true
           type: string
+        - name: includeDoc
+          in: query
+          description: includeDoc
+          required: false
+          type: string
+          default: 'false'
+        - name: includeNonCompliant
+          in: query
+          description: includeNonCompliant
+          required: false
+          type: string
+          default: 'false'
+        - name: displaySimulated
+          in: query
+          description: displaySimulated
+          required: false
+          type: string
+          default: 'false'
       responses:
         '200':
           description: OK
@@ -1060,7 +1270,7 @@ paths:
         - name: Authorization
           in: header
           description: Authorization
-          required: true
+          required: false
           type: string
       responses:
         '200':
@@ -1100,7 +1310,7 @@ paths:
         - name: Authorization
           in: header
           description: Authorization
-          required: true
+          required: false
           type: string
       responses:
         '200':
@@ -1238,6 +1448,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
         - name: page
           in: query
           description: Page number of the requested page
@@ -1250,11 +1465,6 @@ paths:
           required: false
           type: integer
           format: int32
-        - name: id
-          in: path
-          description: id
-          required: true
-          type: string
         - name: sort
           in: query
           description: >-
@@ -1278,7 +1488,7 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-  '/api/serviceSpecification/{id}/{version}':
+  '/api/serviceSpecification/{id}/{version}/':
     get:
       tags:
         - service-specification-resource
@@ -1671,6 +1881,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
         - name: page
           in: query
           description: Page number of the requested page
@@ -1683,11 +1898,6 @@ paths:
           required: false
           type: integer
           format: int32
-        - name: id
-          in: path
-          description: id
-          required: true
-          type: string
         - name: sort
           in: query
           description: >-
@@ -1711,7 +1921,7 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-  '/api/technicalDesign/{id}/{version}':
+  '/api/technicalDesign/{id}/{version}/':
     get:
       tags:
         - technical-design-resource
@@ -2159,8 +2369,6 @@ definitions:
         $ref: '#/definitions/SpecificationTemplate'
       name:
         type: string
-      organisationId:
-        type: string
       organizationId:
         type: string
       specifications:
@@ -2176,50 +2384,37 @@ definitions:
       one or morespecification templates.It has at least a technical
       representation of thedescriptiion in form of an XML and a filled out
       templateas e.g. word document.
-  SpecificationTemplate:
+  Doc:
     type: object
     properties:
       comment:
         type: string
-      docs:
-        type: array
-        items:
-          $ref: '#/definitions/Doc'
-      guidelineDoc:
-        $ref: '#/definitions/Doc'
+      filecontent:
+        type: string
+        format: byte
+      filecontentContentType:
+        type: string
       id:
         type: integer
         format: int64
+      mimetype:
+        type: string
       name:
         type: string
-      templateDoc:
-        $ref: '#/definitions/Doc'
-      type:
-        type: string
-        enum:
-          - SPECIFICATION
-          - DESIGN
-          - INSTANCE
-      version:
-        type: string
-      xsds:
-        type: array
-        items:
-          $ref: '#/definitions/Xsd'
     description: >-
-      A SpecificationTemplate contains information on how to define a aspects
-      ofa service.It has a type do differentiate between e.g. logical
-      definitions andconcrete service instances.Templates will evolve, that's
-      why they have a version.
+      A doc represents a human readable document that can be attached to various
+      objects.This could be an office document containing guidelines linked,to a
+      service specification, or a Getting Started PDF attached toan service
+      instance.
   Instance:
     type: object
     properties:
       comment:
         type: string
-      designs:
-        type: array
-        items:
-          $ref: '#/definitions/Design'
+      compliant:
+        type: boolean
+      designId:
+        type: string
       docs:
         type: array
         items:
@@ -2235,6 +2430,8 @@ definitions:
       id:
         type: integer
         format: int64
+      imo:
+        type: string
       implementedSpecificationVersion:
         $ref: '#/definitions/SpecificationTemplate'
       instanceAsDoc:
@@ -2245,9 +2442,15 @@ definitions:
         type: string
       keywords:
         type: string
+      mmsi:
+        type: string
       name:
         type: string
       organizationId:
+        type: string
+      serviceType:
+        type: string
+      specificationId:
         type: string
       status:
         type: string
@@ -2260,99 +2463,6 @@ definitions:
       to one or morespecification templates.It has at least a technical
       representation of thedescriptiion in form of an XML and a filled out
       templateas e.g. word document.
-  Xml:
-    type: object
-    properties:
-      comment:
-        type: string
-      content:
-        type: string
-      contentContentType:
-        type: string
-      id:
-        type: integer
-        format: int64
-      name:
-        type: string
-    description: >-
-      A technical way to describe aspects if a service.The Xml should validate
-      against a XSD from a SpecificationTemplate.
-  Xsd:
-    type: object
-    properties:
-      comment:
-        type: string
-      content:
-        type: array
-        items:
-          type: string
-          format: byte
-      contentContentType:
-        type: string
-      id:
-        type: integer
-        format: int64
-      name:
-        type: string
-    description: 'A schema for describing aspects of a service in a XML document.        '
-  Doc:
-    type: object
-    properties:
-      comment:
-        type: string
-      filecontent:
-        type: string
-      filecontentContentType:
-        type: string
-      id:
-        type: integer
-        format: int64
-      mimetype:
-        type: string
-      name:
-        type: string
-    description: >-
-      A doc represents a human readable document that can be attached to various
-      objects.This could be an office document containing guidelines linked,to a
-      service specification, or a Getting Started PDF attached toan service
-      instance.
-  Specification:
-    type: object
-    properties:
-      comment:
-        type: string
-      docs:
-        type: array
-        items:
-          $ref: '#/definitions/Doc'
-      id:
-        type: integer
-        format: int64
-      implementedSpecificationVersion:
-        $ref: '#/definitions/SpecificationTemplate'
-      keywords:
-        type: string
-      name:
-        type: string
-      organisationId:
-        type: string
-      organizationId:
-        type: string
-      specAsDoc:
-        $ref: '#/definitions/Doc'
-      specAsXml:
-        $ref: '#/definitions/Xml'
-      specificationId:
-        type: string
-      status:
-        type: string
-      version:
-        type: string
-    description: >-
-      Holds a logical description of a service.A specification can be compatible
-      to one or morespecification templates.It has at least a technical
-      representation of the servicedescriptiion in form of an XML and a filled
-      out service templateas e.g. word document.
   JsonNode:
     type: object
     properties:
@@ -2389,7 +2499,6 @@ definitions:
           - BINARY
           - BOOLEAN
           - MISSING
-          - 'NULL'
           - NUMBER
           - OBJECT
           - POJO
@@ -2406,3 +2515,106 @@ definitions:
         type: boolean
       valueNode:
         type: boolean
+  Specification:
+    type: object
+    properties:
+      comment:
+        type: string
+      docs:
+        type: array
+        items:
+          $ref: '#/definitions/Doc'
+      id:
+        type: integer
+        format: int64
+      implementedSpecificationVersion:
+        $ref: '#/definitions/SpecificationTemplate'
+      keywords:
+        type: string
+      name:
+        type: string
+      organizationId:
+        type: string
+      specAsDoc:
+        $ref: '#/definitions/Doc'
+      specAsXml:
+        $ref: '#/definitions/Xml'
+      specificationId:
+        type: string
+      status:
+        type: string
+      version:
+        type: string
+    description: >-
+      Holds a logical description of a service. A specification can be
+      compatible to one or morespecification templates.It has at least a
+      technical representation of the servicedescriptiion in form of an XML and
+      a filled out service templateas e.g. word document.
+  SpecificationTemplate:
+    type: object
+    properties:
+      comment:
+        type: string
+      docs:
+        type: array
+        items:
+          $ref: '#/definitions/Doc'
+      guidelineDoc:
+        $ref: '#/definitions/Doc'
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+      templateDoc:
+        $ref: '#/definitions/Doc'
+      type:
+        type: string
+        enum:
+          - SPECIFICATION
+          - DESIGN
+          - INSTANCE
+      version:
+        type: string
+      xsds:
+        type: array
+        items:
+          $ref: '#/definitions/Xsd'
+    description: >-
+      A SpecificationTemplate contains information on how to define a aspects
+      ofa service.It has a type do differentiate between e.g. logical
+      definitions andconcrete service instances.Templates will evolve, that's
+      why they have a version.
+  Xml:
+    type: object
+    properties:
+      comment:
+        type: string
+      content:
+        type: string
+      contentContentType:
+        type: string
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+    description: >-
+      A technical way to describe aspects if a service.The Xml should validate
+      against a XSD from a SpecificationTemplate.
+  Xsd:
+    type: object
+    properties:
+      comment:
+        type: string
+      content:
+        type: string
+        format: byte
+      contentContentType:
+        type: string
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+    description: 'A schema for describing aspects of a service in a XML document.        '
