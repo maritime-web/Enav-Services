@@ -44,7 +44,6 @@ import java.util.List;
 @ThreadSafe
 public class XmlRewriter {
 
-    public volatile boolean documentChangeLogged;
     /**
      * producedBy and providedBy are of type VendorInfo which is defined in ServiceBaseTypesSchema.xsd, the elements of this
      * type is not namespaced since the elementFormDefault attribute is not set for this xsd.
@@ -60,11 +59,7 @@ public class XmlRewriter {
 
             Element rootElement = document.getRootElement();
             if (!rootElement.getQualifiedName().equals("ServiceInstanceSchema:serviceInstance")) {
-                // if the document changes we do not modify it, instead we log an error the first time it happens
-                if (!documentChangeLogged) {
-                    documentChangeLogged = true;
-                    log.warn("Root element of XML was not 'ServiceInstanceSchema:serviceInstance' as expected: " + rootElement.selectSingleNode("./name/text()"));
-                }
+                // if the document changes we do not modify it
                 return xml;
             }
 
