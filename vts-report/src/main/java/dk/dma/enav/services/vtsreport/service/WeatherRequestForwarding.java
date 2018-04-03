@@ -1,9 +1,5 @@
 package dk.dma.enav.services.vtsreport.service;
 
-
-
-
-
 import com.google.common.base.Strings;
 import javax.ws.rs.Produces;
 
