@@ -23,6 +23,6 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class WeatherForwardingReader {
+class WeatherForwardingReader {
     String data;
 }
