@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package dk.dma.enav.services.vtsreport.service;
 
 import javax.ws.rs.GET;
