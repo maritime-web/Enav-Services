@@ -49,6 +49,10 @@ public class UserDefinedAisSourceFilter implements AisSourceFilter {
     }
 
     public String getAisFilter() {
+        if (getUser() == null) {
+            return null;
+        }
+
         if (getUser().getAisFilterName() == null || getUser().getAisFilterName().length() == 0) {
             return null;
         }
