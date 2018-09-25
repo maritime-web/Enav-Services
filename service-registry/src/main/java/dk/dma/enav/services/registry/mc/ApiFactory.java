@@ -32,10 +32,8 @@ import java.io.InputStream;
  *
  */
 public class ApiFactory {
-    private static final String CERTIFICATE_PATH = "/DST Root CA X3.cer";
     private final String url;
     private final int connectionTimeout;
-    private final byte[] certificateBytes;
 
     @Inject
 
@@ -43,15 +41,6 @@ public class ApiFactory {
                       @Property("enav-service.service-registry.mc.connect.timeout") int connectionTimeout) {
         this.url = url;
         this.connectionTimeout = connectionTimeout;
-        InputStream certificateStream = getClass().getResourceAsStream(CERTIFICATE_PATH);
-        if (certificateStream == null) {
-            throw new IllegalStateException("Missing certificate in classpath '" + CERTIFICATE_PATH + "'");
-        }
-        try {
-            certificateBytes = ByteStreams.toByteArray(certificateStream);
-        } catch (IOException e) {
-            throw new IllegalStateException("Unable to read certificate from classpath '" + CERTIFICATE_PATH + "'", e);
-        }
     }
 
     InstanceResourceApi createInstanceResourceApi() {
@@ -68,7 +57,6 @@ public class ApiFactory {
     public ApiClient createApiClient() {
         ApiClient apiClient = new ApiClient();
         apiClient.setBasePath(url);
-        apiClient.setSslCaCert(new ByteArrayInputStream(certificateBytes));
         apiClient.setConnectTimeout(connectionTimeout);
         return apiClient;
     }
