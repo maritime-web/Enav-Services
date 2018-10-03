@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  * rather than throwing an exception.
  */
 @Slf4j
-final class MessageLoaderTask implements Callable<List<MessageVo>> {
+final class NwNmMessageLoaderTask implements Callable<List<MessageVo>> {
 
     private static final String NW_NM_API = "public/v1/messages";
     private static final DataFilter MESSAGE_DETAILS_FILTER =
@@ -60,7 +60,7 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
     private final String wkt;
 
     /** Constructor */
-    private MessageLoaderTask(
+    private NwNmMessageLoaderTask(
             EmbryoLogService embryoLogService,
             NwNmConnectionManager connectionManager,
             ExpiringMap<String, NwNmServiceInstanceData> instanceMessageCache,
@@ -248,7 +248,7 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
     }
 
 
-    /** Buiilder class for the MessageLoaderTask class **/
+    /** Buiilder class for the NwNmMessageLoaderTask class **/
     @Setter
     @Accessors(chain = true, fluent = true)
     public static class MessageLoaderTaskBuilder {
@@ -268,16 +268,16 @@ final class MessageLoaderTask implements Callable<List<MessageVo>> {
         }
 
         /**
-         * Constructs a new MessageLoaderTask instance
-         * @return a new MessageLoaderTask instance
+         * Constructs a new NwNmMessageLoaderTask instance
+         * @return a new NwNmMessageLoaderTask instance
          */
-        public MessageLoaderTask build() {
+        public NwNmMessageLoaderTask build() {
             // Validate data
             if (serviceInstance == null) {
-                throw new IllegalArgumentException("Cannot construct a MessageLoaderTask without a serviceInstance");
+                throw new IllegalArgumentException("Cannot construct a NwNmMessageLoaderTask without a serviceInstance");
             }
 
-            return new MessageLoaderTask(embryoLogService, connectionManager, instanceMessageCache, serviceInstance, mainType, lang, wkt);
+            return new NwNmMessageLoaderTask(embryoLogService, connectionManager, instanceMessageCache, serviceInstance, mainType, lang, wkt);
         }
     }
 }

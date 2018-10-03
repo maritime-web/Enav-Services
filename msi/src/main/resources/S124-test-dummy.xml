@@ -1,0 +1,96 @@
+<ns:DataSet gml:id="DK.NW-014-17"
+            xmlns:ns="http://www.iho.int/S124/gml/cs0/0.1"
+            xmlns:gml="http://www.opengis.net/gml/3.2"
+            xmlns:ns1="http://www.iho.int/s100gml/1.0"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.iho.int/S124/gml/cs0/0.1 S124.xsd"
+>
+    <gml:boundedBy>
+        <gml:Envelope srsName="http://www.opengis.net/def/crs/EPSG/0/4326" srsDimension="2">
+            <gml:lowerCorner>56.7 10.268</gml:lowerCorner>
+            <gml:upperCorner>56.7 10.268</gml:upperCorner>
+        </gml:Envelope>
+    </gml:boundedBy>
+    <DatasetIdentificationInformation>
+        <ns1:encodingSpecification>S-100 Part 10b</ns1:encodingSpecification>
+        <ns1:encodingSpecificationEdition>1.0</ns1:encodingSpecificationEdition>
+        <ns1:productIdentifier>S-124</ns1:productIdentifier>
+        <ns1:productEdition>0.9</ns1:productEdition>
+        <ns1:applicationProfile>NW</ns1:applicationProfile>
+        <ns1:datasetFileIdentifier>DK.NW-014-17</ns1:datasetFileIdentifier>
+        <ns1:datasetTitle>Test</ns1:datasetTitle>
+        <ns1:datasetReferenceDate>2018-09-27+02:00</ns1:datasetReferenceDate>
+        <ns1:datasetLanguage>en</ns1:datasetLanguage>
+        <!--Optional:-->
+        <ns1:datasetAbstract>Test notices and warnings</ns1:datasetAbstract>
+        <!--1 or more repetitions:-->
+        <ns1:datasetTopicCategory>boundaries</ns1:datasetTopicCategory>
+    </DatasetIdentificationInformation>
+    <DatasetStructureInformation>
+        <ns1:datasetCoordOriginX>0</ns1:datasetCoordOriginX>
+        <ns1:datasetCoordOriginY>0</ns1:datasetCoordOriginY>
+        <ns1:datasetCoordOriginZ>0</ns1:datasetCoordOriginZ>
+        <ns1:coordMultFactorX>1</ns1:coordMultFactorX>
+        <ns1:coordMultFactorY>1</ns1:coordMultFactorY>
+        <ns1:coordMultFactorZ>1</ns1:coordMultFactorZ>
+        <ns1:nInfoRec>1</ns1:nInfoRec>
+        <ns1:nPointRec>1</ns1:nPointRec>
+        <ns1:nFeatureRec>1</ns1:nFeatureRec>
+    </DatasetStructureInformation>
+    <imember>
+        <ns:NWPreamble gml:id="PR.DK.NW-014-17">
+            <locality>
+                <locationName>
+                    <language>eng</language>
+                    <text>Randers Fiord</text>
+                </locationName>
+            </locality>
+            <messageSeriesIdentifier>
+                <nameOfSeries>Danish Nav Warn</nameOfSeries>
+                <warningNumber>14</warningNumber>
+                <warningType>coastal navigational warning</warningType>
+                <year>17</year>
+                <productionAgency>111</productionAgency>
+            </messageSeriesIdentifier>
+            <!--TODO affectedChartPublications-->
+            <title>
+                <language>eng</language>
+                <text>Denmark. Kattegat. Randers Fiord. Light buoy replaced.</text>
+            </title>
+
+            <publicationDate>2017-05-10T00:00:00</publicationDate>
+            <generalArea>
+                <locationName>
+                    <language>eng</language>
+                    <text>Kattegat</text>
+                </locationName>
+            </generalArea>
+            <!-- TODO should the area parent i.e. Denmark be here as well? There is no way to associate two general areas!-->
+            <theWarningPart xlink:href="#DK.NW-014-17.1"/>
+        </ns:NWPreamble>
+    </imember>
+
+    <member>
+        <ns:NavigationalWarningFeaturePart gml:id="DK.NW-014-17.1">
+            <geometry>
+                <ns1:pointProperty>
+                    <ns1:Point gml:id="G.DK.NW-014-17.1">
+                        <gml:pos>56.7 10.268</gml:pos>
+                    </ns1:Point>
+                </ns1:pointProperty>
+            </geometry>
+            <fixedDateRange>
+                <timeOfDayStart>09:47:22Z</timeOfDayStart>
+                <dateStart>
+                    <date>2017-05-10</date>
+                </dateStart>
+            </fixedDateRange>
+            <warningInformation>
+                <language>eng</language>
+                <text>The south cardinal light buoy in pos. 56° 42.0'N - 010° 16.1'E has been replaced with a green buoy.</text>
+            </warningInformation>
+            <header xlink:href="#PR.DK.NW-014-17" />
+        </ns:NavigationalWarningFeaturePart>
+    </member>
+</ns:DataSet>

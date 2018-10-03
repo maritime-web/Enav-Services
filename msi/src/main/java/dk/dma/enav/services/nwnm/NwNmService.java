@@ -15,7 +15,7 @@
 package dk.dma.enav.services.nwnm;
 
 import dk.dma.embryo.common.log.EmbryoLogService;
-import dk.dma.enav.services.nwnm.MessageLoaderTask.MessageLoaderTaskBuilder;
+import dk.dma.enav.services.nwnm.NwNmMessageLoaderTask.MessageLoaderTaskBuilder;
 import dk.dma.enav.services.registry.api.EnavServiceRegister;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
 import lombok.extern.slf4j.Slf4j;
@@ -112,7 +112,7 @@ public class NwNmService {
                 if (serviceInstance != null) {
 
                     // Construct a task for fetching messages
-                    MessageLoaderTask task = new MessageLoaderTaskBuilder(embryoLogService, connectionManager)
+                    NwNmMessageLoaderTask task = new MessageLoaderTaskBuilder(embryoLogService, connectionManager)
                             .instanceMessageCache(instanceMessageCache)
                             .serviceInstance(serviceInstance)
                             .mainType(mainType)

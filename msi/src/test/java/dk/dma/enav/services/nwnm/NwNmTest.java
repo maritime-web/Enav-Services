@@ -14,13 +14,17 @@
  */
 package dk.dma.enav.services.nwnm;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.dma.embryo.common.log.EmbryoLogService;
-import dk.dma.enav.services.nwnm.MessageLoaderTask.MessageLoaderTaskBuilder;
+import dk.dma.enav.services.nwnm.NwNmMessageLoaderTask.MessageLoaderTaskBuilder;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
-import org.apache.http.conn.ClientConnectionManager;
+import dk.dma.enav.services.registry.api.VendorInfo;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.niord.model.message.MessageVo;
+
+import java.util.List;
 
 /**
  * Test loading NW-NM messages
@@ -34,24 +38,32 @@ public class NwNmTest {
         EmbryoLogService embryoLogService = Mockito.mock(EmbryoLogService.class);
 
         // Check the redirect works
-        String url = "https://niord.e-navigation.net/rest/";
+        String url = "https://niord.dma.dk/rest/";
 
         NwNmConnectionManager connectionManager =
                 new NwNmConnectionManager();
 
         try {
-            InstanceMetadata instance = new InstanceMetadata("test-nwnm", "1.0", 1)
+            InstanceMetadata instance = new InstanceMetadata("NWNM", "1.0", 1L);
+            instance
+                    .setDescription("ArcticWeb specific service registry providing access to the NW-NM service")
+                    .setName("NWNM Service Endpoint")
+                    .setProducedBy(new VendorInfo("DMA"))
+                    .setProvidedBy(new VendorInfo("DMA"))
                     .setUrl(url);
 
-            MessageLoaderTask task =
+            NwNmMessageLoaderTask task =
                     new MessageLoaderTaskBuilder(embryoLogService, connectionManager)
                             .serviceInstance(instance)
-                            .mainType("NW")
+//                            .mainType("NW")
                             .lang("en")
-                            .wkt("POLYGON((7 54, 7 57, 13 56, 13 57, 7 54))")
+                            .wkt("POLYGON((7 54, 7 57, 13 57, 13 54, 7 54))")
                             .build();
 
-            System.out.println("URL " + url + " returned " + task.call().size() + " messages");
+            List<MessageVo> voList = task.call();
+            ObjectMapper mapper = new ObjectMapper();
+            System.out.println(mapper.writeValueAsString(voList));
+            System.out.println("URL " + url + " returned " + voList.size() + " messages");
         } catch (Exception e) {
             connectionManager.shutdown();
             e.printStackTrace();

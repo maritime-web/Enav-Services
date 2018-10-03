@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
  * 
  */
 @RunWith(MockitoJUnitRunner.class)
-public class MessageLoaderTaskTest {
+public class NwNmMessageLoaderTaskTest {
     private static String message = "[  {\n" +
             "    \"id\": \"b743abd9-7c70-414c-ae4a-eb24647ceb9a\",\n" +
             "    \"created\": 1494412189000,\n" +
@@ -148,7 +148,7 @@ public class MessageLoaderTaskTest {
     private InstanceMetadata serviceInstance;
 
     @InjectMocks
-    private MessageLoaderTask cut;
+    private NwNmMessageLoaderTask cut;
 
     @Before
     public void setUp() throws Exception {
