@@ -1,0 +1,32 @@
+<jxb:bindings version="1.0"
+              xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+              xmlns:xs="http://www.w3.org/2001/XMLSchema" >
+
+    <jxb:bindings schemaLocation="../xsd/xlink.xsd" node="//xs:schema">
+
+        <jxb:bindings node="//xs:attributeGroup[@name='locatorAttrs']">
+            <jxb:bindings node=".//xs:attribute[@ref='xlink:title']">
+                <jxb:property name="locatorTitle"/>
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="//xs:attributeGroup[@name='arcAttrs']">
+            <jxb:bindings node=".//xs:attribute[@ref='xlink:title']">
+                <jxb:property name="arcTitle"/>
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="//xs:group[@name='locatorModel']">
+            <jxb:bindings node=".//xs:element[@ref='xlink:title']">
+                <jxb:property name="locatorModelTitles"/>
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="//xs:group[@name='arcModel']">
+            <jxb:bindings node=".//xs:element[@ref='xlink:title']">
+                <jxb:property name="arcModelTitles"/>
+            </jxb:bindings>
+        </jxb:bindings>
+    </jxb:bindings>
+
+</jxb:bindings>

@@ -15,7 +15,6 @@
 package dk.dma.enav.services.s124;
 
 import org.jboss.resteasy.annotations.GZIP;
-import org.json.XML;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -23,12 +22,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import java.io.StringWriter;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * REST endpoint for searching S-124 services as defined in the Maritime Cloud Service Registry.
@@ -41,6 +36,9 @@ public class S124RestService {
     @Inject
     private S124Service s124Service;
 
+    @Inject
+    private DataSetMapper dataSetMapper;
+
     /**
      * Fetches the published messages from the given service instances in parallel
      * @param instanceIds the MC Service Registry instance IDs to fetch messages from
@@ -52,20 +50,19 @@ public class S124RestService {
     @Path("/messages")
     @Produces("application/json;charset=UTF-8")
     @GZIP
-    public List<String> getS124Messages(
+    public List<S124View> getS124Messages(
             @QueryParam("instanceId") List<String> instanceIds,
             @QueryParam("id") Integer id,
             @QueryParam("status") Integer status,
-            @QueryParam("wkt") String wkt) throws Exception {
+            @QueryParam("wkt") String wkt) {
 
         try {
-            byte[] bytes = Files.readAllBytes(Paths.get(ClassLoader.getSystemResource("S124-test-dummy.xml").toURI()));
-            StringWriter writer = new StringWriter();
-            XML.toJSONObject(new String(bytes, Charset.forName("UTF-8"))).write(writer);
-            ArrayList<String> res = new ArrayList<>();
-            res.add(writer.toString());
-            return res;
-//            return s124Service.getMessages(instanceIds, id, status, wkt);
+
+            return s124Service
+                    .getMessages(instanceIds, id, status, wkt)
+                    .stream()
+                    .map(dataSetMapper::toViewType)
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             throw new WebApplicationException("Failed loading S-124 messages: " + e.getMessage(), 500);
         }

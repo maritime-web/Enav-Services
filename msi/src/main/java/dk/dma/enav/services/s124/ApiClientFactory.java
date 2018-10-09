@@ -22,6 +22,7 @@ public class ApiClientFactory {
         ApiClient apiClient = new ApiClient();
         apiClient.setBasePath(url);
         apiClient.setConnectTimeout(5000);
-        return new PullApi(apiClient);
+//        return new PullApi(apiClient);
+        return new DummyPullApi();//TODO temporary implementation. Delete when real s-124 service is up and running
     }
 }

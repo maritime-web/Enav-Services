@@ -55,7 +55,7 @@ public class NwNmTest {
             NwNmMessageLoaderTask task =
                     new MessageLoaderTaskBuilder(embryoLogService, connectionManager)
                             .serviceInstance(instance)
-//                            .mainType("NW")
+                            .mainType("NW")
                             .lang("en")
                             .wkt("POLYGON((7 54, 7 57, 13 57, 13 54, 7 54))")
                             .build();

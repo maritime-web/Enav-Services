@@ -14,6 +14,7 @@
  */
 package dk.dma.enav.services.s124;
 
+import _int.iho.s124.gml.cs0._0.DatasetType;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.enav.services.MessageLoaderTaskExecuter;
 import dk.dma.enav.services.MessageLoaderTaskFactory;
@@ -41,19 +42,22 @@ public class S124Service {
     private EmbryoLogService embryoLogService;
 
     @Inject
-    private MessageLoaderTaskExecuter<String> messageLoaderTaskExecuter;
+    private DataSetXmlParser dataSetXmlParser;
+
+    @Inject
+    private MessageLoaderTaskExecuter<DatasetType> messageLoaderTaskExecuter;
 
     @PreDestroy
     void destroy() {
         messageLoaderTaskExecuter.shutdown();
     }
 
-    List<String> getMessages(List<String> instanceIds, Integer id, Integer status, String wkt) {
+    public List<DatasetType> getMessages(List<String> instanceIds, Integer id, Integer status, String wkt) {
         // Sanity check
         if (instanceIds != null && !instanceIds.isEmpty()) {
 
-            MessageLoaderTaskFactory<String> messageLoaderTaskFactory;
-            messageLoaderTaskFactory = serviceInstance -> new S124MessageLoaderTaskBuilder(embryoLogService, apiClientFactory)
+            MessageLoaderTaskFactory<DatasetType> messageLoaderTaskFactory;
+            messageLoaderTaskFactory = serviceInstance -> new S124MessageLoaderTaskBuilder(embryoLogService, apiClientFactory, dataSetXmlParser)
                     .serviceInstance(serviceInstance)
                     .id(id)
                     .status(status)

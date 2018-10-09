@@ -14,6 +14,7 @@
  */
 package dk.dma.enav.services.s124;
 
+import _int.iho.s124.gml.cs0._0.DatasetType;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
 import dk.dma.enav.services.s124.api.PullApi;
@@ -25,9 +26,10 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 @Slf4j
-public final class S124MessageLoaderTask implements Callable<List<String>> {
+public final class S124MessageLoaderTask implements Callable<List<DatasetType>> {
 
     private final EmbryoLogService embryoLogService;
     private final ApiClientFactory apiClientFactory;
@@ -35,8 +37,9 @@ public final class S124MessageLoaderTask implements Callable<List<String>> {
     private final Integer id;
     private final Integer status;
     private final String wkt;
+    private final DataSetXmlParser dataSetXmlParser;
 
-    private S124MessageLoaderTask(EmbryoLogService embryoLogService, ApiClientFactory apiClientFactory, InstanceMetadata serviceInstance, Integer id, Integer status, String wkt) {
+    private S124MessageLoaderTask(EmbryoLogService embryoLogService, ApiClientFactory apiClientFactory, InstanceMetadata serviceInstance, Integer id, Integer status, String wkt, DataSetXmlParser dataSetXmlParser) {
 
         this.embryoLogService = embryoLogService;
         this.apiClientFactory = apiClientFactory;
@@ -44,15 +47,18 @@ public final class S124MessageLoaderTask implements Callable<List<String>> {
         this.id = id;
         this.status = status;
         this.wkt = wkt;
+        this.dataSetXmlParser = dataSetXmlParser;
     }
 
     @Override
-    public List<String> call() throws Exception {
-        List<String> messages;
+    public List<DatasetType> call() throws Exception {
+        List<DatasetType> messages;
 
         try {
-            messages = fetchS124Messages();
-            embryoLogService.info("Loaded " + messages.size() + " messages from " + serviceInstance.getInstanceId());
+            List<String> rawMessages = fetchS124Messages();
+            embryoLogService.info("Loaded " + rawMessages.size() + " messages from " + serviceInstance.getInstanceId());
+
+            messages = rawMessages.stream().map(dataSetXmlParser::parseDataSetXml).collect(Collectors.toList());
         } catch (Exception e) {
             log.error("Failed loading S-124 messages for instance "
                     + serviceInstance.getInstanceId() + " : " + e.getMessage(), e);
@@ -92,18 +98,20 @@ public final class S124MessageLoaderTask implements Callable<List<String>> {
     public static class S124MessageLoaderTaskBuilder {
         private final EmbryoLogService embryoLogService;
         private final ApiClientFactory apiClientFactory;
+        private final DataSetXmlParser dataSetXmlParser;
         private InstanceMetadata serviceInstance;
         private Integer id;
         private Integer status;
         private String wkt;
 
-        S124MessageLoaderTaskBuilder(EmbryoLogService embryoLogService, ApiClientFactory apiClientFactory) {
+        S124MessageLoaderTaskBuilder(EmbryoLogService embryoLogService, ApiClientFactory apiClientFactory, DataSetXmlParser dataSetXmlParser) {
             this.embryoLogService = embryoLogService;
             this.apiClientFactory = apiClientFactory;
+            this.dataSetXmlParser = dataSetXmlParser;
         }
 
         public S124MessageLoaderTask build() {
-            return new S124MessageLoaderTask(embryoLogService, apiClientFactory, serviceInstance, id, status, wkt);
+            return new S124MessageLoaderTask(embryoLogService, apiClientFactory, serviceInstance, id, status, wkt, dataSetXmlParser);
         }
     }
 }
