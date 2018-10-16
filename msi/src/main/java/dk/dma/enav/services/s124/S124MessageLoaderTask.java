@@ -14,7 +14,6 @@
  */
 package dk.dma.enav.services.s124;
 
-import _int.iho.s124.gml.cs0._0.DatasetType;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
 import dk.dma.enav.services.s124.api.PullApi;
@@ -22,6 +21,7 @@ import dk.dma.enav.services.s124.model.GetMessageResponseObject;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import org.opengis.feature.simple.SimpleFeature;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 @Slf4j
-public final class S124MessageLoaderTask implements Callable<List<DatasetType>> {
+public final class S124MessageLoaderTask implements Callable<List<SimpleFeature>> {
 
     private final EmbryoLogService embryoLogService;
     private final ApiClientFactory apiClientFactory;
@@ -51,8 +51,8 @@ public final class S124MessageLoaderTask implements Callable<List<DatasetType>> 
     }
 
     @Override
-    public List<DatasetType> call() throws Exception {
-        List<DatasetType> messages;
+    public List<SimpleFeature> call() throws Exception {
+        List<SimpleFeature> messages;
 
         try {
             List<String> rawMessages = fetchS124Messages();

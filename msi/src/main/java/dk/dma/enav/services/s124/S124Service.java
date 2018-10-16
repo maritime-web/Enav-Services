@@ -14,12 +14,12 @@
  */
 package dk.dma.enav.services.s124;
 
-import _int.iho.s124.gml.cs0._0.DatasetType;
 import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.enav.services.MessageLoaderTaskExecuter;
 import dk.dma.enav.services.MessageLoaderTaskFactory;
 import dk.dma.enav.services.s124.S124MessageLoaderTask.S124MessageLoaderTaskBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.opengis.feature.simple.SimpleFeature;
 
 import javax.annotation.PreDestroy;
 import javax.ejb.Lock;
@@ -45,18 +45,18 @@ public class S124Service {
     private DataSetXmlParser dataSetXmlParser;
 
     @Inject
-    private MessageLoaderTaskExecuter<DatasetType> messageLoaderTaskExecuter;
+    private MessageLoaderTaskExecuter<SimpleFeature> messageLoaderTaskExecuter;
 
     @PreDestroy
     void destroy() {
         messageLoaderTaskExecuter.shutdown();
     }
 
-    public List<DatasetType> getMessages(List<String> instanceIds, Integer id, Integer status, String wkt) {
+    public List<SimpleFeature> getMessages(List<String> instanceIds, Integer id, Integer status, String wkt) {
         // Sanity check
         if (instanceIds != null && !instanceIds.isEmpty()) {
 
-            MessageLoaderTaskFactory<DatasetType> messageLoaderTaskFactory;
+            MessageLoaderTaskFactory<SimpleFeature> messageLoaderTaskFactory;
             messageLoaderTaskFactory = serviceInstance -> new S124MessageLoaderTaskBuilder(embryoLogService, apiClientFactory, dataSetXmlParser)
                     .serviceInstance(serviceInstance)
                     .id(id)

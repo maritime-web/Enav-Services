@@ -14,55 +14,42 @@
  */
 package dk.dma.enav.services.s124;
 
-import _int.iho.s124.gml.cs0._0.DatasetType;
-import _int.iho.s124.gml.cs0._0.ObjectFactory;
+import org.geotools.xml.Parser;
+import org.opengis.feature.simple.SimpleFeature;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.StringReader;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  *
  */
 public class DataSetXmlParser {
-    private JAXBContext jaxbContext;
 
-    public DatasetType parseDataSetXml(String xml) {
+    public SimpleFeature parseDataSetXml(String xml) {
         return unmarshal(xml);
     }
 
     private InputSource createInputSource(String xml) {
-        return new InputSource(new StringReader(xml));
+        ByteArrayInputStream bis = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
+        return new InputSource(bis);
     }
 
-    private DatasetType unmarshal(String xml) {
-        try {
-            Unmarshaller unmarshaller = getUnmarshaller();
-            return (DatasetType) ((JAXBElement)unmarshaller.unmarshal(createInputSource(xml))).getValue();
+    private SimpleFeature unmarshal(String xml) {
+        org.geotools.xml.Configuration config = new S124Configuration(S124XSD.getInstance());
 
-        } catch (JAXBException e) {
+        Parser parser = new Parser( config );
+        parser.setStrict(true);
+
+
+        try {
+            return (SimpleFeature) parser.parse(createInputSource(xml));
+        } catch (IOException | SAXException | ParserConfigurationException e) {
             throw new RuntimeException("Unable to unmarshal:\n" + xml, e);
         }
+
     }
-
-    private Unmarshaller getUnmarshaller() throws JAXBException {
-        return getContext().createUnmarshaller();
-    }
-
-    private JAXBContext getContext() {
-        if (jaxbContext == null) {
-            String contextPath = "_int.iho.s124.gml.cs0._0";
-            try {
-                jaxbContext = JAXBContext.newInstance(contextPath, ObjectFactory.class.getClassLoader());
-            } catch (JAXBException e) {
-                throw new RuntimeException("Unable to create JAXBContext for context path \"" + contextPath + "\"", e);
-            }
-        }
-
-        return jaxbContext;
-    }
-
 }

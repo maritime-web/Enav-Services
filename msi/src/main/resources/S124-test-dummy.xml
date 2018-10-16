@@ -43,11 +43,19 @@
             <locality>
                 <locationName>
                     <language>eng</language>
+                    <text>Kattegat</text>
+                </locationName>
+            </locality>
+            <locality>
+                <locationName>
+                    <language>eng</language>
                     <text>Randers Fiord</text>
                 </locationName>
             </locality>
             <messageSeriesIdentifier>
+                <country>DK</country>
                 <nameOfSeries>Danish Nav Warn</nameOfSeries>
+                <warningIdentifier>urn:mrn:iho:nw:dk:04d364ec-9a35-4802-81bb-0ef501d8e519.5</warningIdentifier>
                 <warningNumber>14</warningNumber>
                 <warningType>coastal navigational warning</warningType>
                 <year>17</year>
