@@ -12,26 +12,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dk.dma.enav.services.nwnm;
+package dk.dma.enav.services.s124.views;
 
-import com.vividsolutions.jts.geom.Geometry;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.niord.model.message.MessageVo;
+import lombok.ToString;
 
-import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Contains NW-NM data cached for each service instance
- */
+@ToString
 @Getter
-@AllArgsConstructor
-public class NwNmServiceInstanceData implements Serializable {
+public class References {
+    private String id;
+    private Map<String, List<Map<String, Object>>> other;
+    private String reference;
 
-    private final List<MessageVo> messages;
-    private final Map<String, List<Geometry>> geometries;
+    public References() {
+        other = new HashMap<>();
+    }
 
+    public void setId(String id) {
+
+        this.id = id;
+    }
+
+    public void setReference(String reference) {
+
+        this.reference = reference;
+    }
+
+    public void setOthers(Map<String, List<Map<String, Object>>> others) {
+        other = others;
+    }
 }
-

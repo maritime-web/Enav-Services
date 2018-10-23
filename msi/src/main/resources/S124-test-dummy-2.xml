@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<S124:DataSet gml:id="DK.NW-065-17"
+              xmlns:ns5="http://www.w3.org/1999/xlink"
+              xmlns:S124="http://www.iho.int/S124/gml/cs0/0.1"
+              xmlns:gml="http://www.opengis.net/gml/3.2"
+              xmlns:S100="http://www.iho.int/s100gml/1.0">
+    <gml:boundedBy>
+        <gml:Envelope srsName="EPSG:4326">
+            <gml:lowerCorner>54.91427446994854 10.855828332666512</gml:lowerCorner>
+            <gml:upperCorner>56.90566669927034 15.835888334000158</gml:upperCorner>
+        </gml:Envelope>
+    </gml:boundedBy>
+    <imember>
+        <S124:NWPreamble gml:id="PR.DK.NW-065-17">
+            <locality>
+                <locationName>
+                    <language>eng</language>
+                    <text>Boegestroem</text>
+                </locationName>
+                <locationName>
+                    <language>dan</language>
+                    <text>Bøgestrøm</text>
+                </locationName>
+            </locality>
+            <locality>
+                <locationName>
+                    <language>eng</language>
+                    <text>Waters South of Zealand</text>
+                </locationName>
+                <locationName>
+                    <language>dan</language>
+                    <text>Farvandende syd for Sjælland</text>
+                </locationName>
+            </locality>
+            <messageSeriesIdentifier>
+                <country>DK</country>
+                <nameOfSeries>Danish Nav Warn</nameOfSeries>
+                <warningIdentifier>urn:mrn:iho:nw:dk:nw-065-17</warningIdentifier>
+                <warningNumber>65</warningNumber>
+                <warningType>coastal navigational warning</warningType>
+                <year>17</year>
+                <productionAgency>111</productionAgency>
+            </messageSeriesIdentifier>
+            <affectedChartPublications>
+                <chartAffected>
+                    <chartNumber>112</chartNumber>
+                    <editionDate>2017-08-25</editionDate>
+                </chartAffected>
+                <internationalChartAffected>INT 1234</internationalChartAffected>
+            </affectedChartPublications>
+            <title>
+                <language>eng</language>
+                <text>Denmark. The Waters South of Zealand. Boegestroem. light unlit.</text>
+            </title>
+            <title>
+                <language>dan</language>
+                <text>Danmark. Farvandende syd for Sjælland. Bøgestrøm. lys slukket.</text>
+            </title>
+            <publicationDate>2017-08-25T09:59:30.000+02:00</publicationDate>
+            <generalArea>
+                <locationName>
+                    <language>eng</language>
+                    <text>Baltic sea</text>
+                </locationName>
+            </generalArea>
+            <generalArea>
+                <locationName>
+                    <language>dan</language>
+                    <text>Østersøen</text>
+                </locationName>
+            </generalArea>
+            <theWarningPart ns5:href="#DK.NW-065-17.1"/>
+            <theWarningPart ns5:href="#DK.NW-065-17.2"/>
+        </S124:NWPreamble>
+    </imember>
+    <member>
+        <S124:NavigationalWarningFeaturePart gml:id="DK.NW-065-17.1">
+            <gml:boundedBy>
+                <gml:Envelope srsName="EPSG:4326">
+                    <gml:lowerCorner>54.91427446994854 10.855828332666512</gml:lowerCorner>
+                    <gml:upperCorner>56.90566669927034 15.835888334000158</gml:upperCorner>
+                </gml:Envelope>
+            </gml:boundedBy>
+            <S100:featureObjectIdentifier>
+                <S100:agency>99</S100:agency>
+                <S100:featureIdentificationNumber>9999</S100:featureIdentificationNumber>
+                <S100:featureIdentificationSubdivision>9999</S100:featureIdentificationSubdivision>
+            </S100:featureObjectIdentifier>
+            <geometry>
+                <S100:curveProperty/>
+            </geometry>
+            <geometry>
+                <S100:pointProperty>
+                    <S100:Point srsName="EPSG:4326" gml:id="G.DK.NW-065-17.2">
+                        <gml:pos>55.99425214241725 11.85017275594075</gml:pos>
+                    </S100:Point>
+                </S100:pointProperty>
+            </geometry>
+            <geometry>
+                <S100:curveProperty/>
+            </geometry>
+            <geometry>
+                <S100:surfaceProperty>
+                    <S100:Surface srsName="EPSG:4326" gml:id="G.DK.NW-065-17.4">
+                        <gml:patches>
+                            <gml:PolygonPatch>
+                                <gml:exterior>
+                                    <gml:LinearRing>
+                                        <gml:posList>55.99425214241725 11.909666805433403 55.9877602403773
+                                            11.908523643954727 55.981516790330716 11.905138090573228 55.97576190115507
+                                            11.899640250206714 55.97071699438766 11.892241401777254 55.96657625487333
+                                            11.883225878880664 55.96349912085597 11.872940143005899 55.961604109349935
+                                            11.861779469214316 55.960964221314754 11.85017275594075 55.961604109349935
+                                            11.838566042667184 55.96349912085597 11.827405368875601 55.96657625487333
+                                            11.817119633000836 55.97071699438766 11.808104110104246 55.97576190115507
+                                            11.800705261674786 55.981516790330716 11.795207421308271 55.9877602403773
+                                            11.791821867926773 55.99425214241725 11.790678706448096 56.00074295435576
+                                            11.791821867926773 56.006983300055936 11.795207421308271 56.01273354324894
+                                            11.800705261674786 56.01777296970633 11.808104110104246 56.02190822891086
+                                            11.817119633000836 56.024980716946004 11.827405368875601 56.026872624106005
+                                            11.838566042667184 56.02751142203988 11.85017275594075 56.026872624106005
+                                            11.861779469214316 56.024980716946004 11.872940143005899 56.02190822891086
+                                            11.883225878880664 56.01777296970633 11.892241401777254 56.01273354324894
+                                            11.899640250206714 56.006983300055936 11.905138090573228 56.00074295435576
+                                            11.908523643954727 55.99425214241725 11.909666805433403
+                                        </gml:posList>
+                                    </gml:LinearRing>
+                                </gml:exterior>
+                            </gml:PolygonPatch>
+                        </gml:patches>
+                    </S100:Surface>
+                </S100:surfaceProperty>
+            </geometry>
+            <geometry>
+                <S100:surfaceProperty>
+                    <S100:Surface srsName="EPSG:4326" gml:id="G.DK.NW-065-17.5">
+                        <gml:patches>
+                            <gml:PolygonPatch>
+                                <gml:exterior>
+                                    <gml:LinearRing>
+                                        <gml:posList>54.917617092719695 15.834545283291417 54.91737948393151
+                                            15.835018790967636 54.9170933448267 15.835402548316711 54.916769670664394
+                                            15.835681807758927 54.91642089931534 15.83584583751053 54.91606043339468
+                                            15.835888334000158 54.91570212527924 15.835807664111542 54.91535974478742
+                                            15.835606927943266 54.91504644997667 15.835293839673701 54.91477428140027
+                                            15.834880431109466 54.9145536992724 15.83438258930984 54.914393181346725
+                                            15.833819446055992 54.914298896982956 15.83321264262735 54.91427446994854
+                                            15.832585498139379 54.914320839087 15.831962113403044 54.91443622221985
+                                            15.831366444744168 54.91461618467093 15.83082138337525 56.90249118632511
+                                            10.85717138337525 56.90271693381246 10.856697875699032 56.90298878542944
+                                            10.856314118349957 56.903296293189555 10.856034858907742 56.90362763901655
+                                            10.855870829156139 56.90397008901704 10.855828332666512 56.904310482906595
+                                            10.855909002555126 56.904635739770924 10.8561097387234 56.90493336072271
+                                            10.856422826992967 56.90519190914293 10.856836235557203 56.905401450063806
+                                            10.857334077356828 56.90555393182652 10.857897220610678 56.90564349536791
+                                            10.85850402403932 56.90566669927034 10.859131168527291 56.90562265194393
+                                            10.859754553263626 56.90551304587069 10.8603502219225 56.90534209259897
+                                            10.860895283291416 54.917617092719695 15.834545283291417
+                                        </gml:posList>
+                                    </gml:LinearRing>
+                                </gml:exterior>
+                            </gml:PolygonPatch>
+                        </gml:patches>
+                    </S100:Surface>
+                </S100:surfaceProperty>
+            </geometry>
+            <fixedDateRange>
+                <timeOfDayStart>09:59:30.000+02:00</timeOfDayStart>
+                <timeOfDayEnd>10:00:09.000+02:00</timeOfDayEnd>
+                <dateStart>
+                    <date>2017-08-25+02:00</date>
+                </dateStart>
+                <dateEnd>
+                    <date>2017-08-25+02:00</date>
+                </dateEnd>
+            </fixedDateRange>
+            <featureName>
+                <displayName>true</displayName>
+                <language>eng</language>
+                <name>Light warning</name>
+            </featureName>
+            <featureName>
+                <language>dan</language>
+                <name>Lys advarsel</name>
+            </featureName>
+            <featureReference>
+                <featureIdentifier>urn:mrn:iho:nw:dk:nw-065-17</featureIdentifier>
+                <featureIdentifier>urn:mrn:iho:nw:dk:nw-065-18</featureIdentifier>
+                <featureIdentifier>urn:mrn:iho:nw:dk:nw-065-19</featureIdentifier>
+                <ENCFeatureReference>
+                    <ENCName>ENC-118</ENCName>
+                    <featureObjectIdentifier>999</featureObjectIdentifier>
+                    <featureObjectIdentifier>2999</featureObjectIdentifier>
+                    <editionNumber>1</editionNumber>
+                    <updateNumber>2</updateNumber>
+                </ENCFeatureReference>
+            </featureReference>
+            <featureReference>
+                <featureIdentifier>urn:mrn:iho:nw:dk:nw-065-20</featureIdentifier>
+                <ENCFeatureReference>
+                    <ENCName>ENC-119</ENCName>
+                    <featureObjectIdentifier>988</featureObjectIdentifier>
+                    <featureObjectIdentifier>239</featureObjectIdentifier>
+                    <editionNumber>4</editionNumber>
+                    <updateNumber>1</updateNumber>
+                </ENCFeatureReference>
+            </featureReference>
+            <restriction>entry prohibited</restriction>
+            <warningHazardType>aids to navigation</warningHazardType>
+            <warningHazardType>buoy adrift</warningHazardType>
+            <warningInformation>
+                <language>eng</language>
+                <text>&lt;p&gt;Light unlit in pos&amp;nbsp; 55&amp;deg; 59.7'N - 011&amp;deg; 51.0'E&lt;/p&gt;</text>
+            </warningInformation>
+            <header ns5:href="#PR.DK.NW-065-17"/>
+        </S124:NavigationalWarningFeaturePart>
+    </member>
+    <imember>
+        <S124:References gml:id="urn:mrn:iho:nw:dk:nw-065-17">
+            <messageSeriesIdentifier>
+                <country>DK</country>
+                <nameOfSeries>Danish Nav Warn</nameOfSeries>
+                <warningIdentifier>urn:mrn:iho:nw:dk:nw-065-17</warningIdentifier>
+                <warningNumber>65</warningNumber>
+                <warningType>coastal navigational warning</warningType>
+                <year>17</year>
+                <productionAgency>111</productionAgency>
+            </messageSeriesIdentifier>
+            <reference>source reference</reference>
+        </S124:References>
+    </imember>
+</S124:DataSet>

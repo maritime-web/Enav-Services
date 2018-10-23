@@ -221,7 +221,8 @@ public final class JtsConverter {
 
 
     private static double[] fromJtsCoords(Coordinate coordinate) {
-        return new double[] { coordinate.x, coordinate.y };
+//
+        return new double[] { coordinate.y, coordinate.x };
     }
 
     private static double[][] fromJtsCoords(Coordinate[] coordinates) {

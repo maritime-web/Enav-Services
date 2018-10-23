@@ -14,8 +14,8 @@
  */
 package dk.dma.enav.services.s124;
 
+import dk.dma.enav.services.s124.views.DataSet;
 import org.geotools.xml.Parser;
-import org.opengis.feature.simple.SimpleFeature;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -29,7 +29,8 @@ import java.nio.charset.StandardCharsets;
  */
 public class DataSetXmlParser {
 
-    public SimpleFeature parseDataSetXml(String xml) {
+    @SuppressWarnings("WeakerAccess")
+    public DataSet parseDataSetXml(String xml) {
         return unmarshal(xml);
     }
 
@@ -38,7 +39,7 @@ public class DataSetXmlParser {
         return new InputSource(bis);
     }
 
-    private SimpleFeature unmarshal(String xml) {
+    private DataSet unmarshal(String xml) {
         org.geotools.xml.Configuration config = new S124Configuration(S124XSD.getInstance());
 
         Parser parser = new Parser( config );
@@ -46,7 +47,7 @@ public class DataSetXmlParser {
 
 
         try {
-            return (SimpleFeature) parser.parse(createInputSource(xml));
+            return (DataSet) parser.parse(createInputSource(xml));
         } catch (IOException | SAXException | ParserConfigurationException e) {
             throw new RuntimeException("Unable to unmarshal:\n" + xml, e);
         }

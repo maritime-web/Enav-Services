@@ -14,6 +14,7 @@
  */
 package dk.dma.enav.services.s124;
 
+import dk.dma.enav.services.s124.views.DataSet;
 import org.jboss.resteasy.annotations.GZIP;
 
 import javax.inject.Inject;
@@ -23,7 +24,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * REST endpoint for searching S-124 services as defined in the Maritime Cloud Service Registry.
@@ -36,9 +36,6 @@ public class S124RestService {
     @Inject
     private S124Service s124Service;
 
-    @Inject
-    private DataSetMapper dataSetMapper;
-
     /**
      * Fetches the published messages from the given service instances in parallel
      * @param instanceIds the MC Service Registry instance IDs to fetch messages from
@@ -50,7 +47,7 @@ public class S124RestService {
     @Path("/messages")
     @Produces("application/json;charset=UTF-8")
     @GZIP
-    public List<S124View> getS124Messages(
+    public List<DataSet> getS124Messages(
             @QueryParam("instanceId") List<String> instanceIds,
             @QueryParam("id") Integer id,
             @QueryParam("status") Integer status,
@@ -58,11 +55,7 @@ public class S124RestService {
 
         try {
 
-            return s124Service
-                    .getMessages(instanceIds, id, status, wkt)
-                    .stream()
-                    .map(dataSetMapper::toViewType)
-                    .collect(Collectors.toList());
+            return s124Service.getMessages(instanceIds, id, status, wkt);
         } catch (Exception e) {
             throw new WebApplicationException("Failed loading S-124 messages: " + e.getMessage(), 500);
         }

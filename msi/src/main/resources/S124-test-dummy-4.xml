@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<S124:DataSet xmlns:S124="http://www.iho.int/S124/gml/cs0/0.1"
+              xsi:schemaLocation="http://www.iho.int/S124/gml/cs0/0.1 schema/S124.xsd"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns:gml="http://www.opengis.net/gml/3.2"
+              xmlns:S100="http://www.iho.int/s100gml/1.0"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              gml:id="DK.04d364ec-9a35-4802-81bb-0ef501d8e519">
+
+    <gml:boundedBy>
+        <gml:Envelope srsName="EPSG:4326">
+            <gml:lowerCorner>55.828 11.837</gml:lowerCorner>
+            <gml:upperCorner>55.915 11.982</gml:upperCorner>
+        </gml:Envelope>
+    </gml:boundedBy>
+
+    <imember>
+        <S124:NWPreamble gml:id="PR.DK.04d364ec-9a35-4802-81bb-0ef501d8e519">
+            <!--<id>urn:mrn:iho:nw:dk:04d364ec-9a35-4802-81bb-0ef501d8e519</id>-->
+            <locality>
+                <locationName>
+                    <!--<language>eng</language>-->
+                    <text>EK R 18 Jaegerspris</text>
+                </locationName>
+            </locality>
+
+            <messageSeriesIdentifier>
+                <country>DK</country>
+                <nameOfSeries>Danish Nav Warn</nameOfSeries>
+                <warningIdentifier>urn:mrn:iho:nw:dk:04d364ec-9a35-4802-81bb-0ef501d8e519</warningIdentifier>
+                <warningNumber>1234</warningNumber>
+                <warningType>local in force bulletin</warningType>
+                <year>18</year>
+                <productionAgency>111</productionAgency>
+            </messageSeriesIdentifier>
+            <affectedChartPublications>
+                <chartAffected>
+                    <chartNumber>117</chartNumber>
+                    <editionDate>2018-10-08</editionDate>
+                </chartAffected>
+            </affectedChartPublications>
+            <affectedChartPublications>
+                <chartAffected>
+                    <chartNumber>116</chartNumber>
+                    <editionDate>2018-10-08</editionDate>
+                </chartAffected>
+            </affectedChartPublications>
+            <title>
+                <language>eng</language>
+                <text>Denmark. Kattegat. EK R 18 Jaegerspris. Firing exercises. Warning.</text>
+            </title>
+            <publicationDate>2018-10-05T10:15:00.000+02:00</publicationDate>
+
+            <!--<sourceDate>2018-10-05</sourceDate>-->
+
+            <!--<generalCategory>military exersices</generalCategory>-->
+
+            <generalArea>
+                <locationName>
+                    <text>Kattegat</text>
+                </locationName>
+            </generalArea>
+
+            <theWarningPart xlink:href="#DK.04d364ec-9a35-4802-81bb-0ef501d8e519.1"></theWarningPart>
+            <theWarningPart xlink:href="#DK.04d364ec-9a35-4802-81bb-0ef501d8e519.2"></theWarningPart>
+            <theWarningPart xlink:href="#DK.04d364ec-9a35-4802-81bb-0ef501d8e519.3"></theWarningPart>
+            <theWarningPart xlink:href="#DK.04d364ec-9a35-4802-81bb-0ef501d8e519.4"></theWarningPart>
+            <theWarningPart xlink:href="#DK.04d364ec-9a35-4802-81bb-0ef501d8e519.5"></theWarningPart>
+
+        </S124:NWPreamble>
+    </imember>
+
+    <member>
+        <S124:NavigationalWarningFeaturePart gml:id="DK.04d364ec-9a35-4802-81bb-0ef501d8e519.1">
+            <!--<id>urn:mrn:iho:nw:dk:04d364ec-9a35-4802-81bb-0ef501d8e519.1</id>-->
+            <fixedDateRange>
+                <timeOfDayStart>06:00:00Z</timeOfDayStart>
+                <timeOfDayEnd>14:00:00Z</timeOfDayEnd>
+                <dateStart>
+                    <date>2018-10-06</date>
+                </dateStart>
+                <dateEnd>
+                    <date>2018-10-06</date>
+                </dateEnd>
+            </fixedDateRange>
+            <warningInformation>
+                <headline>Time</headline>
+                <language>eng</language>
+                <text>6 October 2018, hours 08:00 - 16:00.</text>
+            </warningInformation>
+
+            <header xlink:href="#PR.DK.04d364ec-9a35-4802-81bb-0ef501d8e519"></header>
+        </S124:NavigationalWarningFeaturePart>
+    </member>
+    <member>
+        <S124:NavigationalWarningFeaturePart gml:id="DK.04d364ec-9a35-4802-81bb-0ef501d8e519.5">
+            <!--<id>urn:mrn:iho:nw:dk:04d364ec-9a35-4802-81bb-0ef501d8e519.1</id>-->
+            <fixedDateRange>
+                <timeOfDayStart>06:00:00Z</timeOfDayStart>
+                <timeOfDayEnd>14:00:00Z</timeOfDayEnd>
+                <dateStart>
+                    <date>2018-10-07</date>
+                </dateStart>
+                <dateEnd>
+                    <date>2018-10-07</date>
+                </dateEnd>
+            </fixedDateRange>
+            <warningInformation>
+                <headline>Time</headline>
+                <language>eng</language>
+                <text>7 October 2018, hours 08:00 - 16:00.</text>
+            </warningInformation>
+            <header xlink:href="#PR.DK.04d364ec-9a35-4802-81bb-0ef501d8e519"></header>
+        </S124:NavigationalWarningFeaturePart>
+    </member>
+    <member>
+        <S124:NavigationalWarningFeaturePart gml:id="DK.04d364ec-9a35-4802-81bb-0ef501d8e519.6">
+            <!--<id>urn:mrn:iho:nw:dk:04d364ec-9a35-4802-81bb-0ef501d8e519.1</id>-->
+            <fixedDateRange>
+                <timeOfDayStart>08:00:00Z</timeOfDayStart>
+                <timeOfDayEnd>20:00:00Z</timeOfDayEnd>
+                <dateStart>
+                    <date>2018-10-08</date>
+                </dateStart>
+                <dateEnd>
+                    <date>2018-10-08</date>
+                </dateEnd>
+            </fixedDateRange>
+            <warningInformation>
+                <headline>Time</headline>
+                <language>eng</language>
+                <text>8 October 2018, hours 10:00 - 22:00.</text>
+            </warningInformation>
+
+            <header xlink:href="#PR.DK.04d364ec-9a35-4802-81bb-0ef501d8e519"></header>
+        </S124:NavigationalWarningFeaturePart>
+    </member>
+    <member>
+        <S124:NavigationalWarningFeaturePart gml:id="DK.04d364ec-9a35-4802-81bb-0ef501d8e519.7">
+            <!--<id>urn:mrn:iho:nw:dk:04d364ec-9a35-4802-81bb-0ef501d8e519.1</id>-->
+            <fixedDateRange>
+                <timeOfDayStart>06:00:00Z</timeOfDayStart>
+                <timeOfDayEnd>20:00:00Z</timeOfDayEnd>
+                <dateStart>
+                    <date>2018-10-09</date>
+                </dateStart>
+                <dateEnd>
+                    <date>2018-10-09</date>
+                </dateEnd>
+            </fixedDateRange>
+            <warningInformation>
+                <headline>Time</headline>
+                <language>eng</language>
+                <text>9 October 2018, hours 08:00 - 22:00.</text>
+            </warningInformation>
+
+            <header xlink:href="#PR.DK.04d364ec-9a35-4802-81bb-0ef501d8e519"></header>
+        </S124:NavigationalWarningFeaturePart>
+    </member>
+    <member>
+        <S124:NavigationalWarningFeaturePart gml:id="DK.04d364ec-9a35-4802-81bb-0ef501d8e519.8">
+            <!--<id>urn:mrn:iho:nw:dk:04d364ec-9a35-4802-81bb-0ef501d8e519.1</id>-->
+            <fixedDateRange>
+                <timeOfDayStart>06:00:00Z</timeOfDayStart>
+                <timeOfDayEnd>15:00:00Z</timeOfDayEnd>
+                <dateStart>
+                    <date>2018-10-10</date>
+                </dateStart>
+                <dateEnd>
+                    <date>2018-10-10</date>
+                </dateEnd>
+            </fixedDateRange>
+            <warningInformation>
+                <headline>Time</headline>
+                <language>eng</language>
+                <text>10 October 2018, hours 08:00 - 17:00.</text>
+            </warningInformation>
+
+            <header xlink:href="#PR.DK.04d364ec-9a35-4802-81bb-0ef501d8e519"></header>
+        </S124:NavigationalWarningFeaturePart>
+    </member>
+    <member>
+        <S124:NavigationalWarningFeaturePart gml:id="DK.04d364ec-9a35-4802-81bb-0ef501d8e519.9">
+            <!--<id>urn:mrn:iho:nw:dk:04d364ec-9a35-4802-81bb-0ef501d8e519.1</id>-->
+            <fixedDateRange>
+                <timeOfDayStart>06:00:00Z</timeOfDayStart>
+                <timeOfDayEnd>19:00:00Z</timeOfDayEnd>
+                <dateStart>
+                    <date>2018-10-11</date>
+                </dateStart>
+                <dateEnd>
+                    <date>2018-10-11</date>
+                </dateEnd>
+            </fixedDateRange>
+            <warningInformation>
+                <headline>Time</headline>
+                <language>eng</language>
+                <text>11 October 2018, hours 08:00 - 21:00.</text>
+            </warningInformation>
+
+            <header xlink:href="#PR.DK.04d364ec-9a35-4802-81bb-0ef501d8e519"></header>
+        </S124:NavigationalWarningFeaturePart>
+    </member>
+    <member>
+        <S124:NavigationalWarningFeaturePart gml:id="DK.04d364ec-9a35-4802-81bb-0ef501d8e519.10">
+            <!--<id>urn:mrn:iho:nw:dk:04d364ec-9a35-4802-81bb-0ef501d8e519.1</id>-->
+            <fixedDateRange>
+                <timeOfDayStart>07:00:00Z</timeOfDayStart>
+                <timeOfDayEnd>10:00:00Z</timeOfDayEnd>
+                <dateStart>
+                    <date>2018-10-12</date>
+                </dateStart>
+                <dateEnd>
+                    <date>2018-10-12</date>
+                </dateEnd>
+            </fixedDateRange>
+            <warningInformation>
+                <headline>Time</headline>
+                <language>eng</language>
+                <text>12 October 2018, hours 09:00 - 12:00.</text>
+            </warningInformation>
+            <header xlink:href="#PR.DK.04d364ec-9a35-4802-81bb-0ef501d8e519"></header>
+        </S124:NavigationalWarningFeaturePart>
+    </member>
+    <member>
+        <S124:NavigationalWarningFeaturePart gml:id="DK.04d364ec-9a35-4802-81bb-0ef501d8e519.2">
+
+            <!--<id>urn:mrn:iho:nw:dk:04d364ec-9a35-4802-81bb-0ef501d8e519.2</id>-->
+
+
+            <geometry>
+                <S100:surfaceProperty>
+                    <S100:Surface gml:id="G.DK.04d364ec-9a35-4802-81bb-0ef501d8e519.1" srsName="EPSG:4326">
+                        <gml:patches>
+                            <gml:PolygonPatch>
+                                <gml:exterior>
+                                    <gml:LinearRing>
+                                        <gml:posList>55.843 11.965 55.828 11.869 55.892 11.837 55.915 11.863 55.897
+                                            11.936 55.858 11.965 55.843 11.965 55.843 11.965 55.843 11.965 55.843 11.965
+                                            55.843 11.965 55.843 11.965 55.843 11.965
+                                        </gml:posList>
+                                    </gml:LinearRing>
+                                </gml:exterior>
+                            </gml:PolygonPatch>
+                        </gml:patches>
+                    </S100:Surface>
+                </S100:surfaceProperty>
+            </geometry>
+
+            <geometry>
+                <S100:pointProperty>
+                    <S100:Point gml:id="G.DK.04d364ec-9a35-4802-81bb-0ef501d8e519.2" srsName="EPSG:4326">
+                        <gml:pos>55.843 11.958
+                        </gml:pos>
+                    </S100:Point>
+                </S100:pointProperty>
+            </geometry>
+
+            <geometry>
+                <S100:pointProperty>
+                    <S100:Point gml:id="G.DK.04d364ec-9a35-4802-81bb-0ef501d8e519.3" srsName="EPSG:4326">
+                        <gml:pos>55.843 11.982
+                        </gml:pos>
+                    </S100:Point>
+                </S100:pointProperty>
+            </geometry>
+
+            <geometry>
+                <S100:pointProperty>
+                    <S100:Point gml:id="G.DK.04d364ec-9a35-4802-81bb-0ef501d8e519.4" srsName="EPSG:4326">
+                        <gml:pos>55.901 11.926
+                        </gml:pos>
+                    </S100:Point>
+                </S100:pointProperty>
+            </geometry>
+
+            <warningInformation>
+                <headline>Details</headline>
+                <language>eng</language>
+                <text>
+                    In connection with firing practices in EK R 18 Jægerspris, a temporary prohibited area is
+                    established on the sea off the firing practice area in position:
+
+                    * 55° 52'N - 011° 57'E.
+                </text>
+            </warningInformation>
+
+            <header xlink:href="#PR.DK.04d364ec-9a35-4802-81bb-0ef501d8e519"></header>
+        </S124:NavigationalWarningFeaturePart>
+    </member>
+    <member>
+        <S124:NavigationalWarningFeaturePart gml:id="DK.04d364ec-9a35-4802-81bb-0ef501d8e519.3">
+
+            <!--<id>urn:mrn:iho:nw:dk:04d364ec-9a35-4802-81bb-0ef501d8e519.3</id>-->
+
+            <warningInformation>
+                <headline>Prohibition</headline>
+                <language>eng</language>
+                <text>During firing practices, all navigation, anchoring and fishing are prohibited in the area.</text>
+            </warningInformation>
+
+            <warningInformation>
+                <headline>Signals</headline>
+                <language>eng</language>
+                <text>
+                    Information about firing practices is given by displaying the following signals from one hour before
+                    the start of the firing practice until its end:
+
+                    a) By daylight, a sphere is hoisted and a white, flashing light is lit (60 flashes per minute) on
+                    signal mast 1, 2 and 3. 
+                    b) 30 minutes before sunset, lights displaying a red and white alternating flash (30 flashes per
+                    minute) are lit on signal masts 1 and 3.
+                    * 55° 50,55'N - 011° 57,50'E, Signal mast 1 - at the coast at Sdr. Strandhuse.
+                    * 55° 50,58'N - 011° 58,90'E, Signal mast 2 - on Karolinehøj.
+                    * 55° 54,04'N - 011° 55,58'E, Signal mast 3 - at the coast of Storehøj.
+                </text>
+            </warningInformation>
+
+            <warningInformation>
+                <headline>Note</headline>
+                <language>eng</language>
+                <text>
+                    Information about firing practices is available from Camp Jægerspris, tel. +45 7283 9730 or from
+                    www.forsvaret.dk/JPL http://forsvaret.dk/jpl/skydninger/Pages/default.aspx>, or over VHF radio. Call
+                    name: Jægerspris. Call channel: 16. Conversation channels: 6, 8, and 67. The radio is open from one
+                    hour before the start of the firing practice and until its end.
+                </text>
+            </warningInformation>
+
+            <header xlink:href="#PR.DK.04d364ec-9a35-4802-81bb-0ef501d8e519"></header>
+        </S124:NavigationalWarningFeaturePart>
+    </member>
+</S124:DataSet>

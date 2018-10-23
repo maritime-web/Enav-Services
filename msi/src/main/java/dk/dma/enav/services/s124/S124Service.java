@@ -18,8 +18,8 @@ import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.enav.services.MessageLoaderTaskExecuter;
 import dk.dma.enav.services.MessageLoaderTaskFactory;
 import dk.dma.enav.services.s124.S124MessageLoaderTask.S124MessageLoaderTaskBuilder;
+import dk.dma.enav.services.s124.views.DataSet;
 import lombok.extern.slf4j.Slf4j;
-import org.opengis.feature.simple.SimpleFeature;
 
 import javax.annotation.PreDestroy;
 import javax.ejb.Lock;
@@ -45,18 +45,19 @@ public class S124Service {
     private DataSetXmlParser dataSetXmlParser;
 
     @Inject
-    private MessageLoaderTaskExecuter<SimpleFeature> messageLoaderTaskExecuter;
+    private MessageLoaderTaskExecuter<DataSet> messageLoaderTaskExecuter;
 
     @PreDestroy
     void destroy() {
         messageLoaderTaskExecuter.shutdown();
     }
 
-    public List<SimpleFeature> getMessages(List<String> instanceIds, Integer id, Integer status, String wkt) {
+    @SuppressWarnings("WeakerAccess")
+    public List<DataSet> getMessages(List<String> instanceIds, Integer id, Integer status, String wkt) {
         // Sanity check
         if (instanceIds != null && !instanceIds.isEmpty()) {
 
-            MessageLoaderTaskFactory<SimpleFeature> messageLoaderTaskFactory;
+            MessageLoaderTaskFactory<DataSet> messageLoaderTaskFactory;
             messageLoaderTaskFactory = serviceInstance -> new S124MessageLoaderTaskBuilder(embryoLogService, apiClientFactory, dataSetXmlParser)
                     .serviceInstance(serviceInstance)
                     .id(id)

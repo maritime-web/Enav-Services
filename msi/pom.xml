@@ -126,11 +126,11 @@
       </dependency>
 
       <!-- Test dependencies -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
+      <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <scope>test</scope>
+      </dependency>
       <dependency>
           <groupId>org.hamcrest</groupId>
           <artifactId>java-hamcrest</artifactId>
@@ -169,32 +169,6 @@
                     </execution>
                 </executions>
             </plugin>
-<!--
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jaxb2-maven-plugin</artifactId>
-                <version>2.4</version>
-                <executions>
-                    <execution>
-                        <id>instance-schema</id>
-                        <goals>
-                            <goal>xjc</goal>
-                        </goals>
-                        <configuration>
-                            &lt;!&ndash;<packageName>int_.iho.s124.gml</packageName>&ndash;&gt;
-                            <sources>
-                                <source>${basedir}/src/main/xsd/S124.xsd</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <enableIntrospection>true</enableIntrospection>
-                    <extension>true</extension>
-                    <verbose>true</verbose>
-                </configuration>
-            </plugin>
--->
         </plugins>
     </build>
 </project>

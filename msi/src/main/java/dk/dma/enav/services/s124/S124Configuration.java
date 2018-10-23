@@ -14,28 +14,46 @@
  */
 package dk.dma.enav.services.s124;
 
+import dk.dma.enav.services.s124.bindings.DataSetTypeBinding;
+import dk.dma.enav.services.s124.bindings.NavigationalWarningFeaturePartTypeBinding;
+import dk.dma.enav.services.s124.bindings.NwPreambleTypeBinding;
+import dk.dma.enav.services.s124.bindings.ReferencesTypeBinding;
 import lombok.extern.slf4j.Slf4j;
+import org.geotools.factory.Hints;
 import org.geotools.gml3.v3_2.GMLConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.XSD;
 import org.geotools.xs.XSConfiguration;
 
+import java.util.Map;
+
+@SuppressWarnings("unchecked")
 @Slf4j
 public class S124Configuration extends Configuration {
+
     /**
      * Creates a new configuration.
      *
      * <p>Any dependent schemas should be added in subclass constructor. The xml schema dependency
      * does not have to be added.
      *
-     * @param xsd
+     * @param xsd the S-124 Schema
      */
+    @SuppressWarnings("WeakerAccess")
     public S124Configuration(XSD xsd) {
         super(xsd);
-        log.info(GMLConfiguration.class.getPackage().toString());
-        log.info(GMLConfiguration.class.toString());
         addDependency(new GMLConfiguration(true));
         addDependency(new XSConfiguration());
+        Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, true);
 
+    }
+
+    @Override
+    protected void registerBindings(Map bindings) {
+        super.registerBindings(bindings);
+        bindings.put(DataSetTypeBinding.Q_NAME, DataSetTypeBinding.class);
+        bindings.put(NwPreambleTypeBinding.Q_NAME, NwPreambleTypeBinding.class);
+        bindings.put(ReferencesTypeBinding.Q_NAME, ReferencesTypeBinding.class);
+        bindings.put(NavigationalWarningFeaturePartTypeBinding.Q_NAME, NavigationalWarningFeaturePartTypeBinding.class);
     }
 }

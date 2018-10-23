@@ -14,9 +14,9 @@
  */
 package dk.dma.enav.services.s124;
 
+import dk.dma.enav.services.s124.views.DataSet;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-import org.opengis.feature.simple.SimpleFeature;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,8 +35,8 @@ public class DataSetXmlParserTest {
         InputStreamReader reader = new InputStreamReader(testDoc, StandardCharsets.UTF_8);
 
         DataSetXmlParser cut = new DataSetXmlParser();
-        SimpleFeature simpleFeature = cut.parseDataSetXml(IOUtils.toString(reader));
+        DataSet res = cut.parseDataSetXml(IOUtils.toString(reader));
 
-        assertThat(simpleFeature, not(nullValue(SimpleFeature.class)));
+        assertThat(res, not(nullValue(DataSet.class)));
     }
 }

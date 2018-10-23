@@ -4,7 +4,7 @@
             xmlns:ns1="http://www.iho.int/s100gml/1.0"
             xmlns:xlink="http://www.w3.org/1999/xlink"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.iho.int/S124/gml/cs0/0.1 S124.xsd"
+            xsi:schemaLocation="http://www.iho.int/S124/gml/cs0/0.1 schema/S124.xsd"
 >
     <gml:boundedBy>
         <gml:Envelope srsName="http://www.opengis.net/def/crs/EPSG/0/4326" srsDimension="2">
@@ -97,6 +97,28 @@
             <warningInformation>
                 <language>eng</language>
                 <text>The south cardinal light buoy in pos. 56° 42.0'N - 010° 16.1'E has been replaced with a green buoy.</text>
+            </warningInformation>
+            <header xlink:href="#PR.DK.NW-014-17" />
+        </ns:NavigationalWarningFeaturePart>
+    </member>
+    <member>
+        <ns:NavigationalWarningFeaturePart gml:id="DK.NW-014-17.2">
+            <geometry>
+                <ns1:pointProperty>
+                    <ns1:Point gml:id="G.DK.NW-014-17.2">
+                        <gml:pos>56.6 10.268</gml:pos>
+                    </ns1:Point>
+                </ns1:pointProperty>
+            </geometry>
+            <fixedDateRange>
+                <timeOfDayStart>09:47:22Z</timeOfDayStart>
+                <dateStart>
+                    <date>2017-05-10</date>
+                </dateStart>
+            </fixedDateRange>
+            <warningInformation>
+                <language>eng</language>
+                <text>The something or other.</text>
             </warningInformation>
             <header xlink:href="#PR.DK.NW-014-17" />
         </ns:NavigationalWarningFeaturePart>

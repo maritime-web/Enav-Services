@@ -34,20 +34,33 @@ public class DummyPullApi extends PullApi {
         res.setMessageId(UUID.randomUUID());
         res.setTimestamp(OffsetDateTime.now());
 
+        ArrayList<String> messages = new ArrayList<>();
         String dataSet;
         try {
             InputStream resource = getClass().getClassLoader().getResourceAsStream("S124-test-dummy.xml");
             InputStreamReader reader = new InputStreamReader(resource, StandardCharsets.UTF_8);
             dataSet = IOUtils.toString(reader);
+            messages.add(dataSet);
+
+            resource = getClass().getClassLoader().getResourceAsStream("S124-test-dummy-2.xml");
+            reader = new InputStreamReader(resource, StandardCharsets.UTF_8);
+            dataSet = IOUtils.toString(reader);
+            messages.add(dataSet);
+
+            resource = getClass().getClassLoader().getResourceAsStream("S124-test-dummy-3.xml");
+            reader = new InputStreamReader(resource, StandardCharsets.UTF_8);
+            dataSet = IOUtils.toString(reader);
+            messages.add(dataSet);
+
+            resource = getClass().getClassLoader().getResourceAsStream("S124-test-dummy-4.xml");
+            reader = new InputStreamReader(resource, StandardCharsets.UTF_8);
+            dataSet = IOUtils.toString(reader);
+            messages.add(dataSet);
 
         } catch (IOException e) {
             e.printStackTrace();
             throw new ApiException(e);
         }
-
-        ArrayList<String> messages = new ArrayList<>();
-        messages.add(dataSet);
-
 
         res.setMessages(messages);
         return res;

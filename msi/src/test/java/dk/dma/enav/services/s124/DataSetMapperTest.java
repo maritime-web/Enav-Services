@@ -14,233 +14,93 @@
  */
 package dk.dma.enav.services.s124;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.dma.enav.services.s124.views.DataSet;
 import org.geotools.xml.Parser;
 import org.junit.Before;
 import org.junit.Test;
-import org.opengis.feature.simple.SimpleFeature;
 import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 
+@SuppressWarnings("RedundantThrows")
 public class DataSetMapperTest {
-    private SimpleFeature fc;
+    private Parser parser;
 
     @Before
     public void setUp() throws Exception {
-        InputStream testDoc = getClass().getClassLoader().getResourceAsStream("S124-test-dummy.xml");
         org.geotools.xml.Configuration config = new S124Configuration(S124XSD.getInstance());
 
-        Parser parser = new Parser(config);
+        parser = new Parser(config);
         parser.setStrict(true);
-
-        fc = (SimpleFeature) parser.parse(testDoc);
     }
 
     @Test
-    public void shouldMapTitle() {
-        S124View s124View = new DataSetMapper().toViewType(fc);
+    public void shouldMapMultipleTitles() throws ParserConfigurationException, SAXException, IOException {
+        DataSet res = parse("S124-test-dummy-2.xml");
 
-        assertThat(s124View.getTitle(), is("Denmark. Kattegat. Randers Fiord. Light buoy replaced."));
+        assertThat(res.getTitle(), is("Denmark. The Waters South of Zealand. Boegestroem. light unlit."));
+        assertThat(res.getNwPreamble().getOther().get("title"), isA(List.class));
+        assertThat(res.getNwPreamble().getOther().get("title"), hasSize(2));
     }
 
     @Test
-    public void shouldMapAreaHeading() {
-        S124View s124View = new DataSetMapper().toViewType(fc);
+    public void shouldMapTitle() throws IOException, SAXException, ParserConfigurationException {
+        DataSet res = parse("S124-test-dummy.xml");
 
-        assertThat(s124View.getAreaHeading(), is("Kattegat - Kattegat - Randers Fiord"));
+        assertThat(res.getTitle(), is("Denmark. Kattegat. Randers Fiord. Light buoy replaced."));
     }
 
     @Test
-    public void geoToolsGml() throws JAXBException, ParserConfigurationException, SAXException, IOException {
+    public void shouldMapAreaHeading() throws IOException, SAXException, ParserConfigurationException {
+        DataSet res = parse("S124-test-dummy.xml");
 
-/*
-        GML gml = new GML(GML.Version.GML3);
-        gml.setCoordinateReferenceSystem(DefaultGeographicCRS.WGS84);
-*/
-
-//        InputStream testDoc = getClass().getClassLoader().getResourceAsStream("gmltest.xml");
-        InputStream testDoc = getClass().getClassLoader().getResourceAsStream("S124-test-dummy.xml");
-
-
-/*
-        try (SimpleFeatureIterator simpleFeatureIterator = gml.decodeFeatureIterator(testDoc)) {
-            while (simpleFeatureIterator.hasNext()) {
-                SimpleFeature feature = simpleFeatureIterator.next();
-                System.out.println(feature);
-                System.out.println(feature.getID());
-            }
-        }
-*/
-
-//        org.geotools.xml.Configuration configuration = new org.geotools.gml3.v3_2.GMLConfiguration(true);
-
-        String namespace = "http://www.iho.int/S124/gml/cs0/0.1";
-        String schemaLocation = getClass().getClassLoader().getResource("schema/S124.xsd").toString();
-        ApplicationSchemaXSD xsd = new ApplicationSchemaXSD(namespace, schemaLocation);
-        org.geotools.xml.Configuration config = new S124Configuration(xsd);
-
-        Parser parser = new Parser(config);
-        parser.setStrict(true);
-
-        SimpleFeature fc = (SimpleFeature) parser.parse(testDoc);
-        System.out.println(fc);
-
-        System.out.println(fc.getID());
-        System.out.println(fc.getAttributeCount());
-/*
-        System.out.println(fc.getDefaultGeometry());
-        System.out.println(fc.getType());
-        fc.getAttributes().forEach(a -> {
-            if (a != null) {
-                System.out.println(a.getClass());
-                System.out.println(a);
-            }
-
-        });
-*/
-
-        System.out.println("Preamble Start");
-        Object imember = fc.getAttribute("imember");
-        System.out.println(imember.getClass().getSimpleName());
-        System.out.println(imember);
-        System.out.println("Preamble End");
-
-
-/*
-        System.out.println(fc.getAttribute("geometry"));
-        StringWriter output = new StringWriter();
-        GeoJSON.write(fc.getAttribute("geometry"), output);
-        System.out.println(output);
-        GeometryVo geometry = JtsConverter.fromJts((Geometry) fc.getAttribute("geometry"));
-        System.out.println(fc.getAttribute("warningInformation"));
-*/
-/*
-        JAXBElement<NavigationalWarningFeaturePartType> navigationalWarningFeaturePart = createNavigationalWarningFeaturePart();
-        navigationalWarningFeaturePart.getValue().getGeometry().forEach(geom -> {
-
-            StringWriter writer = new StringWriter();
-            try {
-                Marshaller marshaller = JAXBContext.newInstance("_int.iho.s124.gml.cs0._0").createMarshaller();
-                marshaller.marshal(geom.getSurfaceProperty().getAbstractSurface(), writer);
-                System.out.println(writer);
-                ByteArrayInputStream bis = new ByteArrayInputStream(writer.toString().getBytes(StandardCharsets.UTF_8));
-                SimpleFeatureCollection simpleFeatureCollection = gml.decodeFeatureCollection(bis);
-
-            } catch (JAXBException | SAXException | ParserConfigurationException | IOException e) {
-                e.printStackTrace();
-            }
-
-
-        });
-*/
-
-
+        assertThat(res.getAreaHeading(), is("Kattegat - Kattegat - Randers Fiord"));
     }
 
-/*
-    private FeatureVo toGeoJson(PointCurveSurface pointCurveSurface) {
-        FeatureVo res = new FeatureVo();
-        SurfacePropertyType surfaceProperty = pointCurveSurface.getSurfaceProperty();
-        AbstractSurfaceType value = surfaceProperty.getAbstractSurface().getValue();
-        if (value instanceof _int.iho.s100gml._1.SurfaceType) {
-            _int.iho.s100gml._1.SurfaceType surfaceValue = (_int.iho.s100gml._1.SurfaceType) value;
-            surfaceValue.getPatches().getAbstractSurfacePatch().forEach(p -> {
+    @Test
+    public void shouldMapSingleGeneralAreas() throws ParserConfigurationException, SAXException, IOException {
+        DataSet res = parse("S124-test-dummy-4.xml");
 
-                AbstractSurfacePatchType patchType = p.getValue();
-
-                if (patchType instanceof PolygonPatchType) {
-
-                    PolygonPatchType polyPatch = ((PolygonPatchType) patchType);
-//                    polyPatch.getExterior()
-
-                } else {
-                    System.out.println(patchType.getClass().getSimpleName());
-                }
-            });
-        } else {
-            System.out.println(value.getClass().getSimpleName());
-        }
-        String id = value.getId();
-//        value.getClass()
-        return null;
+        assertThat(res.getNwPreamble().getGeneralAreas(), hasSize(1));
     }
 
-    private JAXBElement<NavigationalWarningFeaturePartType> createNavigationalWarningFeaturePart() throws JAXBException {
-        */
-/* GML *//*
+    @Test
+    public void shouldMapMultipleGeneralAreas() throws ParserConfigurationException, SAXException, IOException {
+        DataSet res = parse("S124-test-dummy-2.xml");
 
-        ObjectFactory fac = new ObjectFactory();
-
-        Double[] coords = {55.843, 11.965, 55.828, 11.869, 55.892, 11.837, 55.915, 11.863, 55.897,
-                11.936, 55.858, 11.965, 55.843, 11.965, 55.843, 11.965, 55.843, 11.965, 55.843, 11.965,
-                55.843, 11.965, 55.843, 11.965, 55.843, 11.965};
-
-        DirectPositionListType directPositionListType = fac.createDirectPositionListType();
-        directPositionListType.getValue().addAll(Arrays.asList(coords));
-
-        LinearRingType linearRingType = fac.createLinearRingType();
-        linearRingType.setPosList(directPositionListType);
-
-        JAXBElement<LinearRingType> linearRing = fac.createLinearRing(linearRingType);
-
-        AbstractRingPropertyType abstractRingPropertyType = fac.createAbstractRingPropertyType();
-        abstractRingPropertyType.setAbstractRing(linearRing);
-
-        PolygonPatchType polygonPatchType = fac.createPolygonPatchType();
-        polygonPatchType.setExterior(abstractRingPropertyType);
-
-        JAXBElement<PolygonPatchType> polygonPatch = fac.createPolygonPatch(polygonPatchType);
-
-        SurfacePatchArrayPropertyType surfacePatchArrayPropertyType = fac.createSurfacePatchArrayPropertyType();
-        surfacePatchArrayPropertyType.getAbstractSurfacePatch().add(polygonPatch);
-
-        SurfaceType surfaceType = fac.createSurfaceType();
-        surfaceType.setPatches(surfacePatchArrayPropertyType);
-
-
-        */
-/* S100 GML *//*
-
-        _int.iho.s100gml._1.ObjectFactory s100GmlFac = new _int.iho.s100gml._1.ObjectFactory();
-
-
-        _int.iho.s100gml._1.SurfaceType surfaceType_s100 = s100GmlFac.createSurfaceType();
-        surfaceType_s100.setId("12345surface");
-        surfaceType_s100.setPatches(surfacePatchArrayPropertyType);
-
-        JAXBElement<_int.iho.s100gml._1.SurfaceType> surface = s100GmlFac.createSurface(surfaceType_s100);
-
-        _int.iho.s100gml._1.SurfacePropertyType surfacePropertyType1 = s100GmlFac.createSurfacePropertyType();
-        surfacePropertyType1.setAbstractSurface(surface);
-
-        */
-/* S124 *//*
-
-        _int.iho.s124.gml.cs0._0.ObjectFactory s124Fac = new _int.iho.s124.gml.cs0._0.ObjectFactory();
-
-        PointCurveSurface pointCurveSurface = s124Fac.createPointCurveSurface();
-        pointCurveSurface.setSurfaceProperty(surfacePropertyType1);
-
-        NavigationalWarningFeaturePartType navigationalWarningFeaturePartType = s124Fac.createNavigationalWarningFeaturePartType();
-        navigationalWarningFeaturePartType.getGeometry().add(pointCurveSurface);
-
-        JAXBElement<NavigationalWarningFeaturePartType> navigationalWarningFeaturePart = s124Fac.createNavigationalWarningFeaturePart(navigationalWarningFeaturePartType);
-
-        Marshaller marshaller = JAXBContext.newInstance("_int.iho.s124.gml.cs0._0").createMarshaller();
-
-        StringWriter writer = new StringWriter();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.marshal(navigationalWarningFeaturePart, writer);
-
-        System.out.println(writer.toString());
-
-        return navigationalWarningFeaturePart;
+        assertThat(res.getNwPreamble().getGeneralAreas(), hasSize(2));
     }
-*/
+
+    @Test
+    public void shouldBeJsonSerializable() throws IOException, SAXException, ParserConfigurationException {
+        ObjectMapper mapper = new ObjectMapper();
+
+        assertThat(mapper.writer().canSerialize(DataSet.class), is(true));
+    }
+
+    @Test
+    public void shouldBeAbleToJsonSerializeDataSet() throws IOException, SAXException, ParserConfigurationException {
+        DataSet res = parse("S124-test-dummy-2.xml");
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        String actual = mapper.writer().writeValueAsString(res);
+        System.out.println(actual);
+        assertThat(actual, isA(String.class));
+    }
+
+    private DataSet parse(String fileName) throws ParserConfigurationException, SAXException, IOException {
+        InputStream testDoc = getClass().getClassLoader().getResourceAsStream(fileName);
+        return (DataSet) parser.parse(testDoc);
+    }
+
 }

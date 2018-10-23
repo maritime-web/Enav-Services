@@ -18,6 +18,7 @@ import dk.dma.embryo.common.log.EmbryoLogService;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
 import dk.dma.enav.services.s124.api.PullApi;
 import dk.dma.enav.services.s124.model.GetMessageResponseObject;
+import dk.dma.enav.services.s124.views.DataSet;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 @Slf4j
-public final class S124MessageLoaderTask implements Callable<List<SimpleFeature>> {
+public final class S124MessageLoaderTask implements Callable<List<DataSet>> {
 
     private final EmbryoLogService embryoLogService;
     private final ApiClientFactory apiClientFactory;
@@ -50,9 +51,10 @@ public final class S124MessageLoaderTask implements Callable<List<SimpleFeature>
         this.dataSetXmlParser = dataSetXmlParser;
     }
 
+    @SuppressWarnings("RedundantThrows")
     @Override
-    public List<SimpleFeature> call() throws Exception {
-        List<SimpleFeature> messages;
+    public List<DataSet> call() throws Exception {
+        List<DataSet> messages;
 
         try {
             List<String> rawMessages = fetchS124Messages();
