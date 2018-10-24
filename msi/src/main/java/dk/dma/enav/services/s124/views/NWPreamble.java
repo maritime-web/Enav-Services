@@ -27,8 +27,9 @@ import java.util.Map;
 @Getter
 public class NWPreamble {
     private String id;
-    private List<Map<String, Object>> generalAreas;
-    private List<Map<String, Object>> localities;
+    private List<Area> generalAreas;
+    private List<Area> localities;
+    private List<AffectedChartPublication> charts;
     private Map<String, List<Map<String, Object>>> other;
     private Map<String, Object> messageSeriesIdentifier;
     private Date publicationDate;
@@ -38,6 +39,7 @@ public class NWPreamble {
         other = new HashMap<>();
         generalAreas = new ArrayList<>();
         localities = new ArrayList<>();
+        charts = new ArrayList<>();
     }
 
     public void setId(String id) {
@@ -64,11 +66,15 @@ public class NWPreamble {
         this.other = others;
     }
 
-    public void addGeneralArea(Map<String, Object> generalArea) {
+    public void addGeneralArea(Area generalArea) {
         generalAreas.add(generalArea);
     }
 
-    public void addLocality(Map<String, Object> locality) {
+    public void addLocality(Area locality) {
         localities.add(locality);
+    }
+
+    public void addAffectedChartPublications(AffectedChartPublication affectedChartPublication) {
+        charts.add(affectedChartPublication);
     }
 }

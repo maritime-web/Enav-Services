@@ -14,7 +14,12 @@
  */
 package dk.dma.enav.services.s124;
 
+import dk.dma.enav.services.s124.bindings.AffectedChartPublicationsTypeBinding;
+import dk.dma.enav.services.s124.bindings.ChartAffectedTypeBinding;
 import dk.dma.enav.services.s124.bindings.DataSetTypeBinding;
+import dk.dma.enav.services.s124.bindings.GeneralAreaBinding;
+import dk.dma.enav.services.s124.bindings.LocalityBinding;
+import dk.dma.enav.services.s124.bindings.LocationNameBinding;
 import dk.dma.enav.services.s124.bindings.NavigationalWarningFeaturePartTypeBinding;
 import dk.dma.enav.services.s124.bindings.NwPreambleTypeBinding;
 import dk.dma.enav.services.s124.bindings.ReferencesTypeBinding;
@@ -55,5 +60,10 @@ public class S124Configuration extends Configuration {
         bindings.put(NwPreambleTypeBinding.Q_NAME, NwPreambleTypeBinding.class);
         bindings.put(ReferencesTypeBinding.Q_NAME, ReferencesTypeBinding.class);
         bindings.put(NavigationalWarningFeaturePartTypeBinding.Q_NAME, NavigationalWarningFeaturePartTypeBinding.class);
+        bindings.put(LocationNameBinding.Q_NAME, LocationNameBinding.class);
+        bindings.put(GeneralAreaBinding.Q_NAME, GeneralAreaBinding.class);
+        bindings.put(LocalityBinding.Q_NAME, LocalityBinding.class);
+        bindings.put(ChartAffectedTypeBinding.Q_NAME, ChartAffectedTypeBinding.class);
+        bindings.put(AffectedChartPublicationsTypeBinding.Q_NAME, AffectedChartPublicationsTypeBinding.class);
     }
 }

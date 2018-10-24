@@ -72,10 +72,10 @@ public class DataSet {
 
     private String createAreaHeading() {
         StringJoiner res = new StringJoiner(" - ");
-        List<Map<String, Object>> generalAreas = nwPreamble.getGeneralAreas();
+        List<Area> generalAreas = nwPreamble.getGeneralAreas();
         res.add(generalAreas.stream().map(this::getLocationText).collect(Collectors.joining(" - ")));
 
-        List<Map<String, Object>> locality = nwPreamble.getLocalities();
+        List<Area> locality = nwPreamble.getLocalities();
         if (locality != null) {
             res.add(locality.stream().map(this::getLocationText).collect(Collectors.joining(" - ")));
         }
@@ -90,17 +90,8 @@ public class DataSet {
         return language == null || language.equals("eng");
     }
 
-    private String  getLocationText(Map<String, Object> area) {
-        String res;
-        Object locationNameElement = area.get("locationName");
-        if (locationNameElement instanceof List) {
-            List<Map<String, Object>> areas = (List<Map<String, Object>>) locationNameElement;
-            Map<String, Object> a = areas.stream().filter(this::localizableFilter).findFirst().orElseGet(() -> areas.get(0));
-            res = (String) a.get("text");
-        } else {
-            res = (String) area.get("text");
-        }
-        return res;
+    private String getLocationText(Area area) {
+        return area.getText("eng");
     }
 
     public void setOthers(Map<String, List<Map<String, Object>>> others) {

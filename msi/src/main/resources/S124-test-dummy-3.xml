@@ -83,7 +83,7 @@
                 <year>17</year>
                 <productionAgency>111</productionAgency>
             </messageSeriesIdentifier>
-            <reference>source reference</reference>
+            <referenceCategory>source reference</referenceCategory>
         </S124:References>
     </imember>
 </S124:DataSet>

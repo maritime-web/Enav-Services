@@ -14,6 +14,8 @@
  */
 package dk.dma.enav.services.s124.bindings;
 
+import dk.dma.enav.services.s124.views.AffectedChartPublication;
+import dk.dma.enav.services.s124.views.Area;
 import dk.dma.enav.services.s124.views.NWPreamble;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
@@ -56,26 +58,10 @@ public class NwPreambleTypeBinding extends AbstractComplexBinding {
             Object childValue = child.getValue();
             switch (name) {
                 case "generalArea":
-                    if (childValue instanceof Map) {
-                        nwPreamble.addGeneralArea((Map<String, Object>) childValue);
-                    } else if (childValue instanceof String) {
-                        HashMap<String, Object> generalArea = new HashMap<>();
-                        generalArea.put("text", childValue);
-                        nwPreamble.addGeneralArea(generalArea);
-                    } else {
-                        throw new IllegalArgumentException("Unexpected type for generalArea Node: " + childValue.getClass().getName());
-                    }
+                    nwPreamble.addGeneralArea((Area) childValue);
                     break;
                 case "locality":
-                    if (childValue instanceof Map) {
-                        nwPreamble.addLocality((Map<String, Object>) childValue);
-                    } else if (childValue instanceof String) {
-                        HashMap<String, Object> locality = new HashMap<>();
-                        locality.put("text", childValue);
-                        nwPreamble.addLocality(locality);
-                    } else {
-                        throw new IllegalArgumentException("Unexpected type for locality Node: " + childValue.getClass().getName());
-                    }
+                    nwPreamble.addLocality((Area) childValue);
                     break;
                 case "messageSeriesIdentifier":
                     nwPreamble.setMessageSeriesIdentifier((Map<String, Object>) childValue);
@@ -85,6 +71,9 @@ public class NwPreambleTypeBinding extends AbstractComplexBinding {
                     break;
                 case "cancellationDate":
                     nwPreamble.setCancellationDate((Date) childValue);
+                    break;
+                case "affectedChartPublications":
+                    nwPreamble.addAffectedChartPublications((AffectedChartPublication) childValue);
                     break;
                 default:
                     others.computeIfAbsent(name, k -> new ArrayList<>()).add(S124ParseUtil.parseNode(child));

@@ -14,21 +14,18 @@
  */
 package dk.dma.enav.services.s124.bindings;
 
-import dk.dma.enav.services.s124.views.References;
+import dk.dma.enav.services.s124.views.ChartAffected;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Date;
 
 @SuppressWarnings("unchecked")
-public class ReferencesTypeBinding extends AbstractComplexBinding {
+public class ChartAffectedTypeBinding extends AbstractComplexBinding {
     public static final QName Q_NAME =
-            new QName("http://www.iho.int/S124/gml/cs0/0.1", "ReferencesType");
+            new QName("http://www.iho.int/S124/gml/cs0/0.1", "chartAffectedType");
 
     @Override
     public QName getTarget() {
@@ -37,32 +34,36 @@ public class ReferencesTypeBinding extends AbstractComplexBinding {
 
     @Override
     public Class getType() {
-        return References.class;
+        return ChartAffected.class;
     }
 
     @SuppressWarnings("RedundantThrows")
     @Override
     public Object parse(ElementInstance instance, Node node, Object value) throws Exception {
-        References references = new References();
-
-        String id = (String) node.getAttribute("id").getValue();
-        references.setId(id);
-
-        Map<String, List<Map<String, Object>>> others = new HashMap<>();
+        ChartAffected res = new ChartAffected();
 
         node.getChildren().forEach(c -> {
             Node child = (Node) c;
             String name = child.getComponent().getName();
             Object childValue = child.getValue();
 
-            if (name.equals("referenceCategory")) {
-                references.setReference((String)childValue);
-            } else {
-                others.computeIfAbsent(name, k -> new ArrayList<>()).add(S124ParseUtil.parseNode(child));
+            switch (name) {
+                case "chartNumber":
+                    res.setChartNumber((String) childValue);
+                    break;
+                case "editionDate":
+                    res.setEditionDate((Date)childValue);
+                    break;
+                case "lastNoticeDate":
+                    res.setLastNoticeDate((Date)childValue);
+
+                    break;
+                case "publicationAffected":
+                    res.setPublicationAffected((String) childValue);
+                    break;
             }
         });
-        references.setOthers(others);
 
-        return references;
+        return res;
     }
 }

@@ -69,6 +69,7 @@
 
             <publicationDate>2017-05-10T00:00:00</publicationDate>
             <generalArea>
+                <ocalityIdentifier>urn:mrn:dan:kattegat</ocalityIdentifier>
                 <locationName>
                     <language>eng</language>
                     <text>Kattegat</text>
