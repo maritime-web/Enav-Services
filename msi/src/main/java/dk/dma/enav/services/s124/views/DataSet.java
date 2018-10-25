@@ -36,6 +36,7 @@ public class DataSet {
     private List<References> references;
     private List<NavigationalWarningFeaturePart> navigationalWarningFeaturePart;
     private Map<String, List<Map<String, Object>>> other;
+    private String serviceInstanceId;
 
     public DataSet() {
         references = new ArrayList<>();
@@ -96,5 +97,9 @@ public class DataSet {
 
     public void setOthers(Map<String, List<Map<String, Object>>> others) {
         other = others;
+    }
+
+    public void setServiceInstanceId(String serviceInstanceId) {
+        this.serviceInstanceId = serviceInstanceId;
     }
 }

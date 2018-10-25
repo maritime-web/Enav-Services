@@ -22,7 +22,6 @@ import dk.dma.enav.services.s124.views.DataSet;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import org.opengis.feature.simple.SimpleFeature;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +59,10 @@ public final class S124MessageLoaderTask implements Callable<List<DataSet>> {
             List<String> rawMessages = fetchS124Messages();
             embryoLogService.info("Loaded " + rawMessages.size() + " messages from " + serviceInstance.getInstanceId());
 
-            messages = rawMessages.stream().map(dataSetXmlParser::parseDataSetXml).collect(Collectors.toList());
+            messages = rawMessages.stream()
+                    .map(dataSetXmlParser::parseDataSetXml)
+                    .peek(dataSet -> dataSet.setServiceInstanceId(serviceInstance.getInstanceId()))
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             log.error("Failed loading S-124 messages for instance "
                     + serviceInstance.getInstanceId() + " : " + e.getMessage(), e);
