@@ -25,4 +25,10 @@ public class LocationName {
     private String language;
     private String text;
 
+    public static LocationName empty() {
+        LocationName res = new LocationName();
+        res.setLanguage("eng");
+        res.setText("Unknown name");
+        return res;
+    }
 }

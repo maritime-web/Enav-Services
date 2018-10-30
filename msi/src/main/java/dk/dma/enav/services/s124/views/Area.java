@@ -37,7 +37,7 @@ public class Area {
     }
 
     public String getText(String language) {
-        return names.stream().filter(name -> localizableFilter(name, language)).findFirst().orElseGet(() -> names.get(0)).getText();
+        return names.stream().filter(name -> localizableFilter(name, language)).findFirst().orElseGet(() -> names.isEmpty() ? LocationName.empty() : names.get(0)).getText();
     }
 
     private boolean localizableFilter(LocationName locationName, String language) {
