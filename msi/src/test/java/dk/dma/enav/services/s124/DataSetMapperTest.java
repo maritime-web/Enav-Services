@@ -81,6 +81,13 @@ public class DataSetMapperTest {
     }
 
     @Test
+    public void shouldMapReference() throws ParserConfigurationException, SAXException, IOException {
+        DataSet res = parse("S124-test-5.xml");
+
+        assertThat(res.getReferences(), hasSize(1));
+    }
+
+    @Test
     public void shouldBeJsonSerializable() throws IOException, SAXException, ParserConfigurationException {
         ObjectMapper mapper = new ObjectMapper();
 

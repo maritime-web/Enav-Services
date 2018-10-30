@@ -14,31 +14,37 @@
  */
 package dk.dma.enav.services.registry.mc;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
 import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.enav.services.registry.api.InstanceMetadata;
 import dk.dma.enav.services.registry.api.NoServicesFoundException;
-import dk.dma.enav.services.registry.api.TechnicalDesignId;
 import dk.dma.enav.services.registry.mc.model.Instance;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Caches
  */
+@SuppressWarnings("WeakerAccess")
+@ApplicationScoped
 public class InstanceRepository {
-    private final ApiFactory apiFactory;
-    private final InstanceMapper mapper;
-    private Cache<Long, InstanceMetadata> instanceCache;
+    private static final String ALL_CACHE_KEY = "ALL_CACHE_KEY";
+    private ApiFactory apiFactory;
+    private InstanceMapper mapper;
+    private Cache<String, List<InstanceMetadata>> instanceCache;
+
+    //Required by CDI
+    @SuppressWarnings("unused")
+    public InstanceRepository() {
+    }
 
     @Inject
     public InstanceRepository(ApiFactory apiFactory,
@@ -51,12 +57,11 @@ public class InstanceRepository {
     }
 
     public List<InstanceMetadata> getAllInstances() {
-        List<InstanceMetadata> res = getAllInstancesFromCache();
-        if (res.isEmpty()) {
-            res = getAllInstancesFromMcServiceRegistry();
-            updateCache(res);
+        try {
+            return instanceCache.get(ALL_CACHE_KEY, this::getAllInstancesFromMcServiceRegistry);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
         }
-        return res;
     }
 
     /**
@@ -75,13 +80,7 @@ public class InstanceRepository {
             throw new NoServicesFoundException();
         }
 
-        ArrayList<InstanceMetadata> instanceMetadatas = mapToInstanceMetadata(instances);
-        updateCache(instanceMetadatas);
-        return instanceMetadatas;
-    }
-
-    private List<InstanceMetadata> getAllInstancesFromCache() {
-        return new ArrayList<>(instanceCache.asMap().values());
+        return mapToInstanceMetadata(instances);
     }
 
     private List<InstanceMetadata> getAllInstancesFromMcServiceRegistry() {
@@ -92,11 +91,4 @@ public class InstanceRepository {
     private ArrayList<InstanceMetadata> mapToInstanceMetadata(List<Instance> instances) {
         return instances.stream().map(mapper::toMetaData).collect(Collectors.toCollection(ArrayList::new));
     }
-
-    private void updateCache(List<InstanceMetadata> instances) {
-        Map<Long, InstanceMetadata> data = new HashMap<>();
-        instances.forEach(instance -> data.put(instance.getId(), instance));
-        instanceCache.putAll(data);
-    }
-
 }

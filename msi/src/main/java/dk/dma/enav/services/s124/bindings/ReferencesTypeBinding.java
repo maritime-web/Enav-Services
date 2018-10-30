@@ -55,10 +55,16 @@ public class ReferencesTypeBinding extends AbstractComplexBinding {
             String name = child.getComponent().getName();
             Object childValue = child.getValue();
 
-            if (name.equals("referenceCategory")) {
-                references.setReference((String)childValue);
-            } else {
-                others.computeIfAbsent(name, k -> new ArrayList<>()).add(S124ParseUtil.parseNode(child));
+            switch (name) {
+                case "referenceCategory":
+                    references.setReference((String) childValue);
+                    break;
+                case "noMessageOnHand":
+                    references.setNoMessageOnHand((Boolean) childValue);
+                    break;
+                default:
+                    others.computeIfAbsent(name, k -> new ArrayList<>()).add(S124ParseUtil.parseNode(child));
+                    break;
             }
         });
         references.setOthers(others);

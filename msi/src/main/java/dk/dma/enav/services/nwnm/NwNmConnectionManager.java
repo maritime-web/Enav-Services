@@ -17,6 +17,7 @@ package dk.dma.enav.services.nwnm;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
@@ -81,6 +82,9 @@ public class NwNmConnectionManager {
         Scheme httpsScheme = new Scheme("https", 443, sslSocketFactory);
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         schemeRegistry.register(httpsScheme);
+
+        Scheme httpScheme = new Scheme("http", 80, new PlainSocketFactory());
+        schemeRegistry.register(httpScheme);
 
         connectionManager = new BasicClientConnectionManager(schemeRegistry);
     }

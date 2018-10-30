@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<S124:DataSet gml:id="DK.NW-090-17" xmlns:ns6="http://www.iho.int/s100gml/1.0+EXT"
+              xmlns:ns5="http://www.w3.org/1999/xlink" xmlns:S124="http://www.iho.int/S124/gml/cs0/0.1"
+              xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:S100="http://www.iho.int/s100gml/1.0">
+    <gml:boundedBy>
+        <gml:Envelope srsName="EPSG:4326">
+            <gml:lowerCorner>55.3255166666667 11.04465</gml:lowerCorner>
+            <gml:upperCorner>55.3255166666667 11.04465</gml:upperCorner>
+        </gml:Envelope>
+    </gml:boundedBy>
+    <imember>
+        <S124:NWPreamble gml:id="PR.DK.NW-090-17">
+            <locality>
+                <locationName>
+                    <language>eng</language>
+                    <text>The Great Belt</text>
+                </locationName>
+            </locality>
+            <messageSeriesIdentifier>
+                <country>DK</country>
+                <nameOfSeries>Danish Nav Warn</nameOfSeries>
+                <warningIdentifier>urn:mrn:iho:nw:dk:nw-090-17</warningIdentifier>
+                <warningNumber>90</warningNumber>
+                <warningType>coastal navigational warning</warningType>
+                <year>17</year>
+                <productionAgency>111</productionAgency>
+            </messageSeriesIdentifier>
+            <title>
+                <language>eng</language>
+                <text>Denmark. TheGreat Belt. Oesterrenden. Reduced depth.</text>
+            </title>
+            <publicationDate>2017-06-19T13:08:00.000Z</publicationDate>
+            <generalArea>
+                <locationName>
+                    <language>eng</language>
+                    <text>The Belts</text>
+                </locationName>
+            </generalArea>
+            <theWarningPart ns5:href="#DK.NW-090-17.1"/>
+        </S124:NWPreamble>
+    </imember>
+    <member>
+        <S124:NavigationalWarningFeaturePart gml:id="DK.NW-090-17.1">
+            <gml:boundedBy>
+                <gml:Envelope srsName="EPSG:4326">
+                    <gml:lowerCorner>55.3255166666667 11.04465</gml:lowerCorner>
+                    <gml:upperCorner>55.3255166666667 11.04465</gml:upperCorner>
+                </gml:Envelope>
+            </gml:boundedBy>
+            <S100:featureObjectIdentifier>
+                <S100:agency>99</S100:agency>
+                <S100:featureIdentificationNumber>9999</S100:featureIdentificationNumber>
+                <S100:featureIdentificationSubdivision>9999</S100:featureIdentificationSubdivision>
+            </S100:featureObjectIdentifier>
+            <geometry>
+                <S100:pointProperty>
+                    <S100:Point srsName="EPSG:4326" gml:id="G.DK.NW-090-17.1">
+                        <gml:pos>55.3255166666667 11.04465</gml:pos>
+                    </S100:Point>
+                </S100:pointProperty>
+            </geometry>
+            <fixedDateRange>
+                <timeOfDayStart>13:08:00.000Z</timeOfDayStart>
+                <dateStart>
+                    <date>2017-06-19Z</date>
+                </dateStart>
+            </fixedDateRange>
+            <warningInformation>
+                <language>eng</language>
+                <text>Reduced depth of 16.74m has been observed in pos. 55 19,53 N - 011 02,68 E.</text>
+            </warningInformation>
+            <header ns5:href="#PR.DK.NW-090-17"/>
+        </S124:NavigationalWarningFeaturePart>
+    </member>
+    <imember>
+        <S124:References gml:id="O.REF.1">
+            <messageSeriesIdentifier>
+                <country>DK</country>
+                <nameOfSeries>Danish Nav Warn</nameOfSeries>
+                <warningIdentifier>urn:mrn:iho:nw:dk:nw-090-17</warningIdentifier>
+                <warningNumber>90</warningNumber>
+                <warningType>coastal navigational warning</warningType>
+                <year>17</year>
+                <productionAgency>111</productionAgency>
+            </messageSeriesIdentifier>
+            <referenceCategory>source reference</referenceCategory>
+            <noMessageOnHand>false</noMessageOnHand>
+            <
+        </S124:References>
+    </imember>
+</S124:DataSet>

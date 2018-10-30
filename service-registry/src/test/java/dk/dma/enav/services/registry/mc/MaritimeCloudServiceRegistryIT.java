@@ -34,6 +34,7 @@ import static org.hamcrest.Matchers.is;
  * Created by Steen on 13-10-2016.
  *
  */
+@SuppressWarnings("RedundantThrows")
 public class MaritimeCloudServiceRegistryIT {
     private MaritimeCloudServiceRegistry cut;
     private ApiFactory apiFactory;

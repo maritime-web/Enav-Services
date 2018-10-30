@@ -57,6 +57,7 @@ public class ApiFactory {
     public ApiClient createApiClient() {
         ApiClient apiClient = new ApiClient();
         apiClient.setBasePath(url);
+        apiClient.setDebugging(true);
         apiClient.setConnectTimeout(connectionTimeout);
         return apiClient;
     }

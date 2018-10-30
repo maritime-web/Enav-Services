@@ -27,6 +27,7 @@ public class References {
     private String id;
     private Map<String, List<Map<String, Object>>> other;
     private String reference;
+    private Boolean noMessageOnHand;
 
     public References() {
         other = new HashMap<>();
@@ -44,5 +45,10 @@ public class References {
 
     public void setOthers(Map<String, List<Map<String, Object>>> others) {
         other = others;
+    }
+
+    public void setNoMessageOnHand(Boolean noMessageOnHand) {
+
+        this.noMessageOnHand = noMessageOnHand;
     }
 }
