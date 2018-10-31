@@ -23,7 +23,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * REST endpoint for searching S-124 services as defined in the Maritime Cloud Service Registry.
@@ -55,7 +57,10 @@ public class S124RestService {
 
         try {
 
-            return s124Service.getMessages(instanceIds, id, status, wkt);
+            return s124Service.getMessages(instanceIds, id, status, wkt)
+                    .stream()
+                    .sorted(Comparator.comparing(DataSet::getAreaHeading))
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             throw new WebApplicationException("Failed loading S-124 messages: " + e.getMessage(), 500);
         }
