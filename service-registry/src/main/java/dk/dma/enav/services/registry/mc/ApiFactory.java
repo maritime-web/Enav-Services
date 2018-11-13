@@ -14,23 +14,19 @@
  */
 package dk.dma.enav.services.registry.mc;
 
-import javax.inject.Inject;
-
-import com.google.common.io.ByteStreams;
 import dk.dma.embryo.common.configuration.Property;
 import dk.dma.enav.services.registry.mc.api.InstanceResourceApi;
 import dk.dma.enav.services.registry.mc.api.ServiceinstanceresourceApi;
 import dk.dma.enav.services.registry.mc.api.TechnicaldesignresourceApi;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.inject.Inject;
 
 /**
  *
  * Created by Steen on 17-10-2016.
  *
  */
+@SuppressWarnings("unused")
 public class ApiFactory {
     private final String url;
     private final int connectionTimeout;
@@ -57,7 +53,7 @@ public class ApiFactory {
     public ApiClient createApiClient() {
         ApiClient apiClient = new ApiClient();
         apiClient.setBasePath(url);
-        apiClient.setDebugging(true);
+//        apiClient.setDebugging(true);
         apiClient.setConnectTimeout(connectionTimeout);
         return apiClient;
     }
