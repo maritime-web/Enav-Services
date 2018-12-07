@@ -25,6 +25,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Locale;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.isA;
@@ -110,4 +111,19 @@ public class DataSetMapperTest {
         return (DataSet) parser.parse(testDoc);
     }
 
+    @Test
+    public void name() {
+        double a = 2;
+        double b = 1.2;
+        int points = 10;
+        double step = 2*a/points;
+
+        for (int i = 0; i <= points; i++) {
+            double x = -a + i * step;
+            double yPos = b/a * Math.sqrt(a*a - x*x);
+            double yNeg = -b/a * Math.sqrt(a*a - x*x);
+            System.out.printf(Locale.ENGLISH, "%5.2f, %5.2f\n", x, yPos);
+        }
+
+    }
 }
