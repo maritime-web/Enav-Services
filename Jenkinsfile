@@ -4,9 +4,6 @@ pipeline {
     tools {
         maven 'M3.3.9'
     }
-    tools {
-        jdk: 'java_openjdk_8'
-    }
 
     triggers {
         pollSCM('H/5 * * * *')
