@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     tools {
-        maven 'M3.3.9'
+        maven 'M3.3.9',
+        jdk: 'java_openjdk_8'
     }
 
     triggers {
@@ -12,7 +13,7 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                withMaven(maven: 'M3.3.9') {
+                withMaven(maven: 'M3.3.9', jdk: 'java_openjdk_8', mavenOpts: '-Xmx1024m  -XX:MaxPermSize=512m') {
                     sh 'mvn -U clean checkstyle:check source:jar install'
                 }
             }
