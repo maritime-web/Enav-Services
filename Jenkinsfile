@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                withMaven() {
+                withMaven(maven: 'M3.3.9') {
                     sh 'mvn -U clean checkstyle:check source:jar install'
                 }
             }
