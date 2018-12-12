@@ -4,7 +4,9 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                echo 'pipeline build'
+                withMaven() {
+                    sh '-U clean checkstyle:check source:jar install'
+                }
             }
         }
 
