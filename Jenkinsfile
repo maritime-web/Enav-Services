@@ -1,6 +1,7 @@
 pipeline {
-    agent any
-
+    agent {
+            docker { image 'openjdk:8-jdk' }
+    }
     tools {
         maven 'M3.3.9'
     }
