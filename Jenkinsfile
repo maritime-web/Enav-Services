@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'M3.3.9'
+    }
+
     triggers {
         pollSCM('H/5 * * * *')
 
@@ -9,7 +13,7 @@ pipeline {
         stage('build') {
             steps {
                 withMaven() {
-                    sh '-U clean checkstyle:check source:jar install'
+                    sh 'mvn -U clean checkstyle:check source:jar install'
                 }
             }
         }
