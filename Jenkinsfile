@@ -10,6 +10,11 @@ pipeline {
 
     }
     stages {
+        stage ('prepare') {
+            steps {
+                sh "java -version"
+            }
+        }
         stage('build') {
             steps {
                 withMaven(maven: 'M3.3.9', mavenOpts: '-Xmx1024m  -XX:MaxPermSize=512m') {
