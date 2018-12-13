@@ -24,15 +24,13 @@ pipeline {
             steps {
                 sh "java -version"
                 echo "${currentBuild.buildCauses}"
-                echo "${currentBuild.getBuildCauses('hudson.model.Cause$UserCause')}"
-                echo "${currentBuild.getBuildCauses('hudson.triggers.TimerTrigger$TimerTriggerCause')}"
             }
         }
 
         stage('build') {
-//            when {
-//                triggeredBy "SCMTrigger"
-//            }
+            when {
+               expression {currentBuild.buildCauses.toString().contains("SCM")}
+            }
             steps {
                 withMaven(maven: 'M3.3.9', mavenOpts: '-Xmx1024m') {
                     sh 'mvn -U clean checkstyle:check source:jar install'
@@ -47,9 +45,9 @@ pipeline {
         }
 
         stage('integration test') {
-//            when {
-//                triggeredBy "TimerTrigger"
-//            }
+            when {
+                expression {currentBuild.buildCauses.toString().contains("Started by timer")}
+            }
             steps {
                 withMaven(maven: 'M3.3.9', mavenOpts: '-Xmx1024m ') {
                     sh "mvn -Denav-services-integration-test.configuration=file://${integration_test_config} clean test -PintegrationTest -Dmaven.node.skip=true"
