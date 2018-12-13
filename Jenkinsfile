@@ -1,23 +1,75 @@
 pipeline {
     agent any
+
+    parameters {
+        string(name: 'RELEASE_TAG', defaultValue: '', description: 'The Github release tag to deploy')
+        string(name: 'NEW_VERSION', defaultValue: '', description: 'The new version to be released to the maven repository e.g. 1.0.5')
+    }
+
+    environment {
+        integration_test_config = credentials('enav-services-integration-test.properties')
+    }
+
     tools {
         maven 'M3.3.9'
     }
 
     triggers {
         pollSCM('* * * * *')
-
+        cron('H * * * *')
     }
+
     stages {
         stage ('prepare') {
             steps {
                 sh "java -version"
             }
         }
+
         stage('build') {
+            when {
+                triggeredBy "SCMTrigger"
+            }
             steps {
-                withMaven(maven: 'M3.3.9', mavenOpts: '-Xmx1024m  -XX:MaxPermSize=512m') {
+                withMaven(maven: 'M3.3.9', mavenOpts: '-Xmx1024m') {
                     sh 'mvn -U clean checkstyle:check source:jar install'
+                }
+            }
+            post {
+                success {
+                    echo "TODO deploy to snapshot repo"
+                }
+            }
+
+        }
+
+        stage('integration test') {
+            when {
+                triggeredBy "TimerTrigger"
+            }
+            steps {
+                withMaven(maven: 'M3.3.9', mavenOpts: '-Xmx1024m ') {
+                    sh "mvn -Denav-services-integration-test.configuration=file://${integration_test_config} clean test -PintegrationTest -Dmaven.node.skip=true"
+                }
+            }
+        }
+
+        stage('release') {
+            when {
+                expression { params.RELEASE_TAG != '' }
+            }
+            steps {
+                withMaven(maven: 'M3.5.0', mavenOpts: '-Xmx1024m ') {
+                    sh "mvn versions:set -DnewVersion=${params.NEW_VERSION}"
+                    sh "mvn versions:update-property -DnewVersion=[${params.NEW_VERSION}] -Dproperty=enav-services.version"
+                }
+                withMaven(maven: 'M3.3.9', mavenOpts: '-Xmx1024m ') {
+                    sh "mvn -U clean checkstyle:check source:jar install"
+                }
+            }
+            post {
+                success {
+                    echo "TODO deploy to release repo"
                 }
             }
         }
@@ -26,7 +78,7 @@ pipeline {
     post {
         failure {
             // notify users when the Pipeline fails
-            mail to: 'steen@lundogbendsen.dk',
+            mail to: 'steen@lundogbendsen.dk','rmj@dma.dk',
                     subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
                     body: "Something is wrong with ${env.BUILD_URL}"
         }
