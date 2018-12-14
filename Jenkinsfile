@@ -28,13 +28,14 @@ pipeline {
         }
 
         stage('build') {
-            when {
-               expression {currentBuild.buildCauses.toString().contains("SCM")}
-            }
+//            when {
+//               expression {currentBuild.buildCauses.toString().contains("SCM")}
+//            }
             steps {
                 withMaven(maven: 'M3.3.9', mavenOpts: '-Xmx1024m') {
 //                    TODO remove -DskipTests when java problem is solved
-                    sh 'mvn -DskipTests -U clean checkstyle:check source:jar install'
+//                  sh 'mvn -DskipTests -U clean checkstyle:check source:jar install'
+                    sh 'mvn -U clean checkstyle:check source:jar install'
                 }
             }
             post {
