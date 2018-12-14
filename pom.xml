@@ -461,6 +461,13 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
+                    <!--
+                        Workaround for java bug by skipping classloader in maven conf
+                        see also https://stackoverflow.com/questions/50661648/spring-boot-fails-to-run-maven-surefire-plugin-classnotfoundexception-org-apache/50661649#50661649
+                    -->
+                    <configuration>
+                        <useSystemClassLoader>false</useSystemClassLoader>
+                    </configuration>
                     <version>2.19.1</version>
                 </plugin>
 
@@ -560,7 +567,9 @@
 
                                 "-Denav-services-integration-test.configuration=file:///C:/test-configuration.properties"
                                 -->
-                                <enav-services-integration-test.configuration>${enav-services-integration-test.location}</enav-services-integration-test.configuration>
+                                <enav-services-integration-test.configuration>
+                                    ${enav-services-integration-test.location}
+                                </enav-services-integration-test.configuration>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
