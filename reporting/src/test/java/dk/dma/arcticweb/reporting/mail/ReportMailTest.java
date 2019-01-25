@@ -53,7 +53,7 @@ public class ReportMailTest {
         ReportMail mail = new ReportMail(report, "test@test.dk", "greenpos", propertyFileService).build();
 
         // VERIFY
-        String header = "ArcticWeb Greenpos Deviation Report from MyVessel";
+        String header = "Arctic Greenpos Deviation Report from MyVessel";
         String body = "GREENPOS - DR 4\n";
         body += "A (Vessel): MyVessel/callsign MMSI 12\n";
         body += "B (Report time): 01-01-2014 12:00:34 UTC\n";
@@ -62,7 +62,7 @@ public class ReportMailTest {
         body += "L (Route WayPoints): -\n";
         body += "Q (Malfunctions): -\n";
         body += "\n";
-        body += "Reported via ArcticWeb.";
+        body += "Reported via Arctic.";
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());
         Assert.assertEquals("noreply@dma.dk", mail.getFrom());
@@ -86,7 +86,7 @@ public class ReportMailTest {
         ReportMail mail = new ReportMail(report, "test@test.dk", "greenpos", propertyFileService).build();
 
         // VERIFY
-        String header = "ArcticWeb Greenpos Deviation Report from MyVessel";
+        String header = "Arctic Greenpos Deviation Report from MyVessel";
         String body = "GREENPOS - DR 4\n";
         body += "A (Vessel): MyVessel/callsign MMSI 12\n";
         body += "B (Report time): 01-01-2014 12:00:34 UTC\n";
@@ -95,7 +95,7 @@ public class ReportMailTest {
         body += "L (Route WayPoints): [10 00.000N,010 00.000E],  [12 00.000N,012 00.000E]\n";
         body += "Q (Malfunctions): Starboard hole\n";
         body += "\n";
-        body += "Reported via ArcticWeb.";
+        body += "Reported via Arctic.";
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());
         Assert.assertEquals("noreply@dma.dk", mail.getFrom());
@@ -121,7 +121,7 @@ public class ReportMailTest {
         ReportMail mail = new ReportMail(report, "test@test.dk", "greenpos", propertyFileService).build();
 
         // VERIFY
-        String header = "ArcticWeb Greenpos Sailing Plan Report from MyVessel";
+        String header = "Arctic Greenpos Sailing Plan Report from MyVessel";
         String body = "GREENPOS - SP 1\n";
         body += "A (Vessel): MyVessel/callsign MMSI 12\n";
         body += "B (Report time): 01-02-2014 14:01:25 UTC\n";
@@ -136,7 +136,7 @@ public class ReportMailTest {
         body += "L (Route Description): My Route Description\n";
         body += "L (Route WayPoints): [10 00.000N,010 00.000E],  [12 00.000N,012 00.000E]\n";
         body += "\n";
-        body += "Reported via ArcticWeb.";
+        body += "Reported via Arctic.";
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());
         Assert.assertEquals("noreply@dma.dk", mail.getFrom());
@@ -157,7 +157,7 @@ public class ReportMailTest {
         ReportMail mail = new ReportMail(report, "test@test.dk", "greenpos", propertyFileService).build();
 
         // VERIFY
-        String header = "ArcticWeb Greenpos Sailing Plan Report from MyVessel";
+        String header = "Arctic Greenpos Sailing Plan Report from MyVessel";
         String body = "GREENPOS - SP 1\n";
         body += "A (Vessel): MyVessel/callsign MMSI 12\n";
         body += "B (Report time): 01-02-2014 14:01:25 UTC\n";
@@ -172,7 +172,7 @@ public class ReportMailTest {
         body += "L (Route Description): -\n";
         body += "L (Route WayPoints): -\n";
         body += "\n";
-        body += "Reported via ArcticWeb.";
+        body += "Reported via Arctic.";
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());
         Assert.assertEquals("noreply@dma.dk", mail.getFrom());
@@ -193,7 +193,7 @@ public class ReportMailTest {
         ReportMail mail = new ReportMail(report, "test@test.dk", "greenpos", propertyFileService).build();
 
         // VERIFY
-        String header = "ArcticWeb Greenpos Final Report from MyVessel";
+        String header = "Arctic Greenpos Final Report from MyVessel";
         String body = "GREENPOS - FR 5\n";
         body += "A (Vessel): MyVessel/callsign MMSI 12\n";
         body += "B (Report time): 01-02-2014 14:01:25 UTC\n";
@@ -202,7 +202,7 @@ public class ReportMailTest {
         body += "S (Ice): My Ice\n";
         body += "S (Weather): My Weather\n";
         body += "\n";
-        body += "Reported via ArcticWeb.";
+        body += "Reported via Arctic.";
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());
         Assert.assertEquals("noreply@dma.dk", mail.getFrom());
@@ -222,7 +222,7 @@ public class ReportMailTest {
         ReportMail mail = new ReportMail(report, "test@test.dk", "coastalcontrol", propertyFileService).build();
 
         // VERIFY
-        String header = "ArcticWeb Coastal Control Position Report from MyVessel";
+        String header = "Arctic Coastal Control Position Report from MyVessel";
         String body = "KYSTKONTROL - PR 2\n";
         body += "A (Vessel): MyVessel/callsign MMSI 12\n";
         body += "B (Report time): 01-02-2014 06:03:25 UTC\n";
@@ -233,7 +233,7 @@ public class ReportMailTest {
         body += "S (Ice): My Ice\n";
         body += "S (Weather): My Weather\n";
         body += "\n";
-        body += "Reported via ArcticWeb.";
+        body += "Reported via Arctic.";
 
         Assert.assertEquals("coastal.control.arcticweb@gmail.com", mail.getTo());
         Assert.assertEquals("noreply@dma.dk", mail.getFrom());

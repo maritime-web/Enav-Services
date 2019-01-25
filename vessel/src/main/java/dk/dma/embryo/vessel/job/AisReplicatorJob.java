@@ -120,14 +120,14 @@ public class AisReplicatorJob {
                             vessel.getMmsi(), vessel.getAisData().getName(), vessel.getAisData().getCallsign(), vessel.getAisData().getImoNo());
                 }catch(Exception e){
                     failedVessels.add(vessel);
-                    String msg = "Failed updating AIS base data on ArcticWeb vessel with mmsi=" + vessel.getMmsi();
+                    String msg = "Failed updating AIS base data on Arctic vessel with mmsi=" + vessel.getMmsi();
                     log.error(msg, e);
                     embryoLogService.error(msg, e);
                 }
             }
 
             if(failedVessels.size() == 0){
-                String message = "Updated AIS data for " + vesselsToUpdate.size() + " of " + arcticWebVessels.size()+ " ArcticWeb vessels";
+                String message = "Updated AIS data for " + vesselsToUpdate.size() + " of " + arcticWebVessels.size()+ " Arctic vessels";
                 log.info(message);
                 embryoLogService.info(message);
             }else{

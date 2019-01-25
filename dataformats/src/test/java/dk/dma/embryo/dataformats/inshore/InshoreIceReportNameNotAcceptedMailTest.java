@@ -43,8 +43,8 @@ public class InshoreIceReportNameNotAcceptedMailTest {
         InshoreIceReportNameNotAcceptedMail mail = new InshoreIceReportNameNotAcceptedMail("dmi", inshoreIceReport, propertyFileService).build();
 
         // VERIFY
-        String header = "ArcticWeb was not able to import inshore ice report with inconsistent name " + inshoreIceReport;
-        String body = "ArcticWeb was not able to import the inshore ice report " + inshoreIceReport + ", because it does not follow the expected naming scheme.\n";
+        String header = "Arctic was not able to import inshore ice report with inconsistent name " + inshoreIceReport;
+        String body = "Arctic was not able to import the inshore ice report " + inshoreIceReport + ", because it does not follow the expected naming scheme.\n";
         body += "Please delete the inshore ice report " + inshoreIceReport + " from the FTP location ftp.test.dk/mydir.\n";
         body += "Inshore ice report files must follow the naming scheme yyyy-MM-dd[_version].txt, where '_version' is optional. The format is described below.\n\n";
         body += "yyyy - The year\n";

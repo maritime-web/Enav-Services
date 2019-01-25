@@ -47,9 +47,9 @@ public class MailSenderImpl implements MailSender {
     @PostConstruct
     public void init() {
         if (enabled == null || !"TRUE".equals(enabled.toUpperCase())) {
-            log.info("ArcticWeb MAIL SERVICE DISABLED");
+            log.info("Arctic MAIL SERVICE DISABLED");
         } else {
-            log.info("ArcticWeb MAIL SERVICE ENABLED");
+            log.info("Arctic MAIL SERVICE ENABLED");
         }
     }
 

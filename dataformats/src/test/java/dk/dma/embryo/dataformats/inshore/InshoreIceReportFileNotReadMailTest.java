@@ -47,9 +47,9 @@ public class InshoreIceReportFileNotReadMailTest {
         InshoreIceReportFileNotReadMail mail = new InshoreIceReportFileNotReadMail("dmi", inshoreIceReport, cause, propertyFileService).build();
 
         // VERIFY
-        String header = "ArcticWeb was not able to parse and import inshore ice report with name " + inshoreIceReport;
-        String body = "ArcticWeb was not able to parse import the inshore ice report " + inshoreIceReport + " due to unexpected error during file read: " + cause.getMessage() + "\n";
-        body += "Please make sure the file format is as required by ArcticWeb.\n";
+        String header = "Arctic was not able to parse and import inshore ice report with name " + inshoreIceReport;
+        String body = "Arctic was not able to parse import the inshore ice report " + inshoreIceReport + " due to unexpected error during file read: " + cause.getMessage() + "\n";
+        body += "Please make sure the file format is as required by Arctic.\n";
 
         Assert.assertEquals("arktiskcom@gmail.com", mail.getTo());
         Assert.assertEquals("noreply@dma.dk", mail.getFrom());

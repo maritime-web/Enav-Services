@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>dataformats</artifactId>
     <packaging>jar</packaging>
-    <name>ArcticWeb Data Formats</name>
+    <name>Arctic Data Formats</name>
 
     <parent>
         <groupId>dk.dma.enav.services</groupId>

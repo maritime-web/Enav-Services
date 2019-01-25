@@ -50,8 +50,8 @@ public class IceChartNameNotAcceptedMailTest {
         IceChartNameNotAcceptedMail mail = new IceChartNameNotAcceptedMail("dmi", iceChart, regions, propertyFileService).build();
 
         // VERIFY
-        String header = "ArcticWeb was not able to import ice chart with inconsistent name " + iceChart;
-        String body = "ArcticWeb was not able to import the ice chart " + iceChart + ", because it does not follow the expected naming scheme.\n";
+        String header = "Arctic was not able to import ice chart with inconsistent name " + iceChart;
+        String body = "Arctic was not able to import the ice chart " + iceChart + ", because it does not follow the expected naming scheme.\n";
         body += "Please delete the ice chart " + iceChart + " from the FTP location ftp.test.dk/mydir.\n";
         body += "Ice charts must follow the naming scheme yyyyMMddHHmm_region[_version] where '_version' is optional. The format is described below.\n\n";
         body += "yyyy - The year\n";

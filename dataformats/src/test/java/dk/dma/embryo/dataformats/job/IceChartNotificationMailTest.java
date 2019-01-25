@@ -46,7 +46,7 @@ public class IceChartNotificationMailTest {
         ShapeNotificationMail mail = new ShapeNotificationMail("dmi", iceChart, t, propertyFileService).build();
 
         // VERIFY
-        String header = "ArcticWeb detected an error importing ice chart " + iceChart;
+        String header = "Arctic detected an error importing ice chart " + iceChart;
         String body = "Ice Chart: " + iceChart + "\n";
         body += "Message: Possible corrupt ice chart. You may want to delete the ice chart.\n";
         body += "Error: java.lang.RuntimeException: Expected to read lots of bytes";

@@ -46,7 +46,7 @@ public class NwNmTest {
         try {
             InstanceMetadata instance = new InstanceMetadata("NWNM", "1.0", 1L);
             instance
-                    .setDescription("ArcticWeb specific service registry providing access to the NW-NM service")
+                    .setDescription("Arctic specific service registry providing access to the NW-NM service")
                     .setName("NWNM Service Endpoint")
                     .setProducedBy(new VendorInfo("DMA"))
                     .setProvidedBy(new VendorInfo("DMA"))
