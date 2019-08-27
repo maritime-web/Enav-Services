@@ -114,6 +114,7 @@
                 <version>${enav-services.version}</version>
             </dependency>
 
+            <!-- Failed to collect dependencies at com.n1global:async-couchdb-client:jar:0.62.MW.2 -->
             <dependency>
                 <groupId>dk.dma.enav.services</groupId>
                 <artifactId>sar</artifactId>
@@ -141,7 +142,7 @@
             <dependency>
                 <groupId>dk.dma.enav</groupId>
                 <artifactId>enav-model</artifactId>
-                <version>0.1</version>
+                <version>0.6-SNAPSHOT</version>
             </dependency>
 
             <dependency>
@@ -626,7 +627,7 @@
         <module>map-tiles</module>
         <module>msi</module>
         <module>metoc</module>
-        <module>sar</module>
+        <module>sar</module> <!-- Failed to collect dependencies at com.n1global:async-couchdb-client:jar:0.62.MW.2 --> 
         <module>reporting</module>
         <module>weather</module>
         <module>service-registry-api</module>
