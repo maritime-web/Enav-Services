@@ -7,7 +7,7 @@ before_script:
   - npm install -g grunt-cli
   - npm install karma
 
-script: "[ ${TRAVIS_PULL_REQUEST} = 'false' ] && mvn clean install || mvn clean verify"
+# script: "[ ${TRAVIS_PULL_REQUEST} = 'false' ] && mvn clean install || mvn clean verify"
 
 # whitelist
 branches:
