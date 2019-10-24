@@ -1,4 +1,5 @@
-E-navigation Services
+E-navigation Services 
+[![Build Status](https://travis-ci.com/maritime-web/Enav-Services.svg?branch=master)](https://travis-ci.com/maritime-web/Enav-Services)
 =========
 
 Is a Maven multiproject containing all server side modules, which can be used when putting together
